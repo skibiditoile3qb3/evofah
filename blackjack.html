@@ -1009,7 +1009,7 @@
             dealerPlay();
         }
 
-        function dealerPlay() {
+function dealerPlay() {
             const hiddenCard = dealerHandElement.querySelector('.card.hidden');
             if (hiddenCard) {
                 hiddenCard.classList.remove('hidden');
@@ -1017,22 +1017,28 @@
             }
             state.dealersTurn = true;
             updateHandValue(dealerValueElement, calculateHandValue(state.dealerHand));
+            
             const dealerDraw = () => {
                 const value = calculateHandValue(state.dealerHand);
                 if (value < 17) {
                     setTimeout(() => {
                         dealCard(state.dealerHand, dealerHandElement);
+                        // Update dealer value after each card
+                        updateHandValue(dealerValueElement, calculateHandValue(state.dealerHand));
                         dealerDraw();
                     }, 700);
                 } else {
-                    showResult();
+                    // Final update before showing result
+                    updateHandValue(dealerValueElement, calculateHandValue(state.dealerHand));
+                    setTimeout(() => {
+                        showResult();
+                    }, 500);
                 }
             };
             setTimeout(() => {
                 dealerDraw();
             }, 700);
         }
-
         function showResult(specialCase = null) {
             state.handOver = true;
             state.gameInProgress = false;
