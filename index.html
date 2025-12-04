@@ -344,7 +344,7 @@
             return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         }
 
-        function getCurrentSeed() {
+function getCurrentSeed() {
             try {
                 const stored = localStorage.getItem(_0x2b4a(_0x5c2f));
                 if (stored) {
@@ -355,6 +355,12 @@
             const newSeed = generateSeed();
             setCurrentSeed(newSeed);
             return newSeed;
+        }
+
+        // Regenerate seed on page load
+        function regenerateSeedOnLoad() {
+            const newSeed = generateSeed();
+            setCurrentSeed(newSeed);
         }
 
         function setCurrentSeed(seed) {
