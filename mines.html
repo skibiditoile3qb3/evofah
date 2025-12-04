@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mines 💎</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      margin: 0;
       background: #2e2e2e;
       color: #eee;
       font-family: 'Roboto', sans-serif;
       display: flex;
       height: 100vh;
+      overflow: hidden;
     }
 
     .sidebar {
@@ -96,9 +97,10 @@
       position: relative;
       cursor: pointer;
       transition: transform 0.1s;
+      border: none;
     }
 
-    .tile:active {
+    .tile:active:not(:disabled) {
       transform: scale(0.95);
     }
 
@@ -118,8 +120,8 @@
 
     @keyframes pop-bomb {
       0% { background: #3a3a3a; }
-      50% { background: #000; transform: scale(1.2); }
-      100% { background: #111; }
+      50% { background: #e53e3e; transform: scale(1.2); }
+      100% { background: #c53030; }
     }
 
     .tile.revealed-safe::after {
@@ -163,6 +165,12 @@
       80%  { opacity: 1; transform: translate(-50%, -50%); }
       100% { opacity: 0; transform: translate(-50%, -40%); }
     }
+
+    #balance {
+      font-size: 1.4rem;
+      color: #5a67d8;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
@@ -170,7 +178,7 @@
   <div class="sidebar">
     <div>
       <label for="balance">Balance:</label>
-      <div id="balance">500</div>
+      <div id="balance">Loading...</div>
     </div>
     <div>
       <label for="betAmount">Bet Amount (Coins):</label>
@@ -182,7 +190,6 @@
     </div>
     <button id="startBtn">Start Game</button>
     <button id="cashOutBtn" disabled>Cash Out</button>
-    <button id="resetBalanceBtn">Reset Balance</button>
   </div>
 
   <div class="main">
@@ -202,7 +209,6 @@
     const balanceEl = document.getElementById('balance');
     const startBtn = document.getElementById('startBtn');
     const cashBtn = document.getElementById('cashOutBtn');
-    const resetBtn = document.getElementById('resetBalanceBtn');
     const multEl = document.getElementById('multiplier');
     const winEl = document.getElementById('winnings');
     const message = document.getElementById('message');
@@ -213,13 +219,31 @@
     let currentMult = 1;
     let safeClicks = 0;
     let gameActive = false;
-    let balance = 500;
+    let balance = 0;
     let tilesLeft = 25;
+
+    // Request coins from parent
+    window.parent.postMessage({ type: 'getCoins' }, '*');
+
+    // Listen for coin data from parent
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'coinsData') {
+        balance = event.data.coins;
+        updateInfo();
+      }
+    });
 
     function updateInfo() {
       multEl.textContent = currentMult.toFixed(2) + '×';
       winEl.textContent = (bet * currentMult).toFixed(2);
       balanceEl.textContent = balance.toFixed(2);
+    }
+
+    function updateParentCoins() {
+      window.parent.postMessage({
+        type: 'updateCoins',
+        coins: balance
+      }, '*');
     }
 
     function showMessage(text) {
@@ -244,6 +268,7 @@
 
       balance -= bet;
       updateInfo();
+      updateParentCoins();
 
       bombs.clear();
       revealed.clear();
@@ -253,7 +278,6 @@
       gridEl.innerHTML = '';
       cashBtn.disabled = true;
       startBtn.disabled = true;
-      resetBtn.disabled = true;
 
       while (bombs.size < bombCount) bombs.add(Math.floor(Math.random() * 25));
 
@@ -281,11 +305,12 @@
         tile.classList.add('revealed-safe');
         safeClicks++;
 
-        const safeTiles = tilesLeft - bombs.size;
-        const chance = safeTiles / tilesLeft;
-        const multiplierBoost = 1 / chance;
-
-        currentMult *= multiplierBoost;
+        const safeTiles = 25 - bombs.size - safeClicks;
+        if (safeTiles > 0) {
+          const chance = safeTiles / tilesLeft;
+          const multiplierBoost = 1 / chance;
+          currentMult *= multiplierBoost;
+        }
         updateInfo();
 
         if (safeClicks === 1) {
@@ -299,6 +324,7 @@
       const winnings = bet * currentMult;
       balance += winnings;
       updateInfo();
+      updateParentCoins();
       endGame(true);
     }
 
@@ -306,7 +332,6 @@
       gameActive = false;
       cashBtn.disabled = true;
       startBtn.disabled = false;
-      resetBtn.disabled = false;
 
       showMessage(cashedOut
         ? `🏆 Cashed out ${(bet * currentMult).toFixed(2)} coins!`
@@ -319,13 +344,6 @@
         }
       });
     }
-
-    resetBtn.addEventListener('click', () => {
-      if (gameActive) return showMessage("⚠️ Finish game before resetting!");
-      balance = 500;
-      updateInfo();
-      showMessage("🔄 Balance reset to 500");
-    });
 
     startBtn.addEventListener('click', startGame);
     cashBtn.addEventListener('click', cashOut);
