@@ -218,10 +218,32 @@
                 <button id="allBtn">ALL</button>
                 <button id="minesBtn" style="background: #d69e2e; border: 1px solid #b7791f;">MINES 💎</button>
                 <button id="blackjackBtn" style="background: #c53030; border: 1px solid #9b2c2c;">BLACKJACK ♠️</button>
+                <button id="pokerBtn" style="background: #38a169; border: 1px solid #2f855a;">POKER 🃏</button>
             </div>
             <div id="gameList"></div>
             <div class="dev-section">
                 <input type="text" id="devInput" placeholder="Dev code">
+                
+                <!-- User seed display (everyone can see) -->
+                <div style="margin-top: 15px;">
+                    <button id="getSeedBtn" style="display: block; width: 100%;">Get My Seed</button>
+                    <div id="userSeedDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
+                </div>
+                
+                <!-- Admin panel (only shows with **8p) -->
+                <div id="adminPanel" style="display: none; margin-top: 15px;">
+                    <h3 style="font-size: 16px; margin-bottom: 10px;">Admin Panel</h3>
+                    <input type="text" id="adminSeedInput" placeholder="Enter user's obfuscated seed" style="width: 100%; margin-bottom: 10px;">
+                    <input type="number" id="adminCoinInput" placeholder="Coin amount" min="1" style="width: 100%; margin-bottom: 10px;">
+                    <button id="generateCoinCodeBtn" style="display: block; width: 100%;">Generate Coin Code</button>
+                    <div id="coinCodeDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #4a4; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
+                </div>
+                
+                <!-- Redeem section (everyone can see) -->
+                <div style="margin-top: 15px;">
+                    <input type="text" id="coinCodeInput" placeholder="Enter coin code from admin" style="width: 100%; margin-bottom: 10px;">
+                    <button id="redeemCoinCodeBtn" style="display: block; width: 100%;">Redeem Coin Code</button>
+                </div>
             </div>
 
             <div class="trade-section">
@@ -261,7 +283,7 @@
     </div>
 
     <script>
-        const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquaparkio","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","gunspin2","happy-wheels","hexanautio","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paperio-2","paperio","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-run","slope","smash-karts","snakeio","sniper-rifle-shooting","snow-rider3d","snowballio","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
+        const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquaparkio","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","gunspin2","happy-wheels","hexanautio","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paperio-2","paperio","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-run","slope","smash-karts","snakeio","sniper-rifle-shooting","snow-rider3d","snowballio","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stick-fighter","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","10-minutes-till-dawn","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
 
         // Obfuscation helpers
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
@@ -269,6 +291,8 @@
         const _0x9c3d = 'X2NvaW5EYXRh';
         const _0x7f1e = 'X2xhc3RBY3Rpdml0eQ==';
         const _0x3e8a = 'X3RvdGFsQWN0aXZlVGltZQ==';
+        const _0x5c2f = 'X2N1cnJlbnRTZWVk'; // Current seed storage key
+        const _0x8d4b = 'X3VzZWRDb2Rlcw=='; // Used codes storage key
 
         // Storage functions
         function getCoins() {
@@ -314,6 +338,118 @@
                 localStorage.setItem(_0x2b4a(_0x3e8a), _0x4a2b(time.toString()));
             } catch(e) {}
         }
+
+        // Seed management functions
+        function generateSeed() {
+            return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        }
+
+        function getCurrentSeed() {
+            try {
+                const stored = localStorage.getItem(_0x2b4a(_0x5c2f));
+                if (stored) {
+                    return _0x2b4a(stored);
+                }
+            } catch(e) {}
+            // Generate new seed if none exists
+            const newSeed = generateSeed();
+            setCurrentSeed(newSeed);
+            return newSeed;
+        }
+
+        function setCurrentSeed(seed) {
+            try {
+                localStorage.setItem(_0x2b4a(_0x5c2f), _0x4a2b(seed));
+            } catch(e) {}
+        }
+
+        // User obfuscation (simple base64 reverse)
+        function obfuscateSeedUser(seed) {
+            return btoa(seed).split('').reverse().join('');
+        }
+
+        function deobfuscateSeedUser(obfuscated) {
+            return atob(obfuscated.split('').reverse().join(''));
+        }
+
+        // Admin obfuscation (different cipher - ROT13 + base64)
+        function obfuscateSeedAdmin(seed) {
+            // ROT13 first
+            const rot13 = seed.split('').map(char => {
+                if (char >= 'a' && char <= 'z') {
+                    return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
+                } else if (char >= 'A' && char <= 'Z') {
+                    return String.fromCharCode(((char.charCodeAt(0) - 65 + 13) % 26) + 65);
+                }
+                return char;
+            }).join('');
+            // Then base64
+            return btoa(rot13);
+        }
+
+        function deobfuscateSeedAdmin(obfuscated) {
+            // Reverse base64 first
+            const unb64 = atob(obfuscated);
+            // Then reverse ROT13
+            return unb64.split('').map(char => {
+                if (char >= 'a' && char <= 'z') {
+                    return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
+                } else if (char >= 'A' && char <= 'Z') {
+                    return String.fromCharCode(((char.charCodeAt(0) - 65 + 13) % 26) + 65);
+                }
+                return char;
+            }).join('');
+        }
+
+        // Generate coin code (admin cipher seed + embedded coins)
+        function generateCoinCode(userObfuscatedSeed, coinAmount) {
+            try {
+                // Deobfuscate user's seed
+                const seed = deobfuscateSeedUser(userObfuscatedSeed);
+                // Obfuscate with admin cipher
+                const adminObfuscated = obfuscateSeedAdmin(seed);
+                // Embed coins (coins + separator + obfuscated seed)
+                const coinCode = btoa(coinAmount.toString()) + '.' + adminObfuscated;
+                return coinCode;
+            } catch(e) {
+                return null;
+            }
+        }
+
+        // Validate and redeem coin code
+        function validateCoinCode(coinCode) {
+            try {
+                // Parse coin amount and seed
+                const parts = coinCode.split('.');
+                if (parts.length !== 2) return { valid: false, message: 'Invalid coin code format' };
+                
+                const coinAmount = parseInt(atob(parts[0]));
+                const adminObfuscatedSeed = parts[1];
+                
+                if (isNaN(coinAmount)) return { valid: false, message: 'Invalid coin code' };
+                
+                // Deobfuscate admin cipher
+                const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
+                
+                // Get user's current seed
+                const currentSeed = getCurrentSeed();
+                
+                // Cross-check
+                if (seed === currentSeed) {
+                    // Generate new seed after redemption
+                    const newSeed = generateSeed();
+                    setCurrentSeed(newSeed);
+                    return { valid: true, coins: coinAmount };
+                } else {
+                    return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
+                }
+            } catch(e) {
+                return { valid: false, message: 'Invalid coin code' };
+            }
+        }
+
+        // Initialize seed on page load
+        getCurrentSeed();
 
         // Initialize
         let coins = getCoins();
@@ -429,6 +565,12 @@
                 document.getElementById('gameFrame').src = 'mines.html';
             } else if (game === 'blackjack') {
                 document.getElementById('gameFrame').src = 'blackjack.html';
+            } else if (game === 'poker') {
+                document.getElementById('gameFrame').src = 'poker.html';
+            } else if (game === 'stick-fighter') {
+                document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g6/stick-fighter/';
+            } else if (game === '10-minutes-till-dawn') {
+                document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g7/10-minutes-till-dawn/';
             } else {
                 document.getElementById('gameFrame').src = `https://jasongamesdev.github.io/${game}`;
             }
@@ -466,6 +608,11 @@
             loadGame('blackjack');
         });
 
+        // Poker button
+        document.getElementById('pokerBtn').addEventListener('click', () => {
+            loadGame('poker');
+        });
+
         // Listen for messages from game iframes
         window.addEventListener('message', (event) => {
             // Security: only accept messages from same origin or your domain
@@ -491,6 +638,90 @@
                 setCoins(coins);
                 updateCoinDisplay();
                 e.target.value = '';
+            } else if (code === '**8p') {
+                // Show admin panel
+                document.getElementById('adminPanel').style.display = 'block';
+                e.target.value = '';
+            }
+        });
+
+        // Get seed button (everyone can use)
+        document.getElementById('getSeedBtn').addEventListener('click', () => {
+            const seed = getCurrentSeed();
+            const obfuscated = obfuscateSeedUser(seed);
+            document.getElementById('userSeedDisplay').textContent = obfuscated;
+            document.getElementById('userSeedDisplay').style.display = 'block';
+        });
+
+        // Click to copy user seed
+        document.getElementById('userSeedDisplay').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.textContent);
+            const original = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = original;
+            }, 1000);
+        });
+
+        // Admin: Generate coin code
+        document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
+            const userSeed = document.getElementById('adminSeedInput').value.trim();
+            const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
+            
+            if (!userSeed) {
+                alert('Please enter user\'s obfuscated seed');
+                return;
+            }
+            
+            if (!coinAmount || coinAmount <= 0) {
+                alert('Please enter a valid coin amount');
+                return;
+            }
+            
+            const coinCode = generateCoinCode(userSeed, coinAmount);
+            
+            if (!coinCode) {
+                alert('Failed to generate coin code - invalid seed format');
+                return;
+            }
+            
+            document.getElementById('coinCodeDisplay').textContent = coinCode;
+            document.getElementById('coinCodeDisplay').style.display = 'block';
+            
+            // Clear inputs
+            document.getElementById('adminSeedInput').value = '';
+            document.getElementById('adminCoinInput').value = '';
+        });
+
+        // Click to copy coin code
+        document.getElementById('coinCodeDisplay').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.textContent);
+            const original = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = original;
+            }, 1000);
+        });
+
+        // Redeem coin code (everyone can use)
+        document.getElementById('redeemCoinCodeBtn').addEventListener('click', () => {
+            const coinCode = document.getElementById('coinCodeInput').value.trim();
+            
+            if (!coinCode) {
+                alert('Please enter a coin code');
+                return;
+            }
+            
+            const result = validateCoinCode(coinCode);
+            
+            if (result.valid) {
+                coins += result.coins;
+                setCoins(coins);
+                updateCoinDisplay();
+                alert(`✅ Successfully redeemed ${result.coins} coins!`);
+                document.getElementById('coinCodeInput').value = '';
+            } else {
+                alert('❌ ' + result.message);
             }
         });
 
