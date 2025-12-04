@@ -216,6 +216,7 @@
             <div class="search-container">
                 <input type="text" id="searchBox" placeholder="Search games...">
                 <button id="allBtn">ALL</button>
+                <button id="minesBtn" style="background: #d69e2e; border: 1px solid #b7791f;">MINES 💎</button>
             </div>
             <div id="gameList"></div>
             <div class="dev-section">
@@ -326,7 +327,7 @@
 
         updateCoinDisplay();
 
-        // Activity tracking
+        // Activity tracking - IMPROVED for iframe games
         function markActivity() {
             isActive = true;
             lastActivity = Date.now();
@@ -336,10 +337,16 @@
         document.addEventListener('keydown', markActivity);
         document.addEventListener('click', markActivity);
 
+        // Track if user is playing a game (iframe is visible)
+        let gameIsPlaying = false;
+
         // Check activity every second
         activityCheckInterval = setInterval(() => {
             const now = Date.now();
-            if (isActive && (now - lastActivity) < 2000) {
+            // Count as active if: manually active OR playing a game in iframe
+            const isCurrentlyActive = (isActive && (now - lastActivity) < 2000) || gameIsPlaying;
+            
+            if (isCurrentlyActive) {
                 totalActiveTime += 1;
                 setTotalActiveTime(totalActiveTime);
                 
@@ -415,7 +422,15 @@
             document.getElementById('mainView').style.display = 'none';
             document.getElementById('gameView').style.display = 'block';
             document.getElementById('coinDisplay').style.display = 'none';
-            document.getElementById('gameFrame').src = `https://jasongamesdev.github.io/${game}`;
+            
+            // Special handling for Mines game
+            if (game === 'mines') {
+                document.getElementById('gameFrame').src = 'mines.html';
+            } else {
+                document.getElementById('gameFrame').src = `https://jasongamesdev.github.io/${game}`;
+            }
+            
+            gameIsPlaying = true; // Mark that user is playing
         }
 
         function backToMain() {
@@ -423,6 +438,7 @@
             document.getElementById('gameView').style.display = 'none';
             document.getElementById('coinDisplay').style.display = 'block';
             document.getElementById('gameFrame').src = '';
+            gameIsPlaying = false; // User stopped playing
         }
 
         // Event listeners
@@ -436,6 +452,28 @@
         });
 
         document.getElementById('backBtn').addEventListener('click', backToMain);
+
+        // Mines button
+        document.getElementById('minesBtn').addEventListener('click', () => {
+            loadGame('mines');
+        });
+
+        // Listen for messages from Mines game iframe
+        window.addEventListener('message', (event) => {
+            // Security: only accept messages from same origin or your domain
+            if (event.data.type === 'getCoins') {
+                // Send coins to Mines game
+                event.source.postMessage({
+                    type: 'coinsData',
+                    coins: coins
+                }, '*');
+            } else if (event.data.type === 'updateCoins') {
+                // Mines game updated coins
+                coins = event.data.coins;
+                setCoins(coins);
+                updateCoinDisplay();
+            }
+        });
 
         // Dev code
         document.getElementById('devInput').addEventListener('input', (e) => {
@@ -611,12 +649,19 @@
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 
+                // Handle data channel from creator
                 peerConnection.ondatachannel = (event) => {
                     setupDataChannel(event.channel);
                 };
+                
+                // Set remote description
                 await peerConnection.setRemoteDescription(tradeData.offer);
+                
+                // Create answer
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
+                
+                // Wait for ICE gathering
                 await new Promise((resolve) => {
                     if (peerConnection.iceGatheringState === 'complete') {
                         resolve();
@@ -629,10 +674,13 @@
                     }
                 });
                 
+                // Create answer code for creator
                 const answerData = {
                     answer: peerConnection.localDescription
                 };
                 const answerCode = btoa(JSON.stringify(answerData));
+                
+                // Show answer code
                 prompt('Send this code back to the creator:', answerCode);
                 
                 updateTradeStatus('Waiting for creator to complete connection...');
@@ -681,9 +729,13 @@
                 alert('Not enough coins!');
                 return;
             }
+            
+            // Deduct coins
             coins -= amount;
             setCoins(coins);
             updateCoinDisplay();
+            
+            // Send to peer
             dataChannel.send(JSON.stringify({
                 type: 'coins',
                 amount: amount
@@ -692,7 +744,7 @@
             updateTradeStatus(`Sent ${amount} coins!`, true);
             document.getElementById('coinAmountInput').value = '';
             
-            setTimeout(() => updateTradeStatus('Connected!', true), 2000);
+            setTimeout(() => updateTradeStatus('Connected to peer!', true), 2000);
         }
 
         function resetTrade() {
@@ -719,6 +771,8 @@
             document.getElementById('createTradeBtn').disabled = false;
             document.getElementById('joinTradeBtn').disabled = false;
         }
+        
+        // Detect when user closes/refreshes page
         window.addEventListener('beforeunload', () => {
             if (dataChannel && dataChannel.readyState === 'open') {
                 dataChannel.close();
@@ -728,6 +782,7 @@
             }
         });
 
+        // Trade event listeners
         document.getElementById('createTradeBtn').addEventListener('click', createTrade);
         document.getElementById('cancelTradeBtn').addEventListener('click', () => {
             resetTrade();
@@ -737,7 +792,7 @@
         document.getElementById('sendCoinsBtn').addEventListener('click', sendCoins);
         document.getElementById('completeBtn').addEventListener('click', completeConnection);
         
-        // Copy code
+        // Click to copy trade code
         document.getElementById('tradeCodeDisplay').addEventListener('click', function() {
             navigator.clipboard.writeText(this.textContent).then(() => {
                 const original = this.textContent;
