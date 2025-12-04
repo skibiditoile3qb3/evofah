@@ -224,13 +224,11 @@
             <div class="dev-section">
                 <input type="text" id="devInput" placeholder="Dev code">
                 
-                <!-- User seed display (everyone can see) -->
                 <div style="margin-top: 15px;">
                     <button id="getSeedBtn" style="display: block; width: 100%;">Get My Seed</button>
                     <div id="userSeedDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
                 </div>
                 
-                <!-- Admin panel (only shows with **8p) -->
                 <div id="adminPanel" style="display: none; margin-top: 15px;">
                     <h3 style="font-size: 16px; margin-bottom: 10px;">Admin Panel</h3>
                     <input type="text" id="adminSeedInput" placeholder="Enter user's obfuscated seed" style="width: 100%; margin-bottom: 10px;">
@@ -239,7 +237,6 @@
                     <div id="coinCodeDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #4a4; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
                 </div>
                 
-                <!-- Redeem section (everyone can see) -->
                 <div style="margin-top: 15px;">
                     <input type="text" id="coinCodeInput" placeholder="Enter coin code from admin" style="width: 100%; margin-bottom: 10px;">
                     <button id="redeemCoinCodeBtn" style="display: block; width: 100%;">Redeem Coin Code</button>
@@ -285,16 +282,14 @@
     <script>
         const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquaparkio","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","gunspin2","happy-wheels","hexanautio","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paperio-2","paperio","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-run","slope","smash-karts","snakeio","sniper-rifle-shooting","snow-rider3d","snowballio","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stick-fighter","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","10-minutes-till-dawn","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
 
-        // Obfuscation helpers
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
         const _0x2b4a = (s) => atob(s.split('').reverse().join(''));
         const _0x9c3d = 'X2NvaW5EYXRh';
         const _0x7f1e = 'X2xhc3RBY3Rpdml0eQ==';
         const _0x3e8a = 'X3RvdGFsQWN0aXZlVGltZQ==';
-        const _0x5c2f = 'X2N1cnJlbnRTZWVk'; // Current seed storage key
-        const _0x8d4b = 'X3VzZWRDb2Rlcw=='; // Used codes storage key
+        const _0x5c2f = 'X2N1cnJlbnRTZWVk';
+        const _0x8d4b = 'X3VzZWRDb2Rlcw==';
 
-        // Storage functions
         function getCoins() {
             try {
                 const stored = localStorage.getItem(_0x2b4a(_0x9c3d));
@@ -339,28 +334,20 @@
             } catch(e) {}
         }
 
-        // Seed management functions
         function generateSeed() {
             return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         }
 
-function getCurrentSeed() {
+        function getCurrentSeed() {
             try {
                 const stored = localStorage.getItem(_0x2b4a(_0x5c2f));
                 if (stored) {
                     return _0x2b4a(stored);
                 }
             } catch(e) {}
-            // Generate new seed if none exists
             const newSeed = generateSeed();
             setCurrentSeed(newSeed);
             return newSeed;
-        }
-
-        // Regenerate seed on page load
-        function regenerateSeedOnLoad() {
-            const newSeed = generateSeed();
-            setCurrentSeed(newSeed);
         }
 
         function setCurrentSeed(seed) {
@@ -369,7 +356,6 @@ function getCurrentSeed() {
             } catch(e) {}
         }
 
-        // User obfuscation (simple base64 reverse)
         function obfuscateSeedUser(seed) {
             return btoa(seed).split('').reverse().join('');
         }
@@ -378,9 +364,7 @@ function getCurrentSeed() {
             return atob(obfuscated.split('').reverse().join(''));
         }
 
-        // Admin obfuscation (different cipher - ROT13 + base64)
         function obfuscateSeedAdmin(seed) {
-            // ROT13 first
             const rot13 = seed.split('').map(char => {
                 if (char >= 'a' && char <= 'z') {
                     return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
@@ -389,14 +373,11 @@ function getCurrentSeed() {
                 }
                 return char;
             }).join('');
-            // Then base64
             return btoa(rot13);
         }
 
         function deobfuscateSeedAdmin(obfuscated) {
-            // Reverse base64 first
             const unb64 = atob(obfuscated);
-            // Then reverse ROT13
             return unb64.split('').map(char => {
                 if (char >= 'a' && char <= 'z') {
                     return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
@@ -407,14 +388,10 @@ function getCurrentSeed() {
             }).join('');
         }
 
-        // Generate coin code (admin cipher seed + embedded coins)
         function generateCoinCode(userObfuscatedSeed, coinAmount) {
             try {
-                // Deobfuscate user's seed
                 const seed = deobfuscateSeedUser(userObfuscatedSeed);
-                // Obfuscate with admin cipher
                 const adminObfuscated = obfuscateSeedAdmin(seed);
-                // Embed coins (coins + separator + obfuscated seed)
                 const coinCode = btoa(coinAmount.toString()) + '.' + adminObfuscated;
                 return coinCode;
             } catch(e) {
@@ -422,10 +399,8 @@ function getCurrentSeed() {
             }
         }
 
-        // Validate and redeem coin code
         function validateCoinCode(coinCode) {
             try {
-                // Parse coin amount and seed
                 const parts = coinCode.split('.');
                 if (parts.length !== 2) return { valid: false, message: 'Invalid coin code format' };
                 
@@ -434,15 +409,10 @@ function getCurrentSeed() {
                 
                 if (isNaN(coinAmount)) return { valid: false, message: 'Invalid coin code' };
                 
-                // Deobfuscate admin cipher
                 const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
-                
-                // Get user's current seed
                 const currentSeed = getCurrentSeed();
                 
-                // Cross-check
                 if (seed === currentSeed) {
-                    // Generate new seed after redemption
                     const newSeed = generateSeed();
                     setCurrentSeed(newSeed);
                     return { valid: true, coins: coinAmount };
@@ -454,10 +424,12 @@ function getCurrentSeed() {
             }
         }
 
-        // Initialize seed on page load
-        getCurrentSeed();
+        // Generate NEW seed on every page load
+        (function() {
+            const newSeed = generateSeed();
+            setCurrentSeed(newSeed);
+        })();
 
-        // Initialize
         let coins = getCoins();
         let lastActivity = getLastActivity();
         let totalActiveTime = getTotalActiveTime();
@@ -470,7 +442,6 @@ function getCurrentSeed() {
 
         updateCoinDisplay();
 
-        // Activity tracking - IMPROVED for iframe games
         function markActivity() {
             isActive = true;
             lastActivity = Date.now();
@@ -480,20 +451,16 @@ function getCurrentSeed() {
         document.addEventListener('keydown', markActivity);
         document.addEventListener('click', markActivity);
 
-        // Track if user is playing a game (iframe is visible)
         let gameIsPlaying = false;
 
-        // Check activity every second
         activityCheckInterval = setInterval(() => {
             const now = Date.now();
-            // Count as active if: manually active OR playing a game in iframe
             const isCurrentlyActive = (isActive && (now - lastActivity) < 2000) || gameIsPlaying;
             
             if (isCurrentlyActive) {
                 totalActiveTime += 1;
                 setTotalActiveTime(totalActiveTime);
                 
-                // Award coins every 20 minutes (1200 seconds)
                 if (totalActiveTime > 0 && totalActiveTime % 1200 === 0) {
                     coins += 5;
                     setCoins(coins);
@@ -503,7 +470,6 @@ function getCurrentSeed() {
             isActive = false;
         }, 1000);
 
-        // Levenshtein distance
         function levenshtein(a, b) {
             const matrix = [];
             for (let i = 0; i <= b.length; i++) {
@@ -566,7 +532,6 @@ function getCurrentSeed() {
             document.getElementById('gameView').style.display = 'block';
             document.getElementById('coinDisplay').style.display = 'none';
             
-            // Special handling for custom games
             if (game === 'mines') {
                 document.getElementById('gameFrame').src = 'mines.html';
             } else if (game === 'blackjack') {
@@ -581,7 +546,7 @@ function getCurrentSeed() {
                 document.getElementById('gameFrame').src = `https://jasongamesdev.github.io/${game}`;
             }
             
-            gameIsPlaying = true; // Mark that user is playing
+            gameIsPlaying = true;
         }
 
         function backToMain() {
@@ -589,10 +554,9 @@ function getCurrentSeed() {
             document.getElementById('gameView').style.display = 'none';
             document.getElementById('coinDisplay').style.display = 'block';
             document.getElementById('gameFrame').src = '';
-            gameIsPlaying = false; // User stopped playing
+            gameIsPlaying = false;
         }
 
-        // Event listeners
         document.getElementById('searchBox').addEventListener('input', (e) => {
             searchGames(e.target.value);
         });
@@ -604,39 +568,31 @@ function getCurrentSeed() {
 
         document.getElementById('backBtn').addEventListener('click', backToMain);
 
-        // Mines button
         document.getElementById('minesBtn').addEventListener('click', () => {
             loadGame('mines');
         });
 
-        // Blackjack button
         document.getElementById('blackjackBtn').addEventListener('click', () => {
             loadGame('blackjack');
         });
 
-        // Poker button
         document.getElementById('pokerBtn').addEventListener('click', () => {
             loadGame('poker');
         });
 
-        // Listen for messages from game iframes
         window.addEventListener('message', (event) => {
-            // Security: only accept messages from same origin or your domain
             if (event.data.type === 'getCoins') {
-                // Send coins to Mines game
                 event.source.postMessage({
                     type: 'coinsData',
                     coins: coins
                 }, '*');
             } else if (event.data.type === 'updateCoins') {
-                // Mines game updated coins
                 coins = event.data.coins;
                 setCoins(coins);
                 updateCoinDisplay();
             }
         });
 
-        // Dev code
         document.getElementById('devInput').addEventListener('input', (e) => {
             const code = e.target.value;
             if (code === '**9p') {
@@ -645,13 +601,11 @@ function getCurrentSeed() {
                 updateCoinDisplay();
                 e.target.value = '';
             } else if (code === '**8p') {
-                // Show admin panel
                 document.getElementById('adminPanel').style.display = 'block';
                 e.target.value = '';
             }
         });
 
-        // Get seed button (everyone can use)
         document.getElementById('getSeedBtn').addEventListener('click', () => {
             const seed = getCurrentSeed();
             const obfuscated = obfuscateSeedUser(seed);
@@ -659,7 +613,6 @@ function getCurrentSeed() {
             document.getElementById('userSeedDisplay').style.display = 'block';
         });
 
-        // Click to copy user seed
         document.getElementById('userSeedDisplay').addEventListener('click', function() {
             navigator.clipboard.writeText(this.textContent);
             const original = this.textContent;
@@ -669,47 +622,6 @@ function getCurrentSeed() {
             }, 1000);
         });
 
-        // Admin: Generate coin code
-        document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
-            const userSeed = document.getElementById('adminSeedInput').value.trim();
-            const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
-            
-            if (!userSeed) {
-                alert('Please enter user\'s obfuscated seed');
-                return;
-            }
-            
-            if (!coinAmount || coinAmount <= 0) {
-                alert('Please enter a valid coin amount');
-                return;
-            }
-            
-            const coinCode = generateCoinCode(userSeed, coinAmount);
-            
-            if (!coinCode) {
-                alert('Failed to generate coin code - invalid seed format');
-                return;
-            }
-            
-            document.getElementById('coinCodeDisplay').textContent = coinCode;
-            document.getElementById('coinCodeDisplay').style.display = 'block';
-            
-            // Clear inputs
-            document.getElementById('adminSeedInput').value = '';
-            document.getElementById('adminCoinInput').value = '';
-        });
-
-        // Click to copy coin code
-        document.getElementById('coinCodeDisplay').addEventListener('click', function() {
-            navigator.clipboard.writeText(this.textContent);
-            const original = this.textContent;
-            this.textContent = 'Copied!';
-            setTimeout(() => {
-                this.textContent = original;
-            }, 1000);
-        });
-
-        // Redeem coin code (everyone can use)
         document.getElementById('redeemCoinCodeBtn').addEventListener('click', () => {
             const coinCode = document.getElementById('coinCodeInput').value.trim();
             
@@ -731,7 +643,6 @@ function getCurrentSeed() {
             }
         });
 
-        // ===== P2P TRADING WITH WEBRTC =====
         let peerConnection = null;
         let dataChannel = null;
         let isCreator = false;
@@ -762,7 +673,6 @@ function getCurrentSeed() {
                 document.getElementById('createTradeBtn').disabled = true;
                 document.getElementById('joinTradeBtn').disabled = true;
                 
-                // Send heartbeat every 5 seconds to check connection
                 if (heartbeatInterval) clearInterval(heartbeatInterval);
                 heartbeatInterval = setInterval(() => {
                     if (dataChannel && dataChannel.readyState === 'open') {
@@ -830,11 +740,9 @@ function getCurrentSeed() {
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 
-                // Create data channel
                 const channel = peerConnection.createDataChannel('coins');
                 setupDataChannel(channel);
                 
-                // Handle ICE candidates
                 const iceCandidates = [];
                 peerConnection.onicecandidate = (event) => {
                     if (event.candidate) {
@@ -842,11 +750,9 @@ function getCurrentSeed() {
                     }
                 };
                 
-                // Create offer
                 const offer = await peerConnection.createOffer();
                 await peerConnection.setLocalDescription(offer);
                 
-                // Wait for ICE gathering to complete
                 await new Promise((resolve) => {
                     if (peerConnection.iceGatheringState === 'complete') {
                         resolve();
@@ -859,13 +765,11 @@ function getCurrentSeed() {
                     }
                 });
                 
-                // Create trade code
                 const tradeData = {
                     offer: peerConnection.localDescription
                 };
                 const tradeCode = btoa(JSON.stringify(tradeData));
                 
-                // Display code
                 document.getElementById('tradeCodeDisplay').textContent = tradeCode;
                 document.getElementById('tradeCodeContainer').style.display = 'block';
                 document.getElementById('cancelTradeBtn').style.display = 'inline-block';
@@ -894,19 +798,15 @@ function getCurrentSeed() {
                 
                 peerConnection = new RTCPeerConnection(configuration);
                 
-                // Handle data channel from creator
                 peerConnection.ondatachannel = (event) => {
                     setupDataChannel(event.channel);
                 };
                 
-                // Set remote description
                 await peerConnection.setRemoteDescription(tradeData.offer);
                 
-                // Create answer
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
                 
-                // Wait for ICE gathering
                 await new Promise((resolve) => {
                     if (peerConnection.iceGatheringState === 'complete') {
                         resolve();
@@ -919,13 +819,11 @@ function getCurrentSeed() {
                     }
                 });
                 
-                // Create answer code for creator
                 const answerData = {
                     answer: peerConnection.localDescription
                 };
                 const answerCode = btoa(JSON.stringify(answerData));
                 
-                // Show answer code
                 prompt('Send this code back to the creator:', answerCode);
                 
                 updateTradeStatus('Waiting for creator to complete connection...');
@@ -975,12 +873,10 @@ function getCurrentSeed() {
                 return;
             }
             
-            // Deduct coins
             coins -= amount;
             setCoins(coins);
             updateCoinDisplay();
             
-            // Send to peer
             dataChannel.send(JSON.stringify({
                 type: 'coins',
                 amount: amount
@@ -1017,7 +913,6 @@ function getCurrentSeed() {
             document.getElementById('joinTradeBtn').disabled = false;
         }
         
-        // Detect when user closes/refreshes page
         window.addEventListener('beforeunload', () => {
             if (dataChannel && dataChannel.readyState === 'open') {
                 dataChannel.close();
@@ -1027,7 +922,6 @@ function getCurrentSeed() {
             }
         });
 
-        // Trade event listeners
         document.getElementById('createTradeBtn').addEventListener('click', createTrade);
         document.getElementById('cancelTradeBtn').addEventListener('click', () => {
             resetTrade();
@@ -1037,7 +931,6 @@ function getCurrentSeed() {
         document.getElementById('sendCoinsBtn').addEventListener('click', sendCoins);
         document.getElementById('completeBtn').addEventListener('click', completeConnection);
         
-        // Click to copy trade code
         document.getElementById('tradeCodeDisplay').addEventListener('click', function() {
             navigator.clipboard.writeText(this.textContent).then(() => {
                 const original = this.textContent;
@@ -1048,8 +941,44 @@ function getCurrentSeed() {
             });
         });
         
-        // Initial display
         displayGames(games);
     </script>
 </body>
 </html>
+            }, 1000);
+        });
+
+        document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
+            const userSeed = document.getElementById('adminSeedInput').value.trim();
+            const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
+            
+            if (!userSeed) {
+                alert('Please enter user\'s obfuscated seed');
+                return;
+            }
+            
+            if (!coinAmount || coinAmount <= 0) {
+                alert('Please enter a valid coin amount');
+                return;
+            }
+            
+            const coinCode = generateCoinCode(userSeed, coinAmount);
+            
+            if (!coinCode) {
+                alert('Failed to generate coin code - invalid seed format');
+                return;
+            }
+            
+            document.getElementById('coinCodeDisplay').textContent = coinCode;
+            document.getElementById('coinCodeDisplay').style.display = 'block';
+            
+            document.getElementById('adminSeedInput').value = '';
+            document.getElementById('adminCoinInput').value = '';
+        });
+
+        document.getElementById('coinCodeDisplay').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.textContent);
+            const original = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = original;
