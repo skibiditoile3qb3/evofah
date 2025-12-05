@@ -8,7 +8,7 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-sizing;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
@@ -49,6 +49,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
+            flex-wrap: wrap; /* Added for better mobile support */
         }
         #searchBox {
             flex: 1;
@@ -141,53 +142,7 @@
             outline: none;
             width: 200px;
         }
-        .trade-section {
-            margin-top: 40px;
-            padding-top: 40px;
-            border-top: 1px solid #333;
-        }
-        .trade-section h2 {
-            font-size: 18px;
-            font-weight: 300;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-        .trade-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .trade-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .trade-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-        }
-        .trade-status {
-            padding: 12px 16px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 15px;
-        }
-        .trade-status.connected {
-            color: #4a4;
-            border-color: #4a4;
-        }
-        .trade-code-display {
+        .trade-code-display { /* Reused for coinCodeDisplay */
             padding: 12px 16px;
             background: #1a1a1a;
             border: 1px solid #555;
@@ -225,50 +180,23 @@
                 <input type="text" id="devInput" placeholder="Dev code">
                 
                 <div style="margin-top: 15px;">
-                    <button id="getSeedBtn" style="display: block; width: 100%;">Get My Seed</button>
+                    <button id="getSeedBtn" style="display: block; width: 100%;">Get My Obfuscated Seed</button>
                     <div id="userSeedDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
+                    <small style="display: block; text-align: center;">Give this seed to the admin for a coin code.</small>
                 </div>
                 
                 <div id="adminPanel" style="display: none; margin-top: 15px;">
-                    <h3 style="font-size: 16px; margin-bottom: 10px;">Admin Panel</h3>
-                    <input type="text" id="adminSeedInput" placeholder="Enter user's obfuscated seed" style="width: 100%; margin-bottom: 10px;">
-                    <input type="number" id="adminCoinInput" placeholder="Coin amount" min="1" style="width: 100%; margin-bottom: 10px;">
-                    <button id="generateCoinCodeBtn" style="display: block; width: 100%;">Generate Coin Code</button>
-                    <div id="coinCodeDisplay" style="display: none; margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px solid #4a4; border-radius: 6px; font-family: monospace; word-break: break-all; cursor: pointer;" title="Click to copy"></div>
+                    <h3 style="font-size: 16px; margin-bottom: 10px;">Admin Panel (Requires Dev Code)</h3>
+                    <input type="text" id="adminSeedInput" placeholder="Enter user's obfuscated seed" style="width: 100%; margin-bottom: 10px; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;">
+                    <input type="number" id="adminCoinInput" placeholder="Coin amount" min="1" style="width: 100%; margin-bottom: 10px; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;">
+                    <button id="generateCoinCodeBtn" style="display: block; width: 100%; background: #4a4; border-color: #38a169;">Generate Coin Code</button>
+                    <div id="coinCodeDisplay" class="trade-code-display" style="display: none; margin-top: 10px; border-color: #4a4;" title="Click to copy"></div>
+                    <small style="display: block; text-align: center;">The generated code to give to the user.</small>
                 </div>
                 
                 <div style="margin-top: 15px;">
-                    <input type="text" id="coinCodeInput" placeholder="Enter coin code from admin" style="width: 100%; margin-bottom: 10px;">
+                    <input type="text" id="coinCodeInput" placeholder="Enter coin code from admin" style="width: 100%; margin-bottom: 10px; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;">
                     <button id="redeemCoinCodeBtn" style="display: block; width: 100%;">Redeem Coin Code</button>
-                </div>
-            </div>
-
-            <div class="trade-section">
-                <h2>P2P COIN TRADING</h2>
-                <div class="trade-status" id="tradeStatus">Disconnected</div>
-                <div class="trade-controls">
-                    <div class="trade-row">
-                        <button id="createTradeBtn">CREATE TRADE</button>
-                        <button id="cancelTradeBtn" style="display:none;">CANCEL</button>
-                    </div>
-                    <div id="tradeCodeContainer" style="display:none;">
-                        <div class="trade-code-display" id="tradeCodeDisplay">Loading...</div>
-                        <small>Click to copy • Share this code with another player</small>
-                        <div class="trade-row" style="margin-top: 15px;">
-                            <input type="text" id="answerCodeInput" class="trade-input" placeholder="Paste answer code here">
-                            <button id="completeBtn">COMPLETE</button>
-                        </div>
-                    </div>
-                    <div class="trade-row">
-                        <input type="text" id="joinTradeInput" class="trade-input" placeholder="Enter trade code to connect">
-                        <button id="joinTradeBtn">JOIN</button>
-                    </div>
-                    <div id="sendCoinsContainer" style="display:none;">
-                        <div class="trade-row">
-                            <input type="number" id="coinAmountInput" class="trade-input" placeholder="Amount" min="1" style="flex: 0 0 150px;">
-                            <button id="sendCoinsBtn">SEND COINS</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -356,15 +284,20 @@
             } catch(e) {}
         }
 
+        // --- CORE COIN CODE OBFUSCATION LOGIC ---
+
         function obfuscateSeedUser(seed) {
+            // User-facing obfuscation: Base64, then reverse.
             return btoa(seed).split('').reverse().join('');
         }
 
         function deobfuscateSeedUser(obfuscated) {
+            // Admin uses this to get raw seed: Reverse, then Base64 decode.
             return atob(obfuscated.split('').reverse().join(''));
         }
 
         function obfuscateSeedAdmin(seed) {
+            // Admin's internal obfuscation (for code generation): ROT13, then Base64.
             const rot13 = seed.split('').map(char => {
                 if (char >= 'a' && char <= 'z') {
                     return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
@@ -377,6 +310,7 @@
         }
 
         function deobfuscateSeedAdmin(obfuscated) {
+            // User uses this for validation: Base64 decode, then ROT13 decode.
             const unb64 = atob(obfuscated);
             return unb64.split('').map(char => {
                 if (char >= 'a' && char <= 'z') {
@@ -388,13 +322,22 @@
             }).join('');
         }
 
+        // --- MAIN COIN CODE FUNCTIONS ---
+
         function generateCoinCode(userObfuscatedSeed, coinAmount) {
             try {
+                // 1. Get the user's raw seed from the obfuscated code they sent
                 const seed = deobfuscateSeedUser(userObfuscatedSeed);
+                
+                // 2. Re-obfuscate the raw seed using the admin's method
                 const adminObfuscated = obfuscateSeedAdmin(seed);
+                
+                // 3. Create the final Coin Code: Base64(Amount) . Base64(ROT13(Seed))
                 const coinCode = btoa(coinAmount.toString()) + '.' + adminObfuscated;
+                
                 return coinCode;
             } catch(e) {
+                console.error("Error generating coin code:", e);
                 return null;
             }
         }
@@ -407,12 +350,14 @@
                 const coinAmount = parseInt(atob(parts[0]));
                 const adminObfuscatedSeed = parts[1];
                 
-                if (isNaN(coinAmount)) return { valid: false, message: 'Invalid coin code' };
+                if (isNaN(coinAmount) || coinAmount <= 0) return { valid: false, message: 'Invalid coin amount or code' };
                 
                 const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
                 const currentSeed = getCurrentSeed();
                 
+                // CRITICAL CHECK: Seed in code must match user's current seed
                 if (seed === currentSeed) {
+                    // Success: Generate a NEW seed to immediately invalidate the redeemed code
                     const newSeed = generateSeed();
                     setCurrentSeed(newSeed);
                     return { valid: true, coins: coinAmount };
@@ -420,11 +365,12 @@
                     return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
                 }
             } catch(e) {
+                console.error("Error validating coin code:", e);
                 return { valid: false, message: 'Invalid coin code' };
             }
         }
 
-        // Generate NEW seed on every page load
+        // Generate NEW seed on every page load (Prevents code reuse after redemption)
         (function() {
             const newSeed = generateSeed();
             setCurrentSeed(newSeed);
@@ -461,6 +407,7 @@
                 totalActiveTime += 1;
                 setTotalActiveTime(totalActiveTime);
                 
+                // Award 5 coins every 1200 seconds (20 minutes) of active time
                 if (totalActiveTime > 0 && totalActiveTime % 1200 === 0) {
                     coins += 5;
                     setCoins(coins);
@@ -557,6 +504,8 @@
             gameIsPlaying = false;
         }
 
+        displayGames(games);
+
         document.getElementById('searchBox').addEventListener('input', (e) => {
             searchGames(e.target.value);
         });
@@ -622,6 +571,60 @@
             }, 1000);
         });
 
+        // --- NEW/FIXED ADMIN COIN CODE GENERATION LOGIC ---
+
+        document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
+            // Get values from the main Dev Code input (for auth) and the admin panel inputs
+            const devCodeInput = document.getElementById('devInput').value.trim();
+            const userObfuscatedSeed = document.getElementById('adminSeedInput').value.trim();
+            const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
+            const coinCodeDisplay = document.getElementById('coinCodeDisplay');
+
+            // 1. ADMIN AUTHENTICATION CHECK
+            if (devCodeInput !== '**8p') { 
+                alert('❌ Error: Incorrect Dev Code. You must be the administrator to generate codes.');
+                coinCodeDisplay.style.display = 'none';
+                return;
+            }
+
+            // 2. Input Validation
+            if (!userObfuscatedSeed) {
+                alert('❌ Please enter the user\'s obfuscated seed.');
+                coinCodeDisplay.style.display = 'none';
+                return;
+            }
+
+            if (isNaN(coinAmount) || coinAmount <= 0) {
+                alert('❌ Please enter a valid coin amount (greater than 0).');
+                coinCodeDisplay.style.display = 'none';
+                return;
+            }
+
+            // 3. Generate the Coin Code
+            const coinCode = generateCoinCode(userObfuscatedSeed, coinAmount);
+
+            if (coinCode) {
+                coinCodeDisplay.textContent = coinCode;
+                coinCodeDisplay.style.display = 'block';
+                document.getElementById('devInput').value = ''; // Clear the dev code input
+                alert(`✅ SUCCESS! Coin Code Generated. Click the box to copy and give to the user.`);
+            } else {
+                alert('❌ Error generating code. Check the seed format or console for errors.');
+                coinCodeDisplay.style.display = 'none';
+            }
+        });
+
+        document.getElementById('coinCodeDisplay').addEventListener('click', function() {
+            navigator.clipboard.writeText(this.textContent);
+            const original = this.textContent;
+            this.textContent = 'Copied!';
+            setTimeout(() => {
+                this.textContent = original;
+            }, 1000);
+        });
+
+        // --- USER CODE REDEMPTION LOGIC ---
+
         document.getElementById('redeemCoinCodeBtn').addEventListener('click', () => {
             const coinCode = document.getElementById('coinCodeInput').value.trim();
             
@@ -642,306 +645,6 @@
                 alert('❌ ' + result.message);
             }
         });
-
-        let peerConnection = null;
-        let dataChannel = null;
-        let isCreator = false;
-
-        const configuration = {
-            iceServers: [
-                { urls: 'stun:stun.l.google.com:19302' },
-                { urls: 'stun:stun1.l.google.com:19302' }
-            ]
-        };
-
-        function updateTradeStatus(msg, connected = false) {
-            const status = document.getElementById('tradeStatus');
-            status.textContent = msg;
-            if (connected) {
-                status.classList.add('connected');
-            } else {
-                status.classList.remove('connected');
-            }
-        }
-
-        function setupDataChannel(channel) {
-            dataChannel = channel;
-            
-            dataChannel.onopen = () => {
-                updateTradeStatus('Connected to peer!', true);
-                document.getElementById('sendCoinsContainer').style.display = 'block';
-                document.getElementById('createTradeBtn').disabled = true;
-                document.getElementById('joinTradeBtn').disabled = true;
-                
-                if (heartbeatInterval) clearInterval(heartbeatInterval);
-                heartbeatInterval = setInterval(() => {
-                    if (dataChannel && dataChannel.readyState === 'open') {
-                        try {
-                            dataChannel.send(JSON.stringify({ type: 'heartbeat' }));
-                        } catch(e) {
-                            console.error('Heartbeat failed:', e);
-                            handleDisconnect();
-                        }
-                    }
-                }, 5000);
-            };
-            
-            dataChannel.onclose = () => {
-                handleDisconnect();
-            };
-            
-            dataChannel.onerror = (error) => {
-                console.error('Data channel error:', error);
-                handleDisconnect();
-            };
-            
-            dataChannel.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    if (data.type === 'coins') {
-                        coins += data.amount;
-                        setCoins(coins);
-                        updateCoinDisplay();
-                        updateTradeStatus(`Received ${data.amount} coins!`, true);
-                        setTimeout(() => {
-                            if (dataChannel && dataChannel.readyState === 'open') {
-                                updateTradeStatus('Connected to peer!', true);
-                            }
-                        }, 2000);
-                    } else if (data.type === 'heartbeat') {
-                        // Peer is still alive, do nothing
-                    }
-                } catch(e) {
-                    console.error('Error parsing message:', e);
-                }
-            };
-        }
-        
-        let heartbeatInterval = null;
-        
-        function handleDisconnect() {
-            updateTradeStatus('Peer disconnected! You can create a new trade.', false);
-            document.getElementById('sendCoinsContainer').style.display = 'none';
-            document.getElementById('createTradeBtn').disabled = false;
-            document.getElementById('joinTradeBtn').disabled = false;
-            
-            if (heartbeatInterval) {
-                clearInterval(heartbeatInterval);
-                heartbeatInterval = null;
-            }
-            
-            resetTrade();
-        }
-
-        async function createTrade() {
-            try {
-                isCreator = true;
-                updateTradeStatus('Creating trade...');
-                
-                peerConnection = new RTCPeerConnection(configuration);
-                
-                const channel = peerConnection.createDataChannel('coins');
-                setupDataChannel(channel);
-                
-                const iceCandidates = [];
-                peerConnection.onicecandidate = (event) => {
-                    if (event.candidate) {
-                        iceCandidates.push(event.candidate);
-                    }
-                };
-                
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-                
-                await new Promise((resolve) => {
-                    if (peerConnection.iceGatheringState === 'complete') {
-                        resolve();
-                    } else {
-                        peerConnection.onicegatheringstatechange = () => {
-                            if (peerConnection.iceGatheringState === 'complete') {
-                                resolve();
-                            }
-                        };
-                    }
-                });
-                
-                const tradeData = {
-                    offer: peerConnection.localDescription
-                };
-                const tradeCode = btoa(JSON.stringify(tradeData));
-                
-                document.getElementById('tradeCodeDisplay').textContent = tradeCode;
-                document.getElementById('tradeCodeContainer').style.display = 'block';
-                document.getElementById('cancelTradeBtn').style.display = 'inline-block';
-                document.getElementById('createTradeBtn').style.display = 'none';
-                
-                updateTradeStatus('Waiting for peer to join...');
-                
-            } catch(e) {
-                console.error('Error creating trade:', e);
-                updateTradeStatus('Error creating trade');
-                resetTrade();
-            }
-        }
-
-        async function joinTrade() {
-            try {
-                const code = document.getElementById('joinTradeInput').value.trim();
-                if (!code) {
-                    alert('Please enter a trade code');
-                    return;
-                }
-                
-                updateTradeStatus('Joining trade...');
-                
-                const tradeData = JSON.parse(atob(code));
-                
-                peerConnection = new RTCPeerConnection(configuration);
-                
-                peerConnection.ondatachannel = (event) => {
-                    setupDataChannel(event.channel);
-                };
-                
-                await peerConnection.setRemoteDescription(tradeData.offer);
-                
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                
-                await new Promise((resolve) => {
-                    if (peerConnection.iceGatheringState === 'complete') {
-                        resolve();
-                    } else {
-                        peerConnection.onicegatheringstatechange = () => {
-                            if (peerConnection.iceGatheringState === 'complete') {
-                                resolve();
-                            }
-                        };
-                    }
-                });
-                
-                const answerData = {
-                    answer: peerConnection.localDescription
-                };
-                const answerCode = btoa(JSON.stringify(answerData));
-                
-                prompt('Send this code back to the creator:', answerCode);
-                
-                updateTradeStatus('Waiting for creator to complete connection...');
-                
-            } catch(e) {
-                console.error('Error joining trade:', e);
-                updateTradeStatus('Error joining trade. Invalid code?');
-                resetTrade();
-            }
-        }
-
-        async function completeConnection() {
-            try {
-                const answerCode = document.getElementById('answerCodeInput').value.trim();
-                if (!answerCode) {
-                    alert('Please paste the answer code');
-                    return;
-                }
-                
-                const answerData = JSON.parse(atob(answerCode));
-                await peerConnection.setRemoteDescription(answerData.answer);
-                
-                updateTradeStatus('Connecting...');
-                document.getElementById('answerCodeInput').value = '';
-                
-            } catch(e) {
-                console.error('Error completing connection:', e);
-                alert('Invalid answer code. Please try again.');
-                updateTradeStatus('Error completing connection');
-            }
-        }
-
-        function sendCoins() {
-            if (!dataChannel || dataChannel.readyState !== 'open') {
-                alert('Not connected to a peer');
-                return;
-            }
-            
-            const amount = parseInt(document.getElementById('coinAmountInput').value);
-            if (!amount || amount < 1) {
-                alert('Please enter a valid amount');
-                return;
-            }
-            
-            if (amount > coins) {
-                alert('Not enough coins!');
-                return;
-            }
-            
-            coins -= amount;
-            setCoins(coins);
-            updateCoinDisplay();
-            
-            dataChannel.send(JSON.stringify({
-                type: 'coins',
-                amount: amount
-            }));
-            
-            updateTradeStatus(`Sent ${amount} coins!`, true);
-            document.getElementById('coinAmountInput').value = '';
-            
-            setTimeout(() => updateTradeStatus('Connected to peer!', true), 2000);
-        }
-
-        function resetTrade() {
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            if (dataChannel) {
-                dataChannel.close();
-                dataChannel = null;
-            }
-            if (heartbeatInterval) {
-                clearInterval(heartbeatInterval);
-                heartbeatInterval = null;
-            }
-            isCreator = false;
-            
-            document.getElementById('tradeCodeContainer').style.display = 'none';
-            document.getElementById('cancelTradeBtn').style.display = 'none';
-            document.getElementById('createTradeBtn').style.display = 'inline-block';
-            document.getElementById('sendCoinsContainer').style.display = 'none';
-            document.getElementById('joinTradeInput').value = '';
-            document.getElementById('answerCodeInput').value = '';
-            document.getElementById('createTradeBtn').disabled = false;
-            document.getElementById('joinTradeBtn').disabled = false;
-        }
-        
-        window.addEventListener('beforeunload', () => {
-            if (dataChannel && dataChannel.readyState === 'open') {
-                dataChannel.close();
-            }
-            if (peerConnection) {
-                peerConnection.close();
-            }
-        });
-
-        document.getElementById('createTradeBtn').addEventListener('click', createTrade);
-        document.getElementById('cancelTradeBtn').addEventListener('click', () => {
-            resetTrade();
-            updateTradeStatus('Disconnected');
-        });
-        document.getElementById('joinTradeBtn').addEventListener('click', joinTrade);
-        document.getElementById('sendCoinsBtn').addEventListener('click', sendCoins);
-        document.getElementById('completeBtn').addEventListener('click', completeConnection);
-        
-        document.getElementById('tradeCodeDisplay').addEventListener('click', function() {
-            navigator.clipboard.writeText(this.textContent).then(() => {
-                const original = this.textContent;
-                this.textContent = 'Copied!';
-                setTimeout(() => {
-                    this.textContent = original;
-                }, 1000);
-            });
-        });
-        
-        displayGames(games);
     </script>
 </body>
 </html>
