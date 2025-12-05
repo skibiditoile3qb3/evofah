@@ -208,6 +208,7 @@
     </div>
 
     <script>
+        let isAdmin = false;
         const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquaparkio","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","gunspin2","happy-wheels","hexanautio","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paperio-2","paperio","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-run","slope","smash-karts","snakeio","sniper-rifle-shooting","snow-rider3d","snowballio","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stick-fighter","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","10-minutes-till-dawn","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
 
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
@@ -542,18 +543,22 @@
             }
         });
 
-        document.getElementById('devInput').addEventListener('input', (e) => {
-            const code = e.target.value;
-            if (code === '**9p') {
-                coins += 100;
-                setCoins(coins);
-                updateCoinDisplay();
-                e.target.value = '';
-            } else if (code === '**8p') {
-                document.getElementById('adminPanel').style.display = 'block';
-                e.target.value = '';
-            }
-        });
+
+document.getElementById('devInput').addEventListener('input', (e) => {
+    const code = e.target.value;
+    if (code === '**9p') {
+        coins += 100;
+        setCoins(coins);
+        updateCoinDisplay();
+        e.target.value = ''; // Clears input after coin cheat
+    } else if (code === '**8p') {
+        // AUTHENTICATION SUCCESS: Set the flag and display the panel
+        isAdmin = true; 
+        document.getElementById('adminPanel').style.display = 'block';
+        alert('✅ Admin panel unlocked!');
+        e.target.value = ''; // Clears input after unlocking
+    }
+});
 
         document.getElementById('getSeedBtn').addEventListener('click', () => {
             const seed = getCurrentSeed();
@@ -573,47 +578,46 @@
 
         // --- NEW/FIXED ADMIN COIN CODE GENERATION LOGIC ---
 
-        document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
-            // Get values from the main Dev Code input (for auth) and the admin panel inputs
-            const devCodeInput = document.getElementById('devInput').value.trim();
-            const userObfuscatedSeed = document.getElementById('adminSeedInput').value.trim();
-            const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
-            const coinCodeDisplay = document.getElementById('coinCodeDisplay');
+       // --- REPLACE YOUR EXISTING generateCoinCodeBtn LISTENER WITH THIS: ---
 
-            // 1. ADMIN AUTHENTICATION CHECK
-            if (devCodeInput !== '**8p') { 
-                alert('❌ Error: Incorrect Dev Code. You must be the administrator to generate codes.');
-                coinCodeDisplay.style.display = 'none';
-                return;
-            }
+document.getElementById('generateCoinCodeBtn').addEventListener('click', () => {
+    // We NO longer need to read the devInput box, we just check the isAdmin flag!
+    const userObfuscatedSeed = document.getElementById('adminSeedInput').value.trim();
+    const coinAmount = parseInt(document.getElementById('adminCoinInput').value);
+    const coinCodeDisplay = document.getElementById('coinCodeDisplay');
 
-            // 2. Input Validation
-            if (!userObfuscatedSeed) {
-                alert('❌ Please enter the user\'s obfuscated seed.');
-                coinCodeDisplay.style.display = 'none';
-                return;
-            }
+    // 1. ADMIN AUTHENTICATION CHECK (Using the stored flag)
+    if (!isAdmin) { 
+        alert('❌ Error: You must first enter the Dev Code (**8p) to authenticate as administrator.');
+        coinCodeDisplay.style.display = 'none';
+        return;
+    }
 
-            if (isNaN(coinAmount) || coinAmount <= 0) {
-                alert('❌ Please enter a valid coin amount (greater than 0).');
-                coinCodeDisplay.style.display = 'none';
-                return;
-            }
+    // 2. Input Validation (Same as before)
+    if (!userObfuscatedSeed) {
+        alert('❌ Please enter the user\'s obfuscated seed.');
+        coinCodeDisplay.style.display = 'none';
+        return;
+    }
 
-            // 3. Generate the Coin Code
-            const coinCode = generateCoinCode(userObfuscatedSeed, coinAmount);
+    if (isNaN(coinAmount) || coinAmount <= 0) {
+        alert('❌ Please enter a valid coin amount (greater than 0).');
+        coinCodeDisplay.style.display = 'none';
+        return;
+    }
 
-            if (coinCode) {
-                coinCodeDisplay.textContent = coinCode;
-                coinCodeDisplay.style.display = 'block';
-                document.getElementById('devInput').value = ''; // Clear the dev code input
-                alert(`✅ SUCCESS! Coin Code Generated. Click the box to copy and give to the user.`);
-            } else {
-                alert('❌ Error generating code. Check the seed format or console for errors.');
-                coinCodeDisplay.style.display = 'none';
-            }
-        });
+    // 3. Generate the Coin Code (Same as before)
+    const coinCode = generateCoinCode(userObfuscatedSeed, coinAmount);
 
+    if (coinCode) {
+        coinCodeDisplay.textContent = coinCode;
+        coinCodeDisplay.style.display = 'block';
+        alert(`✅ SUCCESS! Coin Code Generated. Click the box to copy and give to the user.`);
+    } else {
+        alert('❌ Error generating code. Check the seed format or console for errors.');
+        coinCodeDisplay.style.display = 'none';
+    }
+});
         document.getElementById('coinCodeDisplay').addEventListener('click', function() {
             navigator.clipboard.writeText(this.textContent);
             const original = this.textContent;
