@@ -39,6 +39,9 @@ button:disabled{opacity:0.3;cursor:not-allowed;}
 .profit{font-weight:bold;}
 .profit.positive{color:#00ff9d;}
 .profit.negative{color:#ff4557;}
+.history::-webkit-scrollbar{width:8px;}
+.history::-webkit-scrollbar-track{background: rgba(0,0,0,0.3);border-radius:10px;}
+.history::-webkit-scrollbar-thumb{background:#00ff9d;border-radius:10px;}
 </style>
 </head>
 <body>
@@ -70,17 +73,41 @@ button:disabled{opacity:0.3;cursor:not-allowed;}
 <div class="history-title">📊 Recent Drops</div>
 <div id="historyList"></div>
 </div>
+</div>
 <script>
 const canvas=document.getElementById('plinkoCanvas');
 const ctx=canvas.getContext('2d');
 let balance=1000,totalProfit=0,isDropping=false,activeBalls=[],animationId=null;
-const ROWS=11,PEG_RADIUS=4,BALL_RADIUS=10,GRAVITY=0.4,BOUNCE=0.65,FRICTION=0.99;
+
+// Request coins from parent on load
+window.parent.postMessage({type:'getCoins'},'*');
+
+// Fallback: if no response in 500ms, use default balance
+let coinsReceived = false;
+setTimeout(() => {
+    if (!coinsReceived) {
+        balance = 1000;
+        updateDisplay();
+    }
+}, 500);
+
+// Listen for coin updates from parent
+window.addEventListener('message',(event)=>{
+if(event.data.type==='coinsData'){
+coinsReceived = true;
+balance=event.data.coins;
+updateDisplay();
+}
+});
+
+const ROWS=11,PEG_RADIUS=4,BALL_RADIUS=10,GRAVITY=0.5,BOUNCE=0.7,FRICTION=0.98;
 const multipliers={
 low:[20,15,10,5,1,0.5,0.2,0.1,0.1,0.2,0.5,1,5,10,15,20],
 medium:[25,20,15,5,1,0.5,0.2,0.1,0.1,0.2,0.5,1,5,15,20,25],
 high:[30,25,20,10,2,0.5,0.1,0.05,0.05,0.1,0.5,2,10,20,25,30]
 };
 let pegs=[],buckets=[];
+
 function initializeBoard(){
 pegs=[];
 const startX=canvas.width/2,startY=80,hSpacing=50,vSpacing=38;
@@ -99,7 +126,9 @@ buckets.push({x:bWidth*i+bWidth/2,y:bY,width:bWidth*0.9,height:50,multiplier:mul
 updateMultiplierDisplay();
 drawBoard();
 }
+
 function getCurrentMultipliers(){return multipliers[document.getElementById('riskLevel').value];}
+
 function updateMultiplierDisplay(){
 const display=document.getElementById('multiplierDisplay');
 const mults=getCurrentMultipliers();
@@ -113,6 +142,7 @@ else className='mult-very-low';
 return`<div class="multiplier ${className}">${m}x</div>`;
 }).join('');
 }
+
 function drawBoard(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 pegs.forEach(peg=>{
@@ -137,6 +167,7 @@ ctx.textBaseline='middle';
 ctx.fillText(bucket.multiplier+'x',bucket.x,bucket.y+bucket.height/2);
 });
 }
+
 function getBucketColor(m){
 if(m>=20)return'#8e24aa';
 if(m>=10)return'#3949ab';
@@ -144,52 +175,121 @@ if(m>=5)return'#43a047';
 if(m>=0.1)return'#fdd835';
 return'#e53935';
 }
+
 class Ball{
 constructor(x,y){
-this.x=x;this.y=y;this.vx=(Math.random()-0.5)*2;this.vy=0;this.radius=BALL_RADIUS;this.landed=false;this.landedBucket=null;
+this.x=x;
+this.y=y;
+this.vx=(Math.random()-0.5)*3;
+this.vy=0;
+this.radius=BALL_RADIUS;
+this.landed=false;
+this.landedBucket=null;
 }
+
 update(){
 if(this.landed)return;
-this.vy+=GRAVITY;this.vx*=FRICTION;this.vy*=FRICTION;this.x+=this.vx;this.y+=this.vy;
-// Peg collisions
+this.vy+=GRAVITY;
+this.vx*=FRICTION;
+this.vy*=FRICTION;
+this.x+=this.vx;
+this.y+=this.vy;
+
+// Peg collisions with improved physics
 pegs.forEach(peg=>{
-const dx=this.x-peg.x,dy=this.y-peg.y,dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<this.radius+PEG_RADIUS){
+const dx=this.x-peg.x;
+const dy=this.y-peg.y;
+const dist=Math.sqrt(dx*dx+dy*dy);
+const minDist=this.radius+PEG_RADIUS;
+
+if(dist<minDist){
+// Calculate collision angle
 const angle=Math.atan2(dy,dx);
-const targetX=peg.x+Math.cos(angle)*(PEG_RADIUS+this.radius);
-const targetY=peg.y+Math.sin(angle)*(PEG_RADIUS+this.radius);
-const ax=this.vx-dx/dist,ay=this.vy-dy/dist;
-this.x=targetX;this.y=targetY;
-this.vx=ax*BOUNCE+(Math.random()-0.5)*1.5;this.vy=ay*BOUNCE;
+const overlap=minDist-dist;
+  
+// Push ball out of peg
+this.x=peg.x+Math.cos(angle)*minDist;
+this.y=peg.y+Math.sin(angle)*minDist;
+
+// Calculate normal vector
+const nx=dx/dist;
+const ny=dy/dist;
+
+// Calculate relative velocity
+const dvx=this.vx;
+const dvy=this.vy;
+
+// Calculate velocity along normal
+const dvn=dvx*nx+dvy*ny;
+
+// Only bounce if moving toward peg
+if(dvn<0){
+// Reflect velocity with bounce factor
+this.vx=(this.vx-2*dvn*nx)*BOUNCE;
+this.vy=(this.vy-2*dvn*ny)*BOUNCE;
+
+// Add random horizontal impulse for variety
+this.vx+=(Math.random()-0.5)*2;
+}
 }
 });
+
 // Check buckets
 buckets.forEach((bucket,i)=>{
-if(this.y+this.radius>=bucket.y&&this.x>bucket.x-bucket.width/2&&this.x<bucket.x+bucket.width/2){
+if(this.y+this.radius>=bucket.y&&
+this.x>bucket.x-bucket.width/2&&
+this.x<bucket.x+bucket.width/2){
 if(!this.landed){
-this.landed=true;this.landedBucket=i;this.y=bucket.y-this.radius;this.vx=0;this.vy=0;
+this.landed=true;
+this.landedBucket=i;
+this.y=bucket.y-this.radius;
+this.vx=0;
+this.vy=0;
 }
 }
 });
+
 // Wall collisions
-if(this.x-this.radius<0){this.x=this.radius;this.vx*=-BOUNCE;}
-if(this.x+this.radius>canvas.width){this.x=canvas.width-this.radius;this.vx*=-BOUNCE;}
+if(this.x-this.radius<0){
+this.x=this.radius;
+this.vx=Math.abs(this.vx)*BOUNCE;
 }
+if(this.x+this.radius>canvas.width){
+this.x=canvas.width-this.radius;
+this.vx=-Math.abs(this.vx)*BOUNCE;
+}
+}
+
 draw(){
-ctx.shadowBlur=15;ctx.shadowColor='rgba(255,107,107,0.8)';ctx.beginPath();
-ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);ctx.fillStyle='#ff6b6b';ctx.fill();ctx.shadowBlur=0;
-ctx.strokeStyle='#ff4757';ctx.lineWidth=2;ctx.stroke();
+ctx.shadowBlur=15;
+ctx.shadowColor='rgba(255,107,107,0.8)';
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.radius,0,2*Math.PI);
+ctx.fillStyle='#ff6b6b';
+ctx.fill();
+ctx.shadowBlur=0;
+ctx.strokeStyle='#ff4757';
+ctx.lineWidth=2;
+ctx.stroke();
 }
 }
+
 function dropBall(){
 const betAmount=parseInt(document.getElementById('betAmount').value);
 if(isNaN(betAmount)||betAmount<1){alert('Enter valid bet!');return;}
 if(betAmount>balance){alert('Insufficient balance!');return;}
 if(isDropping)return;
-balance-=betAmount;updateDisplay();
+
+balance-=betAmount;
+updateDisplay();
+
 const ball=new Ball(canvas.width/2,40);
-activeBalls.push(ball);isDropping=true;document.getElementById('dropBtn').disabled=true;
+activeBalls.push(ball);
+isDropping=true;
+document.getElementById('dropBtn').disabled=true;
+
 if(!animationId)animate();
+
 const checkLanded=setInterval(()=>{
 if(ball.landed){
 clearInterval(checkLanded);
@@ -198,28 +298,45 @@ const win=Math.round(betAmount*mult);
 balance+=win;
 totalProfit+=win-betAmount;
 updateDisplay();
+
+// Update parent window coins
 window.parent.postMessage({type:'updateCoins',coins:balance},'*');
+
 addHistory(betAmount,mult,win,win-betAmount);
+
 setTimeout(()=>{
 activeBalls=activeBalls.filter(b=>b!==ball);
-if(activeBalls.length===0){isDropping=false;document.getElementById('dropBtn').disabled=false;}
+if(activeBalls.length===0){
+isDropping=false;
+document.getElementById('dropBtn').disabled=false;
+}
 },500);
 }
 },50);
 }
+
 function animate(){
 drawBoard();
 activeBalls.forEach(ball=>{ball.update();ball.draw();});
-if(activeBalls.length>0){animationId=requestAnimationFrame(animate);}else{animationId=null;}
+if(activeBalls.length>0){
+animationId=requestAnimationFrame(animate);
+}else{
+animationId=null;
 }
+}
+
 function addHistory(bet,mult,win,profit){
 const historyList=document.getElementById('historyList');
-const item=document.createElement('div');item.className='history-item '+(profit>=0?'win':'loss');
+const item=document.createElement('div');
+item.className='history-item '+(profit>=0?'win':'loss');
 const profitSign=profit>=0?'+':'';
 item.innerHTML=`<span>Bet: $${bet} × ${mult}x = $${win}</span><span class="profit ${profit>=0?'positive':'negative'}">${profitSign}$${profit}</span>`;
 historyList.insertBefore(item,historyList.firstChild);
-while(historyList.children.length>15){historyList.removeChild(historyList.lastChild);}
+while(historyList.children.length>15){
+historyList.removeChild(historyList.lastChild);
 }
+}
+
 function updateDisplay(){
 document.getElementById('balance').textContent=balance;
 document.getElementById('currentBet').textContent=document.getElementById('betAmount').value;
@@ -228,10 +345,13 @@ const profitSign=totalProfit>=0?'+':'';
 profitEl.textContent=profitSign+'$'+totalProfit;
 profitEl.style.color=totalProfit>=0?'#43e97b':'#f5576c';
 }
+
 document.getElementById('dropBtn').addEventListener('click',dropBall);
 document.getElementById('betAmount').addEventListener('input',updateDisplay);
 document.getElementById('riskLevel').addEventListener('change',()=>{initializeBoard();});
-initializeBoard();updateDisplay();
+
+initializeBoard();
+updateDisplay();
 </script>
 </body>
 </html>
