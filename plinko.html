@@ -101,11 +101,12 @@ updateDisplay();
 });
 
 const ROWS=11,PEG_RADIUS=4,BALL_RADIUS=10,GRAVITY=0.5,BOUNCE=0.7,FRICTION=0.98;
-const multipliers={
-low = [4, 2.5, 1.5, 1, 0.5, 0.2, 0.1, 0.2, 0.5, 1, 1.5, 2.5, 4],
-medium = [8, 4, 2.5, 1.5, 0.5, 0.2, 0.1, 0.2, 0.5, 1.5, 2.5, 4, 8],
-high = [15, 8, 5, 2.5, 1, 0.2, 0.1, 0.2, 1, 2.5, 5, 8, 15]
+const multipliers = {
+    low:    [4, 2.5, 1.5, 1, 0.5, 0.2, 0.1, 0.2, 0.5, 1, 1.5, 2.5, 4],
+    medium: [8, 4, 2.5, 1.5, 0.5, 0.2, 0.1, 0.2, 0.5, 1.5, 2.5, 4, 8],
+    high:   [15, 8, 5, 2.5, 1, 0.2, 0.1, 0.2, 1, 2.5, 5, 8, 15]
 };
+
 let pegs=[],buckets=[];
 
 function initializeBoard(){
