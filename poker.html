@@ -906,6 +906,21 @@
                 return;
             }
 
+            // NEVER fold preflop - AI needs to see the flop
+            if (state.phase === 'preflop') {
+                const amt = Math.min(callAmount, player.chips);
+                player.chips -= amt;
+                player.bet += amt;
+                state.pot += amt;
+                if (player.chips === 0) player.allIn = true;
+                action = "calls";
+                player.hasActed = true;
+                showMessage(`${player.name} ${action}`, 1000);
+                updateDisplay();
+                proceedAfterAction();
+                return;
+            }
+
             if (effectiveStrength < foldThreshold && !wantsToBluff) {
                 player.folded = true;
                 action = "folds";
