@@ -732,23 +732,33 @@
 
 function aiAction() {
     const player = state.players[state.currentPlayerIndex];
-    const smart = player.smartness; // 0 = dumb, 1 = smart
+    const s = player.smartness; // 0–1
+    const r = player.risk;      // 0–1 NEW VARIABLE
     const callAmount = state.currentBet - player.bet;
 
     const handStrength = evaluateHandStrength(player.cards, state.communityCards);
     const random = Math.random();
     const isPreFlop = state.communityCards.length === 0;
 
-    let action = '';
+    let action = "";
 
-    // ============================
-    // 1. DUMB PLAYERS (smart < 0.4)
-    // ============================
-    if (smart < 0.5) {
+    // Dynamic risk multipliers
+    const riskRaiseBoost = 1 + r * 2;       // high risk = bigger raises
+    const riskCallBoost = r * 0.5;          // high risk = call more often
+    const riskFoldPenalty = r * 0.4;        // high risk = fold less
 
-        // 30% raise with ANY hand
-        if (random < 0.3) {
-            const raiseAmount = Math.floor(state.bigBlind * (1 + random * 3));
+    // =====================================================
+    // 1. DUMB PLAYERS (0.00 – 0.50 smartness)
+    // =====================================================
+    if (s < 0.50) {
+
+        // 30% + risk chance to raise
+        if (random < 0.30 + r * 0.20) {
+
+            const raiseAmount = Math.floor(
+                state.bigBlind * (1 + random * 3 * riskRaiseBoost)
+            );
+
             const total = callAmount + raiseAmount;
             const amount = Math.min(total, player.chips);
 
@@ -758,42 +768,47 @@ function aiAction() {
             state.currentBet = player.bet;
             if (player.chips === 0) player.allIn = true;
 
-            state.players.forEach((p, i) => {
-                if (i !== state.currentPlayerIndex && !p.folded && !p.allIn) p.hasActed = false;
-            });
-
-            action = `raises to ${player.bet}`;
+            resetOtherPlayerActions();
+            action = "raises";
         }
 
-        // 60% call anything
-        else if (random < 0.9) {
+        // 60% call/check — buffed by risk
+        else if (random < 0.90 + riskCallBoost) {
             if (callAmount > 0) {
-                const amount = Math.min(callAmount, player.chips);
-                player.chips -= amount;
-                player.bet += amount;
-                state.pot += amount;
-                if (player.chips === 0) player.allIn = true;
+                callChips(player, callAmount);
                 action = "calls";
             } else {
                 action = "checks";
             }
         }
 
-        // 10% random fold
+        // fold — reduced by risk
         else {
-            player.folded = true;
-            action = "folds";
+            if (random < 0.10 - riskFoldPenalty) {
+                player.folded = true;
+                action = "folds";
+            } else {
+                if (callAmount === 0) action = "checks";
+                else {
+                    callChips(player, callAmount);
+                    action = "calls";
+                }
+            }
         }
     }
 
-    // ============================
-    // 2. MID SMART PLAYERS (0.4–0.75)
-    // ============================
-    else if (smart < 0.8) {
+    // =====================================================
+    // 2. MID PLAYERS (0.50 – 0.80 smartness)
+    // =====================================================
+    else if (s < 0.80) {
 
-        // raise if half decent or ego moment
-        if (handStrength > 0.45 || random < 0.15) {
-            const raiseAmount = Math.floor(state.bigBlind * (1 + random * 2));
+        // Raise if hand is decent OR risk-taking behavior
+        if (handStrength > 0.45 || random < 0.15 + r * 0.25) {
+
+            const raiseAmount = Math.floor(
+                state.bigBlind * (1 + random * 2 * riskRaiseBoost)
+            );
+
             const total = callAmount + raiseAmount;
             const amount = Math.min(total, player.chips);
 
@@ -803,53 +818,66 @@ function aiAction() {
             state.currentBet = player.bet;
             if (player.chips === 0) player.allIn = true;
 
-            state.players.forEach((p, i) => {
-                if (i !== state.currentPlayerIndex && !p.folded && !p.allIn) p.hasActed = false;
-            });
-
-            action = `raises to ${player.bet}`;
+            resetOtherPlayerActions();
+            action = "raises";
         }
 
-        // call with decent logic
-        else if (callAmount < player.chips * 0.3 || handStrength > 0.25) {
-            const amount = Math.min(callAmount, player.chips);
-            player.chips -= amount;
-            player.bet += amount;
-            state.pot += amount;
-            if (player.chips === 0) player.allIn = true;
+        else if (callAmount === 0) {
+            action = "checks";
+        }
+
+        // call logic — looser if risky
+        else if (
+            callAmount < player.chips * (0.30 + riskCallBoost) ||
+            handStrength > 0.25 - r * 0.15
+        ) {
+            callChips(player, callAmount);
             action = "calls";
         }
 
-        // otherwise fold
         else {
-            player.folded = true;
-            action = "folds";
+            if (random < 0.5 - r * 0.4) {
+                player.folded = true;
+                action = "folds";
+            } else {
+                callChips(player, callAmount);
+                action = "calls";
+            }
         }
     }
 
-    // ============================
-    // 3. SMART PLAYERS (smart ≥ 0.75)
-    // ============================
+    // =====================================================
+    // 3. SMART / GENIUS PLAYERS (0.80+ smartness)
+    // =====================================================
     else {
 
-        // Pre-flop — they suspect bluffing
+        // Pre-flop reads
         if (isPreFlop && callAmount > 0) {
-            if (handStrength > 0.25 || random < 0.5) {
-                const amount = Math.min(callAmount, player.chips);
-                player.chips -= amount;
-                player.bet += amount;
-                state.pot += amount;
+
+            if (handStrength > 0.25 - r * 0.15 || random < 0.50 + r * 0.30) {
+                callChips(player, callAmount);
                 action = "calls";
             } else {
-                player.folded = true;
-                action = "folds";
+                if (random < 0.60 - r * 0.50) {
+                    player.folded = true;
+                    action = "folds";
+                } else {
+                    callChips(player, callAmount);
+                    action = "calls";
+                }
             }
         }
 
-        // Post-flop — card based decisions
+        // Post-flop deeper logic
         else {
-            if (handStrength > 0.7) {
-                const raiseAmount = Math.floor(state.bigBlind * (2 + random * 3));
+
+            // strong → raise big, risk increases size
+            if (handStrength > 0.70) {
+
+                const raiseAmount = Math.floor(
+                    state.bigBlind * (2 + random * 3 * riskRaiseBoost)
+                );
+
                 const total = callAmount + raiseAmount;
                 const amount = Math.min(total, player.chips);
 
@@ -857,33 +885,44 @@ function aiAction() {
                 player.bet += amount;
                 state.pot += amount;
                 state.currentBet = player.bet;
-                action = `raises to ${player.bet}`;
+                action = "raises";
             }
 
-            else if (handStrength > 0.4) {
-                const amount = Math.min(callAmount, player.chips);
-                player.chips -= amount;
-                player.bet += amount;
-                state.pot += amount;
-                action = "calls";
-            }
-
-            else {
-                if (callAmount < player.chips * 0.1) {
-                    const amount = Math.min(callAmount, player.chips);
-                    player.chips -= amount;
-                    player.bet += amount;
-                    state.pot += amount;
-                    action = "calls";
+            // medium → call/check
+            else if (handStrength > 0.40 - r * 0.20) {
+                if (callAmount === 0) {
+                    action = "checks";
                 } else {
-                    player.folded = true;
-                    action = "folds";
+                    callChips(player, callAmount);
+                    action = "calls";
+                }
+            }
+
+            // weak → fold unless risky
+            else {
+                if (callAmount === 0) {
+                    action = "checks";
+                }
+                else if (callAmount < player.chips * (0.10 + r * 0.20)) {
+                    callChips(player, callAmount);
+                    action = "calls";
+                }
+                else {
+                    if (random < 0.8 - r * 0.7) {
+                        player.folded = true;
+                        action = "folds";
+                    } else {
+                        callChips(player, callAmount);
+                        action = "calls";
+                    }
                 }
             }
         }
     }
 
+    // =====================================================
     // Final mechanics
+    // =====================================================
     player.hasActed = true;
     showMessage(`${player.name} ${action}`, 1000);
     updateDisplay();
@@ -897,8 +936,6 @@ function aiAction() {
         setTimeout(() => nextPlayer(), 1500);
     }
 }
-
-
 
         function evaluateHandStrength(playerCards, communityCards) {
             const allCards = [...playerCards, ...communityCards];
