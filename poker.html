@@ -425,6 +425,7 @@
         });
 
         function updateParentCoins() {
+            console.log('Updating parent coins to:', state.humanBalance);
             window.parent.postMessage({
                 type: 'updateCoins',
                 coins: state.humanBalance
@@ -600,6 +601,8 @@
             const humanPlayer = state.players.find(p => p.isHuman);
             if (humanPlayer) {
                 state.humanBalance = humanPlayer.chips;
+                console.log('Posted blinds, human balance:', state.humanBalance);
+                updateParentCoins();
             }
         }
 
@@ -683,7 +686,8 @@
                 if (player.chips === 0) player.allIn = true;
                 player.hasActed = true;
                 state.humanBalance = player.chips;
-                updateParentCoins(); // Update parent immediately
+                console.log('Called, new balance:', state.humanBalance);
+                updateParentCoins();
                 showMessage(`You call $${amount}`, 1000);
             } else if (action === 'raise') {
                 const raiseAmount = parseInt(document.getElementById('raiseAmount').value);
@@ -705,7 +709,8 @@
                 });
                 
                 state.humanBalance = player.chips;
-                updateParentCoins(); // Update parent immediately
+                console.log('Raised, new balance:', state.humanBalance);
+                updateParentCoins();
                 showMessage(`You raise to $${player.bet}`, 1000);
             }
 
@@ -721,6 +726,7 @@
                 setTimeout(() => nextPlayer(), 1500);
             }
         }
+
         function nextPlayer() {
             let attempts = 0;
             const startIndex = state.currentPlayerIndex;
@@ -1070,6 +1076,7 @@
                 winner.chips += state.pot;
                 if (winner.isHuman) {
                     state.humanBalance = winner.chips;
+                    console.log('Human won! New balance:', state.humanBalance);
                 }
                 showMessage(`${winner.name} wins ${state.pot}!`, 3000);
                 updateDisplay();
@@ -1091,10 +1098,12 @@
                 }
 
                 const winAmount = Math.floor(state.pot / winners.length);
+                
                 winners.forEach(w => {
                     w.player.chips += winAmount;
                     if (w.player.isHuman) {
                         state.humanBalance = w.player.chips;
+                        console.log('Human won in showdown! New balance:', state.humanBalance);
                     }
                 });
 
@@ -1104,9 +1113,17 @@
             }
 
             updateDisplay();
+            
+            // Update parent coins after all chip changes are complete
+            const humanPlayer = state.players.find(p => p.isHuman);
+            if (humanPlayer) {
+                state.humanBalance = humanPlayer.chips;
+                console.log('About to update parent with balance:', state.humanBalance);
+                updateParentCoins();
+            }
+            
             document.getElementById('newHandBtn').style.display = 'block';
 
-            const humanPlayer = state.players.find(p => p.isHuman);
             if (humanPlayer && humanPlayer.chips === 0) {
                 setTimeout(() => {
                     showMessage('You are out of chips! Game Over', 3000);
