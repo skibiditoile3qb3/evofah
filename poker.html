@@ -730,10 +730,52 @@
             return activePlayers.every(p => p.hasActed && p.bet === state.currentBet);
         }
 
+// --------- HELPERS (paste these before aiAction) ----------
+
+// Proper call mechanic
+function callChips(player, callAmount) {
+    const amount = Math.min(callAmount, player.chips);
+    player.chips -= amount;
+    player.bet += amount;
+    state.pot += amount;
+    if (player.chips === 0) player.allIn = true;
+}
+
+// Reset other players' hasActed after a raise
+function resetOtherPlayerActions() {
+    state.players.forEach((p, i) => {
+        if (i !== state.currentPlayerIndex && !p.folded && !p.allIn) {
+            p.hasActed = false;
+        }
+    });
+}
+
+// Force a raise (used to keep the raise code tidy)
+function forceRaise(player, callAmount, random, riskRaiseBoost) {
+    const raiseAmount = Math.floor(
+        state.bigBlind * (1 + random * 3 * riskRaiseBoost)
+    );
+
+    const total = callAmount + raiseAmount;
+    const amount = Math.min(total, player.chips);
+
+    player.chips -= amount;
+    player.bet += amount;
+    state.pot += amount;
+    state.currentBet = player.bet;
+
+    resetOtherPlayerActions();
+    // No UI calls here — aiAction will handle messaging
+    return { action: "raises", amount };
+}
+
+
+// ---------------- UPDATED aiAction() -----------------------
+
 function aiAction() {
     const player = state.players[state.currentPlayerIndex];
-    const s = player.smartness; // 0–1
-    const r = player.risk;      // 0–1
+    const s = player.smartness ?? 0; // 0–1
+    const r = player.risk ?? 0;      // 0–1
     const callAmount = state.currentBet - player.bet;
 
     const handStrength = evaluateHandStrength(player.cards, state.communityCards);
@@ -741,6 +783,7 @@ function aiAction() {
     const isPreFlop = state.communityCards.length === 0;
 
     let action = "";
+    let raisedAmount = 0;
 
     const riskRaiseBoost = 1 + r * 2;
     const riskCallBoost = r * 0.5;
@@ -754,21 +797,9 @@ function aiAction() {
         const raiseChance = 0.30 + r * 0.40; // MORE RISK = MORE RAISES
 
         if (random < raiseChance) {
-            const raiseAmount = Math.floor(
-                state.bigBlind * (1 + random * 3 * riskRaiseBoost)
-            );
-
-            const total = callAmount + raiseAmount;
-            const amount = Math.min(total, player.chips);
-
-            player.chips -= amount;
-            player.bet += amount;
-            state.pot += amount;
-            state.currentBet = player.bet;
-            if (player.chips === 0) player.allIn = true;
-
-            resetOtherPlayerActions();
-            action = "raises";
+            const res = forceRaise(player, callAmount, random, riskRaiseBoost);
+            action = res.action;
+            raisedAmount = res.amount;
         }
 
         else if (random < 0.90 + riskCallBoost) {
@@ -785,8 +816,11 @@ function aiAction() {
                 player.folded = true;
                 action = "folds";
             } else {
-                callChips(player, callAmount);
-                action = "calls";
+                if (callAmount === 0) action = "checks";
+                else {
+                    callChips(player, callAmount);
+                    action = "calls";
+                }
             }
         }
     }
@@ -799,22 +833,9 @@ function aiAction() {
         const raiseChance = 0.15 + r * 0.40;
 
         if (handStrength > 0.45 || random < raiseChance) {
-
-            const raiseAmount = Math.floor(
-                state.bigBlind * (1 + random * 2 * riskRaiseBoost)
-            );
-
-            const total = callAmount + raiseAmount;
-            const amount = Math.min(total, player.chips);
-
-            player.chips -= amount;
-            player.bet += amount;
-            state.pot += amount;
-            state.currentBet = player.bet;
-            if (player.chips === 0) player.allIn = true;
-
-            resetOtherPlayerActions();
-            action = "raises";
+            const res = forceRaise(player, callAmount, random, riskRaiseBoost);
+            action = res.action;
+            raisedAmount = res.amount;
         }
 
         else if (callAmount === 0) {
@@ -850,12 +871,14 @@ function aiAction() {
         // Pre-flop
         if (isPreFlop && callAmount > 0) {
 
-            // Check for risky pre-flop raise
+            // Opportunistic pre-flop raise if risk + decent hand
             if (random < smartRaiseChance && handStrength > 0.30) {
-                return forceRaise(player, callAmount, random, riskRaiseBoost);
+                const res = forceRaise(player, callAmount, random, riskRaiseBoost);
+                action = res.action;
+                raisedAmount = res.amount;
             }
 
-            if (handStrength > 0.25 - r * 0.15 || random < 0.50 + r * 0.30) {
+            else if (handStrength > 0.25 - r * 0.15 || random < 0.50 + r * 0.30) {
                 callChips(player, callAmount);
                 action = "calls";
             } else {
@@ -872,32 +895,26 @@ function aiAction() {
         // Post-flop
         else {
 
-            // big hand ALWAYS raise more with risk
+            // big hand → raise (or random raise if risk high)
             if (handStrength > 0.70 || random < smartRaiseChance) {
-                const raiseAmount = Math.floor(
-                    state.bigBlind * (2 + random * 3 * riskRaiseBoost)
-                );
-
-                const total = callAmount + raiseAmount;
-                const amount = Math.min(total, player.chips);
-
-                player.chips -= amount;
-                player.bet += amount;
-                state.pot += amount;
-                state.currentBet = player.bet;
-                action = "raises";
+                const res = forceRaise(player, callAmount, random, riskRaiseBoost);
+                action = res.action;
+                raisedAmount = res.amount;
             }
 
             else if (handStrength > 0.40 - r * 0.20) {
-                if (callAmount === 0) action = "checks";
-                else {
+                if (callAmount === 0) {
+                    action = "checks";
+                } else {
                     callChips(player, callAmount);
                     action = "calls";
                 }
             }
 
             else {
-                if (callAmount === 0) action = "checks";
+                if (callAmount === 0) {
+                    action = "checks";
+                }
                 else if (callAmount < player.chips * (0.10 + r * 0.20)) {
                     callChips(player, callAmount);
                     action = "calls";
@@ -915,9 +932,18 @@ function aiAction() {
         }
     }
 
+    // =====================================================
     // Final mechanics
+    // =====================================================
     player.hasActed = true;
-    showMessage(`${player.name} ${action}`, 1000);
+
+    // showMessage expects a string — include raise amount if we have it
+    if (action === "raises" && raisedAmount > 0) {
+        showMessage(`${player.name} raises by ${raisedAmount}`, 1000);
+    } else {
+        showMessage(`${player.name} ${action}`, 1000);
+    }
+
     updateDisplay();
 
     const activePlayers = state.players.filter(p => !p.folded);
@@ -928,23 +954,6 @@ function aiAction() {
     } else {
         setTimeout(() => nextPlayer(), 1500);
     }
-}
-function forceRaise(player, callAmount, random, riskRaiseBoost) {
-    const raiseAmount = Math.floor(
-        state.bigBlind * (1 + random * 3 * riskRaiseBoost)
-    );
-
-    const total = callAmount + raiseAmount;
-    const amount = Math.min(total, player.chips);
-
-    player.chips -= amount;
-    player.bet += amount;
-    state.pot += amount;
-    state.currentBet = player.bet;
-
-    resetOtherPlayerActions();
-    showMessage(`${player.name} raises`, 1000);
-    updateDisplay();
 }
 
 
