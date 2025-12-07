@@ -732,212 +732,182 @@
 
 function aiAction() {
     const player = state.players[state.currentPlayerIndex];
-    const s = player.smartness ?? 0; // 0–1
-    const r = player.risk ?? 0;      // 0–1
+    const s = player.smartness ?? 0;  // 0–1
+    const r = player.risk ?? 0;       // 0–1
     const callAmount = state.currentBet - player.bet;
 
-    // Get strength
     const handStrength = evaluateHandStrength(player.cards, state.communityCards);
     const random = Math.random();
     const isPreFlop = state.communityCards.length === 0;
 
     let action = "";
-    let raisedAmount = 0;
 
-    // ====================================================
-    // INTERNAL INLINE CHIP OPERATIONS (no helpers)
-    // ====================================================
+    // =========================================================
+    // INTERNAL INLINE ACTIONS (not helpers, but local ops)
+    // =========================================================
+
+    const canFullyRaise = (extra) => {
+        const total = callAmount + extra;
+        return total <= player.chips;
+    };
 
     const doCall = () => {
-        const amount = Math.min(callAmount, player.chips);
-        player.chips -= amount;
-        player.bet += amount;
-        state.pot += amount;
+        const send = Math.min(callAmount, player.chips);
+        player.chips -= send;
+        player.bet += send;
+        state.pot += send;
         if (player.chips === 0) player.allIn = true;
     };
 
     const doRaise = () => {
-        const riskRaiseBoost = 1 + r * 2;
-        const randomFactor = Math.random();
-        
-        // Raise size
-        const raiseAmount = Math.floor(
-            state.bigBlind * (1 + randomFactor * 3 * riskRaiseBoost)
+        const riskBoost = 1 + (r * 1.5); // risk makes bigger raises but not insane
+        const rand = Math.random();
+
+        let raiseAmount = Math.floor(
+            state.bigBlind * (1 + rand * 2 * riskBoost)
         );
 
-        const total = callAmount + raiseAmount;
-        const send = Math.min(total, player.chips);
+        if (!canFullyRaise(raiseAmount)) return false; // can't raise → not allowed
 
-        player.chips -= send;
-        player.bet += send;
-        state.pot += send;
+        const total = callAmount + raiseAmount;
+
+        player.chips -= total;
+        player.bet += total;
+        state.pot += total;
 
         state.currentBet = player.bet;
-        raisedAmount = send;
 
-        // Reset hasActed for all others
+        // reset others
         state.players.forEach((p, i) => {
-            if (i !== state.currentPlayerIndex && !p.folded && !p.allIn) {
+            if (i !== state.currentPlayerIndex && !p.folded && !p.allIn)
                 p.hasActed = false;
-            }
         });
+
+        return true;
     };
 
     const doFold = () => {
         player.folded = true;
     };
 
-    // ====================================================
-    // -------- LOGIC BRANCH 1: DUMB (0–.50) --------------
-    // ====================================================
+    // ============================================================
+    // 1. DUMB PLAYERS (0.00 – 0.50)
+    // ============================================================
     if (s < 0.50) {
 
-        const raiseChance = 0.30 + r * 0.40;
+        const raiseChance = 0.25 + r * 0.30; // Lower than before. Dumber = less risky.
 
         if (random < raiseChance) {
-            doRaise();
-            action = "raises";
-        }
-
-        else if (random < 0.90 + r * 0.5) {
-            if (callAmount > 0) {
-                doCall();
-                action = "calls";
-            } else {
-                action = "checks";
+            if (doRaise()) action = "raises";
+            else {
+                // can't raise → fallback to call/check
+                if (callAmount === 0) action = "checks";
+                else { doCall(); action = "calls"; }
             }
         }
 
+        else if (random < 0.90) {
+            if (callAmount === 0) action = "checks";
+            else { doCall(); action = "calls"; }
+        }
+
         else {
-            if (random < 0.10 - r * 0.4) {
-                doFold();
-                action = "folds";
-            } else {
+            if (random < 0.10 - r * 0.3) { doFold(); action = "folds"; }
+            else {
                 if (callAmount === 0) action = "checks";
-                else {
-                    doCall();
-                    action = "calls";
-                }
+                else { doCall(); action = "calls"; }
             }
         }
     }
 
-    // ====================================================
-    // -------- LOGIC BRANCH 2: MID (.50–.80) -------------
-    // ====================================================
+    // ============================================================
+    // 2. MID SMART (0.50 – 0.80)
+    // ============================================================
     else if (s < 0.80) {
 
-        const raiseChance = 0.15 + r * 0.40;
+        const raiseChance = 0.10 + r * 0.25; // Lower by default—more realistic
 
         if (handStrength > 0.45 || random < raiseChance) {
-            doRaise();
-            action = "raises";
+            if (doRaise()) action = "raises";
+            else {
+                if (callAmount === 0) action = "checks";
+                else { doCall(); action = "calls"; }
+            }
         }
 
-        else if (callAmount === 0) {
-            action = "checks";
-        }
+        else if (callAmount === 0) action = "checks";
 
         else if (
-            callAmount < player.chips * (0.30 + r * 0.5) ||
-            handStrength > 0.25 - r * 0.15
+            callAmount < player.chips * (0.25 + r * 0.25) ||
+            handStrength > 0.25
         ) {
             doCall();
             action = "calls";
         }
 
         else {
-            if (random < 0.5 - r * 0.4) {
-                doFold();
-                action = "folds";
-            } else {
-                doCall();
-                action = "calls";
-            }
+            if (random < 0.5 - r * 0.3) { doFold(); action = "folds"; }
+            else { doCall(); action = "calls"; }
         }
     }
 
-    // ====================================================
-    // -------- LOGIC BRANCH 3: SMART (.80–1) --------------
-    // ====================================================
+    // ============================================================
+    // 3. SMART (.80 – 1.00)
+    // ============================================================
     else {
 
-        const smartRaiseChance = 0.20 + r * 0.50;
+        const raiseChance = 0.15 + r * 0.30; // smart but still cautious unless risk is high
 
-        // Preflop
         if (isPreFlop && callAmount > 0) {
 
-            if (random < smartRaiseChance && handStrength > 0.30) {
-                doRaise();
+            if ((handStrength > 0.30 && random < raiseChance) && doRaise()) {
                 action = "raises";
             }
 
-            else if (handStrength > 0.25 - r * 0.15 || random < 0.50 + r * 0.30) {
+            else if (handStrength > 0.25 || random < 0.40 + r * 0.2) {
                 doCall();
                 action = "calls";
-            } else {
-                if (random < 0.60 - r * 0.50) {
-                    doFold();
-                    action = "folds";
-                } else {
-                    doCall();
-                    action = "calls";
-                }
-            }
-        }
-
-        // Postflop
-        else {
-
-            if (handStrength > 0.70 || random < smartRaiseChance) {
-                doRaise();
-                action = "raises";
-            }
-
-            else if (handStrength > 0.40 - r * 0.20) {
-                if (callAmount === 0) action = "checks";
-                else {
-                    doCall();
-                    action = "calls";
-                }
             }
 
             else {
-                if (callAmount === 0) {
-                    action = "checks";
-                }
-                else if (callAmount < player.chips * (0.10 + r * 0.20)) {
+                if (random < 0.65 - r * 0.5) { doFold(); action = "folds"; }
+                else { doCall(); action = "calls"; }
+            }
+        }
+
+        else {
+            if ((handStrength > 0.70 || random < raiseChance) && doRaise()) {
+                action = "raises";
+            }
+
+            else if (handStrength > 0.40) {
+                if (callAmount === 0) action = "checks";
+                else { doCall(); action = "calls"; }
+            }
+
+            else {
+                if (callAmount === 0) action = "checks";
+                else if (callAmount < player.chips * (0.08 + r * 0.10)) {
                     doCall();
                     action = "calls";
-                }
-                else {
-                    if (random < 0.80 - r * 0.70) {
-                        doFold();
-                        action = "folds";
-                    } else {
-                        doCall();
-                        action = "calls";
-                    }
+                } else {
+                    if (random < 0.75 - r * 0.5) { doFold(); action = "folds"; }
+                    else { doCall(); action = "calls"; }
                 }
             }
         }
     }
 
-    // ====================================================
+    // ============================================================
     // FINISH
-    // ====================================================
+    // ============================================================
     player.hasActed = true;
 
-    if (action === "raises") {
-        showMessage(`${player.name} raises`, 1000);
-    } else {
-        showMessage(`${player.name} ${action}`, 1000);
-    }
-
+    showMessage(`${player.name} ${action}`, 1000);
     updateDisplay();
 
-    const activePlayers = state.players.filter(p => !p.folded);
-    if (activePlayers.length === 1) {
+    const active = state.players.filter(p => !p.folded);
+    if (active.length === 1) {
         setTimeout(() => endHand(), 1500);
     } else if (bettingRoundComplete()) {
         setTimeout(() => nextPhase(), 1500);
@@ -945,6 +915,7 @@ function aiAction() {
         setTimeout(() => nextPlayer(), 1500);
     }
 }
+
 
 
         function evaluateHandStrength(playerCards, communityCards) {
