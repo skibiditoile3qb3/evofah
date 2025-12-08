@@ -241,6 +241,8 @@
                 <button id="pokerBtn" style="background: #38a169; border: 1px solid #2f855a;">POKER 🃏</button>
                 <button id="lotteryBtn" style="background: #805ad5; border: 1px solid #6b46c1;">LOTTERY 🎰</button>
                 <button id="plinkoBtn" style="background: #3182ce; border: 1px solid #2c5282;">PLINKO 🎯</button>
+                <button id="rouletteBtn" style="background: #c53030; border: 1px solid #9b2c2c;">ROULETTE 🎰</button>
+
             </div>
             <div id="gameList"></div>
             <div class="dev-section">
@@ -563,6 +565,8 @@
                 document.getElementById('gameFrame').src = 'poker.html';
             } else if (game === 'lottery') {
                 document.getElementById('gameFrame').src = 'lottery.html';
+            } else if (game === 'roulette') {
+                document.getElementById('gameFrame').src = 'roulette.html';
              } else if (game === 'plinko') {
                 document.getElementById('gameFrame').src = 'plinko.html';
             } else if (game === 'stick-fighter') {
@@ -621,6 +625,10 @@
 
         document.getElementById('plinkoBtn').addEventListener('click', () => {
             loadGame('plinko');
+        });
+        
+        document.getElementById('rouletteBtn').addEventListener('click', () => {
+            loadGame('roulette');
         });
 
         window.addEventListener('message', (event) => {
