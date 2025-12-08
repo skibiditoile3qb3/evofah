@@ -239,9 +239,11 @@
                 <button id="minesBtn" style="background: #d69e2e; border: 1px solid #b7791f;">MINES 💎</button>
                 <button id="blackjackBtn" style="background: #c53030; border: 1px solid #9b2c2c;">BLACKJACK ♠️</button>
                 <button id="pokerBtn" style="background: #38a169; border: 1px solid #2f855a;">POKER 🃏</button>
-                <button id="lotteryBtn" style="background: #805ad5; border: 1px solid #6b46c1;">LOTTERY 🎰</button>
+                <button id="lotteryBtn" style="background: #805ad5; border: 1px solid #6b46c1;">LOTTERY 🎫</button>
                 <button id="plinkoBtn" style="background: #3182ce; border: 1px solid #2c5282;">PLINKO 🎯</button>
-                <button id="rouletteBtn" style="background: #c53030; border: 1px solid #9b2c2c;">ROULETTE 🎰</button>
+                <button id="rouletteBtn" style="background: #c53030; border: 1px solid #9b2c2c;">ROULETTE ⭕</button>
+                <button id="slotsBtn" style="background:#d69e2e;border:1px solid #b7791f;">SLOTS 🎰</button>
+
 
             </div>
             <div id="gameList"></div>
@@ -569,6 +571,8 @@
                 document.getElementById('gameFrame').src = 'roulette.html';
              } else if (game === 'plinko') {
                 document.getElementById('gameFrame').src = 'plinko.html';
+            } else if (game === 'slots') {
+                document.getElementById('gameFrame').src = 'slots.html';
             } else if (game === 'stick-fighter') {
                 document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g6/stick-fighter/';
             } else if (game === '10-minutes-till-dawn') {
@@ -629,6 +633,10 @@
         
         document.getElementById('rouletteBtn').addEventListener('click', () => {
             loadGame('roulette');
+        });
+        
+        document.getElementById('slotsBtn').addEventListener('click', () => {
+            loadGame('slots');
         });
 
         window.addEventListener('message', (event) => {
