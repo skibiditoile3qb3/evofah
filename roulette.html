@@ -265,13 +265,17 @@
 
         .wheel-pointer {
             position: absolute;
-            top: -25px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
+            border-top: 40px solid #ffd700;
+            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.6));
+            z-index: 10;
+        }-right: 20px solid transparent;
             border-top: 40px solid #ffd700;
             filter: drop-shadow(0 3px 8px rgba(0,0,0,0.6));
         }
@@ -856,10 +860,18 @@
             const wheelNumber = document.getElementById('wheelNumber');
             
             let color = 'green';
-            if (redNumbers.includes(number)) color = 'red';
-            else if (blackNumbers.includes(number)) color = 'black';
+            let colorName = 'Green';
             
-            const colorName = color === 'green' ? 'Green' : (color === 'red' ? 'Red' : 'Black');
+            if (number === 0) {
+                color = 'green';
+                colorName = 'Green';
+            } else if (redNumbers.includes(number)) {
+                color = 'red';
+                colorName = 'Red';
+            } else if (blackNumbers.includes(number)) {
+                color = 'black';
+                colorName = 'Black';
+            }
             
             resultDisplay.innerHTML = `<div class="result-number ${color}">${number} ${colorName}</div>`;
             wheelNumber.textContent = number;
