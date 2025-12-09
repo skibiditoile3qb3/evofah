@@ -23,12 +23,13 @@
         }
 
         .game-container {
-            max-width: 1400px;
+            max-width: 1800px;
             width: 100%;
             background: linear-gradient(145deg, #1a472a, #0d3d1f);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            position: relative;
         }
 
         .header {
@@ -185,64 +186,82 @@
             transform: scale(1.1);
         }
 
+        .game-layout {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .wheel-section {
+            flex: 0 0 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .betting-section {
+            flex: 1;
+            min-width: 0;
+        }
+
         .wheel-container {
             display: flex;
             justify-content: center;
-            margin: 40px 0;
+            margin: 20px 0;
             position: relative;
         }
 
         .wheel {
-            width: 400px;
-            height: 400px;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
             background: conic-gradient(
-                #e53935 0deg 11.25deg,
-                #000 11.25deg 22.5deg,
-                #e53935 22.5deg 33.75deg,
-                #000 33.75deg 45deg,
-                #e53935 45deg 56.25deg,
-                #000 56.25deg 67.5deg,
-                #e53935 67.5deg 78.75deg,
-                #000 78.75deg 90deg,
-                #e53935 90deg 101.25deg,
-                #000 101.25deg 112.5deg,
-                #e53935 112.5deg 123.75deg,
-                #000 123.75deg 135deg,
-                #e53935 135deg 146.25deg,
-                #000 146.25deg 157.5deg,
-                #e53935 157.5deg 168.75deg,
-                #000 168.75deg 180deg,
-                #e53935 180deg 191.25deg,
-                #000 191.25deg 202.5deg,
-                #e53935 202.5deg 213.75deg,
-                #000 213.75deg 225deg,
-                #e53935 225deg 236.25deg,
-                #000 236.25deg 247.5deg,
-                #e53935 247.5deg 258.75deg,
-                #000 258.75deg 270deg,
-                #e53935 270deg 281.25deg,
-                #000 281.25deg 292.5deg,
-                #e53935 292.5deg 303.75deg,
-                #000 303.75deg 315deg,
-                #e53935 315deg 326.25deg,
-                #000 326.25deg 337.5deg,
-                #e53935 337.5deg 348.75deg,
-                #000 348.75deg 360deg
+                #e53935 0deg 9.73deg,
+                #000 9.73deg 19.46deg,
+                #e53935 19.46deg 29.19deg,
+                #000 29.19deg 38.92deg,
+                #e53935 38.92deg 48.65deg,
+                #000 48.65deg 58.38deg,
+                #e53935 58.38deg 68.11deg,
+                #000 68.11deg 77.84deg,
+                #e53935 77.84deg 87.57deg,
+                #000 87.57deg 97.3deg,
+                #e53935 97.3deg 107.03deg,
+                #000 107.03deg 116.76deg,
+                #e53935 116.76deg 126.49deg,
+                #000 126.49deg 136.22deg,
+                #e53935 136.22deg 145.95deg,
+                #000 145.95deg 155.68deg,
+                #e53935 155.68deg 165.41deg,
+                #000 165.41deg 175.14deg,
+                #e53935 175.14deg 184.87deg,
+                #000 184.87deg 194.6deg,
+                #e53935 194.6deg 204.33deg,
+                #000 204.33deg 214.06deg,
+                #e53935 214.06deg 223.79deg,
+                #000 223.79deg 233.52deg,
+                #e53935 233.52deg 243.25deg,
+                #000 243.25deg 252.98deg,
+                #e53935 252.98deg 262.71deg,
+                #000 262.71deg 272.44deg,
+                #e53935 272.44deg 282.17deg,
+                #000 282.17deg 291.9deg,
+                #e53935 291.9deg 301.63deg,
+                #000 301.63deg 311.36deg,
+                #e53935 311.36deg 321.09deg,
+                #000 321.09deg 330.82deg,
+                #e53935 330.82deg 340.55deg,
+                #000 340.55deg 350.28deg,
+                #e53935 350.28deg 360deg
             );
-            border: 20px solid #8b7355;
+            border: 25px solid #8b7355;
             box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.4);
             position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transition: transform 5s ease-out;
         }
 
         .wheel.spinning {
-            animation: spin 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(1800deg); }
+            animation: none;
         }
 
         .wheel-center {
@@ -250,14 +269,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             background: linear-gradient(145deg, #ffd700, #ffed4e);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             color: #000;
             box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
@@ -270,14 +289,11 @@
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 40px solid #ffd700;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 50px solid #ffd700;
             filter: drop-shadow(0 3px 8px rgba(0,0,0,0.6));
             z-index: 10;
-        }-right: 20px solid transparent;
-            border-top: 40px solid #ffd700;
-            filter: drop-shadow(0 3px 8px rgba(0,0,0,0.6));
         }
 
         .result-display {
@@ -308,7 +324,6 @@
             background: rgba(0,0,0,0.4);
             padding: 30px;
             border-radius: 15px;
-            margin: 30px 0;
         }
 
         .bet-section {
@@ -329,7 +344,7 @@
 
         .number-grid {
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 5px;
             margin-bottom: 20px;
         }
@@ -543,9 +558,29 @@
             box-shadow: 0 0 30px rgba(229, 57, 53, 0.8);
         }
 
+        @media (max-width: 1400px) {
+            .game-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .wheel-section {
+                flex: none;
+            }
+
+            .betting-section {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 768px) {
+            .wheel {
+                width: 350px;
+                height: 350px;
+            }
+
             .number-grid {
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(4, 1fr);
             }
         }
     </style>
@@ -559,72 +594,77 @@
             <div class="balance-display">Balance: $<span id="balance">0</span></div>
         </div>
 
-        <div class="wheel-container">
-            <div class="wheel-pointer"></div>
-            <div class="wheel" id="wheel">
-                <div class="wheel-center" id="wheelNumber">-</div>
-            </div>
-        </div>
-
-        <div class="result-display" id="resultDisplay"></div>
-
-        <div class="betting-area">
-            <div class="bet-amount-section">
-                <label>Bet Amount:</label>
-                <input type="number" class="bet-amount-input" id="betAmount" value="10" min="1" step="5">
-                <div class="chip-buttons">
-                    <button class="chip-btn" onclick="setBetAmount(5)">$5</button>
-                    <button class="chip-btn" onclick="setBetAmount(10)">$10</button>
-                    <button class="chip-btn" onclick="setBetAmount(25)">$25</button>
-                    <button class="chip-btn" onclick="setBetAmount(50)">$50</button>
-                    <button class="chip-btn" onclick="setBetAmount(100)">$100</button>
+        <div class="game-layout">
+            <div class="wheel-section">
+                <div class="wheel-container">
+                    <div class="wheel-pointer"></div>
+                    <div class="wheel" id="wheel">
+                        <div class="wheel-center" id="wheelNumber">-</div>
+                    </div>
                 </div>
+                <div class="result-display" id="resultDisplay"></div>
             </div>
 
-            <div class="bet-section">
-                <h3>Simple Bets</h3>
-                <div class="bet-grid">
-                    <button class="bet-button red" onclick="placeBet('red')">RED (2x)</button>
-                    <button class="bet-button black" onclick="placeBet('black')">BLACK (2x)</button>
-                    <button class="bet-button" onclick="placeBet('even')">EVEN (2x)</button>
-                    <button class="bet-button" onclick="placeBet('odd')">ODD (2x)</button>
-                    <button class="bet-button" onclick="placeBet('low')">1-18 (2x)</button>
-                    <button class="bet-button" onclick="placeBet('high')">19-36 (2x)</button>
+            <div class="betting-section">
+                <div class="betting-area">
+                    <div class="bet-amount-section">
+                        <label>Bet Amount:</label>
+                        <input type="number" class="bet-amount-input" id="betAmount" value="10" min="1" step="5">
+                        <div class="chip-buttons">
+                            <button class="chip-btn" onclick="setBetAmount(5)">$5</button>
+                            <button class="chip-btn" onclick="setBetAmount(10)">$10</button>
+                            <button class="chip-btn" onclick="setBetAmount(25)">$25</button>
+                            <button class="chip-btn" onclick="setBetAmount(50)">$50</button>
+                            <button class="chip-btn" onclick="setBetAmount(100)">$100</button>
+                        </div>
+                    </div>
+
+                    <div class="bet-section">
+                        <h3>Simple Bets</h3>
+                        <div class="bet-grid">
+                            <button class="bet-button red" onclick="placeBet('red')">RED (2x)</button>
+                            <button class="bet-button black" onclick="placeBet('black')">BLACK (2x)</button>
+                            <button class="bet-button" onclick="placeBet('even')">EVEN (2x)</button>
+                            <button class="bet-button" onclick="placeBet('odd')">ODD (2x)</button>
+                            <button class="bet-button" onclick="placeBet('low')">1-18 (2x)</button>
+                            <button class="bet-button" onclick="placeBet('high')">19-36 (2x)</button>
+                        </div>
+                    </div>
+
+                    <div class="bet-section">
+                        <h3>Column Bets</h3>
+                        <div class="bet-grid">
+                            <button class="bet-button" onclick="placeBet('column1')">Column 1 (3x)</button>
+                            <button class="bet-button" onclick="placeBet('column2')">Column 2 (3x)</button>
+                            <button class="bet-button" onclick="placeBet('column3')">Column 3 (3x)</button>
+                        </div>
+                    </div>
+
+                    <div class="bet-section">
+                        <h3>Dozen Bets</h3>
+                        <div class="bet-grid">
+                            <button class="bet-button" onclick="placeBet('dozen1')">1st 12 (3x)</button>
+                            <button class="bet-button" onclick="placeBet('dozen2')">2nd 12 (3x)</button>
+                            <button class="bet-button" onclick="placeBet('dozen3')">3rd 12 (3x)</button>
+                        </div>
+                    </div>
+
+                    <div class="bet-section">
+                        <h3>Number Bets (36x payout)</h3>
+                        <div class="number-grid" id="numberGrid"></div>
+                        <button class="bet-button green number-btn" onclick="placeBet('number', 0)">0 (Green)</button>
+                    </div>
+
+                    <div class="current-bets">
+                        <h3>Current Bets (Total: $<span id="totalBet">0</span>)</h3>
+                        <div class="bet-list" id="betList"></div>
+                    </div>
+
+                    <div class="controls">
+                        <button class="control-btn clear-btn" onclick="clearBets()" id="clearBtn">Clear Bets</button>
+                        <button class="control-btn spin-btn" onclick="spin()" id="spinBtn">SPIN!</button>
+                    </div>
                 </div>
-            </div>
-
-            <div class="bet-section">
-                <h3>Column Bets</h3>
-                <div class="bet-grid">
-                    <button class="bet-button" onclick="placeBet('column1')">Column 1 (3x)</button>
-                    <button class="bet-button" onclick="placeBet('column2')">Column 2 (3x)</button>
-                    <button class="bet-button" onclick="placeBet('column3')">Column 3 (3x)</button>
-                </div>
-            </div>
-
-            <div class="bet-section">
-                <h3>Dozen Bets</h3>
-                <div class="bet-grid">
-                    <button class="bet-button" onclick="placeBet('dozen1')">1st 12 (3x)</button>
-                    <button class="bet-button" onclick="placeBet('dozen2')">2nd 12 (3x)</button>
-                    <button class="bet-button" onclick="placeBet('dozen3')">3rd 12 (3x)</button>
-                </div>
-            </div>
-
-            <div class="bet-section">
-                <h3>Number Bets (36x payout)</h3>
-                <div class="number-grid" id="numberGrid"></div>
-                <button class="bet-button green number-btn" onclick="placeBet('number', 0)">0 (Green)</button>
-            </div>
-
-            <div class="current-bets">
-                <h3>Current Bets (Total: $<span id="totalBet">0</span>)</h3>
-                <div class="bet-list" id="betList"></div>
-            </div>
-
-            <div class="controls">
-                <button class="control-btn clear-btn" onclick="clearBets()" id="clearBtn">Clear Bets</button>
-                <button class="control-btn spin-btn" onclick="spin()" id="spinBtn">SPIN!</button>
             </div>
         </div>
 
@@ -818,13 +858,14 @@
             state.balance -= totalBet;
             updateParentCoins();
 
-            // Spin animation
-            const wheel = document.getElementById('wheel');
-            const randomRotation = 1800 + Math.random() * 360;
-            wheel.style.transform = `rotate(${randomRotation}deg)`;
-
-            // Calculate winning number
+            // Calculate winning number FIRST
             const winningNumber = Math.floor(Math.random() * 37); // 0-36
+
+            // Spin animation - smoother with ease-out
+            const wheel = document.getElementById('wheel');
+            const degreesPerNumber = 360 / 37;
+            const targetRotation = 1800 + (winningNumber * degreesPerNumber);
+            wheel.style.transform = `rotate(${targetRotation}deg)`;
             
             setTimeout(() => {
                 displayResult(winningNumber);
@@ -833,9 +874,9 @@
                 if (winnings > 0) {
                     state.balance += winnings;
                     updateParentCoins();
-                    showMessage(`🎉 YOU WIN $${winnings}! 🎉`, 3000, 'win');
+                    showMessage(`🎉 YOU WIN ${winnings}! 🎉`, 3000, 'win');
                 } else {
-                    showMessage(`You lost $${totalBet}`, 2000, 'lose');
+                    showMessage(`You lost ${totalBet}`, 2000, 'lose');
                 }
 
                 state.bets = [];
@@ -849,35 +890,34 @@
                     wheel.style.transition = 'none';
                     wheel.style.transform = 'rotate(0deg)';
                     setTimeout(() => {
-                        wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+                        wheel.style.transition = 'transform 5s ease-out';
                     }, 50);
                 }, 100);
-            }, 4000);
+            }, 5000);
         }
 
-function displayResult(number) {
-    const resultDisplay = document.getElementById('resultDisplay');
-    const wheelNumber = document.getElementById('wheelNumber');
-    
-    let color, colorName;
-    
-    if (number === 0) {
-        color = 'green';
-        colorName = 'Green';
-    } else if (redNumbers.includes(number)) {
-        color = 'red';
-        colorName = 'Red';
-    } else {
-        // If it's not 0 and not red, it MUST be black
-        color = 'black';
-        colorName = 'Black';
-    }
-    
-    console.log(`Number: ${number}, Color: ${colorName}`);
-    
-    resultDisplay.innerHTML = `<div class="result-number ${color}">${number} - ${colorName}</div>`;
-    wheelNumber.textContent = number;
-}
+        function displayResult(number) {
+            const resultDisplay = document.getElementById('resultDisplay');
+            const wheelNumber = document.getElementById('wheelNumber');
+            
+            let color, colorName;
+            
+            if (number === 0) {
+                color = 'green';
+                colorName = 'Green';
+            } else if (redNumbers.includes(number)) {
+                color = 'red';
+                colorName = 'Red';
+            } else {
+                color = 'black';
+                colorName = 'Black';
+            }
+            
+            console.log(`Number: ${number}, Color: ${colorName}`);
+            
+            resultDisplay.innerHTML = `<div class="result-number ${color}">${number} - ${colorName}</div>`;
+            wheelNumber.textContent = number;
+        }
 
         function calculateWinnings(winningNumber) {
             let totalWinnings = 0;
