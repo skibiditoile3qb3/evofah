@@ -288,7 +288,7 @@ function dropBall(){
 const betAmount=parseInt(document.getElementById('betAmount').value);
 const numBalls=parseInt(document.getElementById('numBalls').value);
 if(isNaN(betAmount)||betAmount<1){alert('Enter valid bet!');return;}
-if(isNaN(numBalls)||numBalls<1||numBalls>20){alert('Enter 1-20 balls!');return;}
+if(isNaN(numBalls)||numBalls<1||numBalls>100){alert('Enter 1-100 balls!');return;}
 const totalBet=betAmount*numBalls;
 if(totalBet>balance){alert('Insufficient balance!');return;}
 
