@@ -279,13 +279,20 @@
     </div>
 
     <script>
-        // PASSWORD PROTECTION
-        const correctPassword = atob('Ymx1ZGNhbGM='); // Base64 encoded "bludcalc"
-        
+        const ky = atob('Ymx1ZGNhbGM=');
+
+        if (localStorage.getItem('good') === null) {
+            localStorage.setItem('good', '0') 
+        } else if (localStorage.getItem('good') === '1') {
+            document.getElementById('passwordScreen').style.display = 'none';
+            document.getElementById('mainView').style.display = 'flex';
+        }
+            
         function checkPassword() {
             const input = document.getElementById('passwordInput').value;
-            if (input === correctPassword) {
+            if (input === ky) {
                 document.getElementById('passwordScreen').style.display = 'none';
+                localStorage.getItem('good') === '1'
                 document.getElementById('mainView').style.display = 'flex';
                 return true;
             } else {
