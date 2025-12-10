@@ -157,11 +157,23 @@
             text-align: left;
             transition: all 0.2s;
             width: 100%;
+            position: relative;
         }
         .game-btn:hover {
             background: #252525;
             border-color: #555;
             transform: translateY(-2px);
+        }
+        .game-btn.locked {
+            opacity: 0.6;
+            border-color: #d69e2e;
+        }
+        .game-btn.locked:after {
+            content: '🔒 50 coins';
+            display: block;
+            font-size: 11px;
+            color: #d69e2e;
+            margin-top: 4px;
         }
         #gameView {
             display: none;
@@ -184,6 +196,57 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+        #adOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #adOverlay.show {
+            display: flex;
+        }
+        .ad-content {
+            text-align: center;
+            padding: 40px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            border: 2px solid #333;
+        }
+        .ad-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #d69e2e;
+        }
+        .ad-content p {
+            font-size: 16px;
+            margin-bottom: 30px;
+            color: #aaa;
+        }
+        #adTimer {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        #skipAdBtn {
+            padding: 12px 30px;
+            background: #d69e2e;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+        #skipAdBtn:hover {
+            background: #b7791f;
         }
         .dev-section {
             margin-top: 40px;
@@ -243,8 +306,6 @@
                 <button id="plinkoBtn" style="background: #3182ce; border: 1px solid #2c5282;">PLINKO 🎯</button>
                 <button id="rouletteBtn" style="background: #c53030; border: 1px solid #9b2c2c;">ROULETTE ⭕</button>
                 <button id="slotsBtn" style="background:#319795;border:1px solid #2c7a7b;">SLOTS 🎰</button>
-
-
             </div>
             <div id="gameList"></div>
             <div class="dev-section">
@@ -276,6 +337,15 @@
     <div id="gameView">
         <button id="backBtn">← BACK</button>
         <iframe id="gameFrame"></iframe>
+    </div>
+
+    <div id="adOverlay">
+        <div class="ad-content">
+            <h2>💛 Support the Creator!</h2>
+            <p>Thanks for playing! Your support means everything.</p>
+            <div id="adTimer">Ad ends in <span id="adCountdown">5</span>s</div>
+            <button id="skipAdBtn">Continue</button>
+        </div>
     </div>
 
     <script>
@@ -315,6 +385,8 @@
         let isAdmin = false;
         const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquapark.io","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft-1.8", "eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","gunspin2","happy-wheels","hexanaut.io","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paper.io-2","paper.io","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-multiplayer","slope-run","slope","smash-karts","snake.io","sniper-rifle-shooting","snow-rider3d","snowball.io","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stick-fighter","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","10-minutes-till-dawn","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
 
+        const lockedGames = ['stick-fighter', '10-minutes-till-dawn', 'slope-multiplayer', 'poker'];
+
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
         const _0x2b4a = (s) => atob(s.split('').reverse().join(''));
         const _0x9c3d = 'X2NvaW5EYXRh';
@@ -322,6 +394,24 @@
         const _0x3e8a = 'X3RvdGFsQWN0aXZlVGltZQ==';
         const _0x5c2f = 'X2N1cnJlbnRTZWVk';
         const _0x8d4b = 'X3VzZWRDb2Rlcw==';
+
+        function getUserProfile() {
+            try {
+                const stored = localStorage.getItem('userProfile');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+            } catch(e) {}
+            return { unlockedGames: [], adsDisabled: false };
+        }
+
+        function saveUserProfile(profile) {
+            try {
+                localStorage.setItem('userProfile', JSON.stringify(profile));
+            } catch(e) {}
+        }
+
+        let userProfile = getUserProfile();
 
         function getCoins() {
             try {
@@ -485,22 +575,25 @@
         document.addEventListener('keydown', markActivity);
         document.addEventListener('click', markActivity);
 
-let gameIsPlaying = false;
-        let gamePlayTime = 0; // Track seconds spent in games
+        let gameIsPlaying = false;
+        let gamePlayTime = 0;
+        let lastAdTime = Date.now();
 
         activityCheckInterval = setInterval(() => {
-
             if (gameIsPlaying) {
                 gamePlayTime += 1;
                 if (gamePlayTime > 0 && gamePlayTime % 30 === 0) {
                     coins += 10;
                     setCoins(coins);
                     updateCoinDisplay();
-                    console.log(`🎮 +10 coins! Total game time: ${gamePlayTime}s`);
+                }
+
+                if (!userProfile.adsDisabled && Date.now() - lastAdTime >= 180000) {
+                    showAd();
+                    lastAdTime = Date.now();
                 }
             }
             
-            // Original activity tracking for main page (if you want to keep it)
             const now = Date.now();
             const isCurrentlyActive = (isActive && (now - lastActivity) < 2000);
             
@@ -510,6 +603,32 @@ let gameIsPlaying = false;
             }
             isActive = false;
         }, 1000);
+
+        function showAd() {
+            const overlay = document.getElementById('adOverlay');
+            const skipBtn = document.getElementById('skipAdBtn');
+            const countdown = document.getElementById('adCountdown');
+            
+            overlay.classList.add('show');
+            skipBtn.style.display = 'none';
+            
+            let timeLeft = 5;
+            countdown.textContent = timeLeft;
+            
+            const adInterval = setInterval(() => {
+                timeLeft--;
+                countdown.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(adInterval);
+                    skipBtn.style.display = 'block';
+                }
+            }, 1000);
+        }
+
+        document.getElementById('skipAdBtn').addEventListener('click', () => {
+            document.getElementById('adOverlay').classList.remove('show');
+        });
 
         function levenshtein(a, b) {
             const matrix = [];
@@ -539,14 +658,39 @@ let gameIsPlaying = false;
             return game.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         }
 
+        function isGameLocked(game) {
+            return lockedGames.includes(game) && !userProfile.unlockedGames.includes(game);
+        }
+
         function displayGames(gamesToShow) {
             const gameList = document.getElementById('gameList');
             gameList.innerHTML = '';
             gamesToShow.forEach(game => {
                 const btn = document.createElement('button');
                 btn.className = 'game-btn';
+                if (isGameLocked(game)) {
+                    btn.classList.add('locked');
+                }
                 btn.textContent = formatGameName(game);
-                btn.onclick = () => loadGame(game);
+                btn.onclick = () => {
+                    if (isGameLocked(game)) {
+                        if (confirm(`Unlock ${formatGameName(game)} for 50 coins?`)) {
+                            if (coins >= 50) {
+                                coins -= 50;
+                                setCoins(coins);
+                                updateCoinDisplay();
+                                userProfile.unlockedGames.push(game);
+                                saveUserProfile(userProfile);
+                                displayGames(gamesToShow);
+                                loadGame(game);
+                            } else {
+                                alert('Not enough coins!');
+                            }
+                        }
+                    } else {
+                        loadGame(game);
+                    }
+                };
                 gameList.appendChild(btn);
             });
         }
@@ -583,7 +727,7 @@ let gameIsPlaying = false;
                 document.getElementById('gameFrame').src = 'lottery.html';
             } else if (game === 'roulette') {
                 document.getElementById('gameFrame').src = 'roulette.html';
-             } else if (game === 'plinko') {
+            } else if (game === 'plinko') {
                 document.getElementById('gameFrame').src = 'plinko.html';
             } else if (game === 'slots') {
                 document.getElementById('gameFrame').src = 'slots.html';
@@ -591,10 +735,8 @@ let gameIsPlaying = false;
                 document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g6/stick-fighter/';
             } else if (game === '10-minutes-till-dawn') {
                 document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g7/10-minutes-till-dawn/';
-
             } else if (game === 'eaglercraft-1.8') {
                 document.getElementById('gameFrame').src = 'https://eaglercraft1-8.github.io/';
-
             } else if (game === 'slope-multiplayer') {
                 document.getElementById('gameFrame').src = 'https://gswitch3.github.io/g7/slope-2-multiplayer';
             } else {
@@ -634,7 +776,22 @@ let gameIsPlaying = false;
         });
 
         document.getElementById('pokerBtn').addEventListener('click', () => {
-            loadGame('poker');
+            if (isGameLocked('poker')) {
+                if (confirm('Unlock Poker for 50 coins?')) {
+                    if (coins >= 50) {
+                        coins -= 50;
+                        setCoins(coins);
+                        updateCoinDisplay();
+                        userProfile.unlockedGames.push('poker');
+                        saveUserProfile(userProfile);
+                        loadGame('poker');
+                    } else {
+                        alert('Not enough coins!');
+                    }
+                }
+            } else {
+                loadGame('poker');
+            }
         });
 
         document.getElementById('lotteryBtn').addEventListener('click', () => {
@@ -676,6 +833,11 @@ let gameIsPlaying = false;
             } else if (code === '**8p') {
                 isAdmin = true; 
                 document.getElementById('adminPanel').style.display = 'block';
+                e.target.value = '';
+            } else if (code === '**7p') {
+                userProfile.adsDisabled = true;
+                saveUserProfile(userProfile);
+                alert('✅ Ads disabled!');
                 e.target.value = '';
             }
         });
