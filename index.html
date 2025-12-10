@@ -197,7 +197,6 @@
             height: 100%;
             border: none;
         }
-
         #adOverlay {
             display: none;
             position: fixed;
@@ -206,44 +205,55 @@
             width: 100vw;
             height: 100vh;
             background: rgba(0,0,0,0.95);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            z-index: 99999;
         }
         #adOverlay.show {
-            display: flex !important;
+            display: block;
         }
         .ad-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            padding: 40px;
+            padding: 50px 60px;
             background: #1a1a1a;
             border-radius: 12px;
-            border: 2px solid #333;
+            border: 2px solid #d69e2e;
+            min-width: 400px;
+            max-width: 90vw;
         }
-        .ad-content h2 {
-            font-size: 28px;
+        #adTitle {
+            font-size: 32px;
             margin-bottom: 20px;
             color: #d69e2e;
+            font-weight: bold;
         }
-        .ad-content p {
-            font-size: 16px;
+        #adText {
+            font-size: 18px;
             margin-bottom: 30px;
-            color: #aaa;
+            color: #ccc;
+            line-height: 1.5;
         }
         #adTimer {
-            font-size: 20px;
+            font-size: 24px;
             color: #fff;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        #adCountdown {
+            color: #d69e2e;
+            font-size: 28px;
         }
         #skipAdBtn {
-            padding: 12px 30px;
+            padding: 15px 40px;
             background: #d69e2e;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             color: #000;
             font-weight: bold;
             cursor: pointer;
+            font-size: 18px;
             display: none;
         }
         #skipAdBtn:hover {
@@ -344,8 +354,8 @@
 
     <div id="adOverlay">
         <div class="ad-content">
-            <h2>💛 Support the Creator!</h2>
-            <p>Thanks for playing! Your support means everything.</p>
+            <div id="adTitle">💛 Support the Creator!</div>
+            <div id="adText">Thanks for playing! Your support means everything.</div>
             <div id="adTimer">Ad ends in <span id="adCountdown">5</span>s</div>
             <button id="skipAdBtn">Continue</button>
         </div>
@@ -606,44 +616,45 @@
             }
             isActive = false;
         }, 1000);
-function showAd() {
-    const overlay = document.getElementById('adOverlay');
-    const skipBtn = document.getElementById('skipAdBtn');
-    const countdown = document.getElementById('adCountdown');
-    const gameFrame = document.getElementById('gameFrame');
 
-    const adMessages = [
-        { title: '💛 Support the Creator!', text: 'Thanks for playing! Your support means everything.' },
-        { title: '🔔 Don\'t Forget to Donate Money!', text: 'Stay updated with new games and features.' },
-        { title: '⭐ Enjoying the Game?', text: 'Share it with your friends and spread the fun!' },
-        { title: '🎮 Keep Playing!', text: 'Every minute you play helps support development.' },
-        { title: '🤑 Tip: Every 2 minutes you play you get 10 coins!', text: 'Every minute you play helps support development.' }
-    ];
-    
-    const randomAd = adMessages[Math.floor(Math.random() * adMessages.length)];
-    
-    document.querySelector('.ad-content h2').textContent = randomAd.title;
-    document.querySelector('.ad-content p').textContent = randomAd.text;
-    
-    overlay.classList.add('show');
-    skipBtn.style.display = 'none';
-    gameFrame.style.pointerEvents = 'none';
+        function showAd() {
+            const overlay = document.getElementById('adOverlay');
+            const skipBtn = document.getElementById('skipAdBtn');
+            const countdown = document.getElementById('adCountdown');
+            const gameFrame = document.getElementById('gameFrame');
+            const adTitle = document.getElementById('adTitle');
+            const adText = document.getElementById('adText');
 
-    
-    let timeLeft = Math.random() < 0.75 ? 5 : 10;
-    countdown.textContent = timeLeft;
-    
-    const adInterval = setInterval(() => {
-        timeLeft--;
-        countdown.textContent = timeLeft;
-        
-        if (timeLeft <= 0) {
-            clearInterval(adInterval);
-            skipBtn.style.display = 'block';
+            const adMessages = [
+                { title: '💛 Support the Creator!', text: 'Thanks for playing! Your support means everything.' },
+                { title: '🔔 Don\'t Forget to Donate Money!', text: 'Stay updated with new games and features.' },
+                { title: '⭐ Enjoying the Game?', text: 'Share it with your friends and spread the fun!' },
+                { title: '🎮 Keep Playing!', text: 'Every minute you play helps support development.' },
+                { title: '🤑 Tip: Every 30 seconds you play you get 10 coins!', text: 'Keep gaming to earn more!' }
+            ];
+            
+            const randomAd = adMessages[Math.floor(Math.random() * adMessages.length)];
+            
+            adTitle.textContent = randomAd.title;
+            adText.textContent = randomAd.text;
+            
+            overlay.classList.add('show');
+            skipBtn.style.display = 'none';
+            gameFrame.style.pointerEvents = 'none';
+            
+            let timeLeft = Math.random() < 0.75 ? 5 : 10;
+            countdown.textContent = timeLeft;
+            
+            const adInterval = setInterval(() => {
+                timeLeft--;
+                countdown.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(adInterval);
+                    skipBtn.style.display = 'block';
+                }
+            }, 1000);
         }
-    }, 1000);
-}
-
 
         document.getElementById('skipAdBtn').addEventListener('click', () => {
             document.getElementById('adOverlay').classList.remove('show');
@@ -843,24 +854,25 @@ function showAd() {
             }
         });
 
-document.getElementById('devInput').addEventListener('input', (e) => {
-    const code = e.target.value;
-    if (code === 'abcd') {
-        coins += 100;
-        setCoins(coins);
-        updateCoinDisplay();
-        e.target.value = '';
-    } else if (code === 'efgh') {
-        isAdmin = true; 
-        document.getElementById('adminPanel').style.display = 'block';
-        e.target.value = '';
-    } else if (code === 'ijkl') {
-        userProfile.adsDisabled = !userProfile.adsDisabled;
-        saveUserProfile(userProfile);
-        alert(userProfile.adsDisabled ? '✅ Ads disabled!' : '✅ Ads enabled!');
-        e.target.value = '';
-    }
-});
+        document.getElementById('devInput').addEventListener('input', (e) => {
+            const code = e.target.value;
+            if (code === 'abcd') {
+                coins += 100;
+                setCoins(coins);
+                updateCoinDisplay();
+                e.target.value = '';
+            } else if (code === 'efgh') {
+                isAdmin = true; 
+                document.getElementById('adminPanel').style.display = 'block';
+                e.target.value = '';
+            } else if (code === 'ijkl') {
+                userProfile.adsDisabled = !userProfile.adsDisabled;
+                saveUserProfile(userProfile);
+                alert(userProfile.adsDisabled ? '✅ Ads disabled!' : '✅ Ads enabled!');
+                e.target.value = '';
+            }
+        });
+
         document.getElementById('getSeedBtn').addEventListener('click', () => {
             const seed = getCurrentSeed();
             const obfuscated = obfuscateSeedUser(seed);
@@ -883,7 +895,7 @@ document.getElementById('devInput').addEventListener('input', (e) => {
             const coinCodeDisplay = document.getElementById('coinCodeDisplay');
 
             if (!isAdmin) { 
-                alert('❌ Error: You must first enter the Dev Code (**8p) to authenticate as administrator.');
+                alert('❌ Error: You must first enter the Dev Code (efgh) to authenticate as administrator.');
                 coinCodeDisplay.style.display = 'none';
                 return;
             }
@@ -941,13 +953,14 @@ document.getElementById('devInput').addEventListener('input', (e) => {
                 alert('❌ ' + result.message);
             }
         });
-        document.getElementById('shopBtn').addEventListener('click', () => {
-    window.location.href = 'shop.html';
-});
 
-document.getElementById('hofBtn').addEventListener('click', () => {
-    window.location.href = 'hof.html';
-});
+        document.getElementById('shopBtn').addEventListener('click', () => {
+            window.location.href = 'shop.html';
+        });
+
+        document.getElementById('hofBtn').addEventListener('click', () => {
+            window.location.href = 'hof.html';
+        });
     </script>
 </body>
 </html>
