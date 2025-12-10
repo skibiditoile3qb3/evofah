@@ -350,15 +350,14 @@
         <iframe id="gameFrame"></iframe>
     </div>
 
-    <div id="adOverlay">
-        <div class="ad-content">
-            <div id="adTitle">💛 Support the Creator!</div>
-            <div id="adText">Thanks for playing! Your support means everything.</div>
-            <div id="adTimer">Ad ends in <span id="adCountdown">5</span>s</div>
-            <button id="skipAdBtn">Continue</button>
-        </div>
+<div id="adOverlay">
+    <div class="ad-content">
+        <div id="adTitle">💛 Support the Creator!</div>
+        <div id="adText">Thanks for playing! Your support means everything.</div>
+        <div id="adTimer">Ad ends in <span id="adCountdown">5</span>s</div>
+        <button id="skipAdBtn">Continue</button>
     </div>
-
+</div>
     <script>
         const ky = atob('Ymx1ZGNhbGM=');
 
@@ -616,52 +615,77 @@
             isActive = false;
         }, 1000);
 
-        function showAd() {
+    function showAd() {
     const overlay = document.getElementById('adOverlay');
     const skipBtn = document.getElementById('skipAdBtn');
     const countdown = document.getElementById('adCountdown');
     const gameFrame = document.getElementById('gameFrame');
     const adTitle = document.getElementById('adTitle');
     const adText = document.getElementById('adText');
+    const adTimer = document.getElementById('adTimer');
 
     const adMessages = [
         { title: '💛 Support the Creator!', text: 'Thanks for playing! Your support means everything.' },
         { title: '🔔 Don\'t Forget to Donate Money!', text: 'Stay updated with new games and features.' },
         { title: '⭐ Enjoying the Game?', text: 'Share it with your friends and spread the fun!' },
         { title: '🎮 Keep Playing!', text: 'Every minute you play helps support development.' },
-        { title: '🤑 Tip: Every 30 seconds you play you get 10 coins!', text: 'Keep gaming to earn more!' }
+        { title: '🤑 Tip: Every 30 seconds you play you get 10 coins!', text: 'Keep gaming to earn more!' },
+        { type: 'video', videoUrl: 'ad.mp4', duration: 15 }
     ];
     
     const randomAd = adMessages[Math.floor(Math.random() * adMessages.length)];
-    
-    adTitle.textContent = randomAd.title;
-    adText.textContent = randomAd.text;
     
     overlay.classList.add('show');
     skipBtn.style.display = 'none';
     gameFrame.style.pointerEvents = 'none';
     
-    let timeLeft = Math.random() < 0.75 ? 5 : 10;
-    countdown.textContent = timeLeft;
+// Check if it's a video ad
+if (randomAd.type === 'video') {
+    // Hide text elements
+    adTitle.style.display = 'none';
+    adText.style.display = 'none';
+    adTimer.style.display = 'none';
     
-    const adInterval = setInterval(() => {
+    // Create video element
+    const videoContainer = document.createElement('div');
+    videoContainer.id = 'videoAdContainer';
+    videoContainer.innerHTML = `
+        <video id="adVideo" autoplay style="width: 100%; max-width: 800px; border-radius: 12px;">
+            <source src="${randomAd.videoUrl}" type="video/mp4">
+        </video>
+        <div id="videoTimer" style="margin-top: 20px; font-size: 18px;">Skip available in <span id="videoCountdown">5</span>s</div>
+    `;
+    document.querySelector('.ad-content').appendChild(videoContainer);
+    
+    const videoCountdownEl = document.getElementById('videoCountdown');
+    let timeLeft = Math.random() < 0.75 ? 5 : 10; // Same 5-10 second timer!
+    videoCountdownEl.textContent = timeLeft;
+    
+    const videoInterval = setInterval(() => {
         timeLeft--;
-        countdown.textContent = timeLeft;
+        videoCountdownEl.textContent = timeLeft;
         
         if (timeLeft <= 0) {
-            clearInterval(adInterval);
+            clearInterval(videoInterval);
             skipBtn.style.display = 'block';
+            document.getElementById('videoTimer').textContent = 'You can skip now!';
         }
     }, 1000);
     
-    // Store interval ID so we can clear it if needed
-    window.currentAdInterval = adInterval;
+    window.currentAdInterval = videoInterval;
 }
 
 document.getElementById('skipAdBtn').addEventListener('click', () => {
     if (window.currentAdInterval) {
         clearInterval(window.currentAdInterval);
     }
+    
+    // Remove video container if exists
+    const videoContainer = document.getElementById('videoAdContainer');
+    if (videoContainer) {
+        videoContainer.remove();
+    }
+    
     document.getElementById('adOverlay').classList.remove('show');
     document.getElementById('gameFrame').style.pointerEvents = 'auto';
 });
