@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 36px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        .back-btn {
+            padding: 12px 24px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            margin-bottom: 30px;
+        }
+        .back-btn:hover {
+            background: #252525;
+            border-color: #555;
+        }
+        .legends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .legend-card {
+            background: #1a1a1a;
+            border: 2px solid #d69e2e;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .legend-card:hover {
+            transform: translateY(-5px);
+            border-color: #b7791f;
+            box-shadow: 0 10px 30px rgba(214, 158, 46, 0.3);
+        }
+        .legend-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: #252525;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 3px solid #d69e2e;
+        }
+        .legend-card h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #d69e2e;
+        }
+        .legend-card .subtitle {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            border: 2px solid #d69e2e;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+        }
+        .modal-content h2 {
+            color: #d69e2e;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        .modal-content p {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        .close-modal {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #d69e2e;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .close-modal:hover {
+            background: #b7791f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='index.html'">← BACK</button>
+        <h1>🏆 HALL OF FAME</h1>
+        
+        <div class="legends-grid">
+            <div class="legend-card" onclick="showModal('jiles')">
+                <div class="legend-img">👤</div>
+                <h2>Jiles</h2>
+                <div class="subtitle">Click to learn more</div>
+            </div>
+            
+            <div class="legend-card" onclick="showModal('aden')">
+                <div class="legend-img">👤</div>
+                <h2>Aden</h2>
+                <div class="subtitle">Click to learn more</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const legends = {
+            jiles: {
+                name: 'Jiles',
+                description: 'Jiles is a legendary player known for their incredible skills and dedication. Their achievements have set the standard for excellence in the community. [Add your custom description here]'
+            },
+            aden: {
+                name: 'Aden',
+                description: 'Aden is a master strategist and innovator, constantly pushing the boundaries of what\'s possible. Their contributions have shaped the game for countless players. [Add your custom description here]'
+            }
+        };
+
+        function showModal(legendKey) {
+            const legend = legends[legendKey];
+            document.getElementById('modalTitle').textContent = legend.name;
+            document.getElementById('modalDescription').textContent = legend.description;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
