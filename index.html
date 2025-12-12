@@ -1200,12 +1200,12 @@ if (checkAndHandleBan()) {
         updateCoinDisplay();
         e.target.value = '';
 
-   } else if (code === 'imanadmin') {
+   } else if (code === 'imanadmin' + userProfile.username) {
     isAdmin = true;
     userProfile.status = 'admin';
+    user
     saveUserProfile(userProfile);
     updateUserDisplay();
-    document.getElementById('adminPanel').style.display = 'block';
     e.target.value = '';
 
     } else if (code === 'ved3') {
