@@ -641,36 +641,52 @@ function checkBanStatus() {
         function deobfuscateSeedUser(obfuscated) {
             return atob(obfuscated.split('').reverse().join(''));
         }
-
-        function validateCoinCode(coinCode) {
+function deobfuscateSeedAdmin(obfuscated) {
+    try {
+        const decoded = atob(obfuscated);
+        const rot13 = decoded.split('').map(char => {
+            if (char >= 'a' && char <= 'z') {
+                return String.fromCharCode(((char.charCodeAt(0) - 97 + 13) % 26) + 97);
+            } else if (char >= 'A' && char <= 'Z') {
+                return String.fromCharCode(((char.charCodeAt(0) - 65 + 13) % 26) + 65);
+            }
+            return char;
+        }).join('');
+        return rot13;
+    } catch(e) {
+        console.error("Error deobfuscating admin seed:", e);
+        return null;
+    }
+}
+       function validateCoinCode(coinCode) {
     try {
         const parts = coinCode.split('.');
         
-        // Check if it's a ban code
-        // Check if it's a ban code
-if (parts[0] === 'BAN' && parts.length === 3) {
-    const banData = JSON.parse(atob(parts[1]));
-    const adminObfuscatedSeed = parts[2];
-    
-    const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
-    const currentSeed = getCurrentSeed();
-    
-    if (seed === currentSeed) {
-        const banUntil = Date.now() + (banData.days * 24 * 60 * 60 * 1000);
-        setBanData({
-            until: banUntil,
-            bannedBy: banData.admin
-        });
-        
-        // Rotate seed AFTER setting ban data
-        const newSeed = generateSeed();
-        setCurrentSeed(newSeed);
-        
-        return { valid: true, type: 'ban', days: banData.days, bannedBy: banData.admin };
-    } else {
-        return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
-    }
-}
+        // Check if it's a ban code (starts with X instead of BAN)
+        if (parts[0].startsWith('X') && parts.length === 2) {
+            const banDataEncoded = parts[0].substring(1); // Remove 'X'
+            const banData = JSON.parse(atob(banDataEncoded));
+            const adminObfuscatedSeed = parts[1];
+            
+            const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
+            const currentSeed = getCurrentSeed();
+            
+            if (seed === currentSeed) {
+                const banUntil = Date.now() + (banData.days * 24 * 60 * 60 * 1000);
+                setBanData({
+                    until: banUntil,
+                    bannedBy: banData.admin
+                });
+                
+                // Rotate seed AFTER setting ban data
+                const newSeed = generateSeed();
+                setCurrentSeed(newSeed);
+                
+                return { valid: true, type: 'ban', days: banData.days, bannedBy: banData.admin };
+            } else {
+                return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
+            }
+        }
         
         // Regular coin code
         if (parts.length !== 2) return { valid: false, message: 'Invalid code format' };
