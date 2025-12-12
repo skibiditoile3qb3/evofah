@@ -251,7 +251,7 @@
                     days: days,
                     admin: adminUsername
                 };
-                const banCode = 'X.' + btoa(JSON.stringify(banData)) + '.' + adminObfuscated;
+                const banCode = 'X' + btoa(JSON.stringify(banData)) + '.' + adminObfuscated;
                 return banCode;
             } catch(e) {
                 console.error("Error generating ban code:", e);
