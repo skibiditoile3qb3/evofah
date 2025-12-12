@@ -105,12 +105,42 @@
         <h1>🛒 SHOP</h1>
         <div class="coin-display">Your Coins: <span id="coinAmount">0</span></div>
         
-        <div class="shop-item" id="adRemovalItem">
-            <h2>🚫 Remove All Ads Forever</h2>
-            <p>Tired of ads? Purchase this to permanently disable all advertisements and enjoy uninterrupted gameplay!</p>
-            <div class="price">20,000 Coins</div>
-            <button id="buyAdRemoval">Purchase</button>
-        </div>
+<div class="coin-display">Your Coins: <span id="coinAmount">0</span> | Playtime: <span id="playtime">0h 0m</span></div>
+
+<div class="shop-item" id="adRemovalItem">
+    <h2>🚫 Remove All Ads Forever</h2>
+    <p>Tired of ads? Purchase this to permanently disable all advertisements and enjoy uninterrupted gameplay!</p>
+    <div class="price">20,000 Coins</div>
+    <button id="buyAdRemoval">Purchase</button>
+</div>
+
+<div class="shop-item" id="nameChangeItem">
+    <h2>✏️ Custom Name</h2>
+    <p>Stand out from the crowd! Set your own custom username instead of the default guest name.</p>
+    <div class="price">50,000 Coins</div>
+    <button id="buyNameChange">Purchase</button>
+</div>
+
+<div class="shop-item" id="rareRankItem">
+    <h2>💎 Rare Rank</h2>
+    <p>Get the exclusive Rare rank with a beautiful blue color! No playtime requirement.</p>
+    <div class="price">30,000 Coins</div>
+    <button id="buyRareRank">Purchase</button>
+</div>
+
+<div class="shop-item" id="legendaryRankItem">
+    <h2>👑 Legendary Rank</h2>
+    <p>Become a legend with the golden Legendary rank! Requires at least 5 hours of playtime.</p>
+    <div class="price">100,000 Coins | 5h playtime required</div>
+    <button id="buyLegendaryRank">Purchase</button>
+</div>
+
+<div class="shop-item" id="mysticalRankItem">
+    <h2>✨ Mystical Rank</h2>
+    <p>Achieve the ultimate status with the mystical blue rank! Requires at least 20 hours of playtime.</p>
+    <div class="price">500,000 Coins | 20h playtime required</div>
+    <button id="buyMysticalRank">Purchase</button>
+</div>
     </div>
 
     <script>
@@ -118,15 +148,37 @@
         const _0x2b4a = (s) => atob(s.split('').reverse().join(''));
         const _0x9c3d = 'X2NvaW5EYXRh';
 
-        function getUserProfile() {
-            try {
-                const stored = localStorage.getItem('userProfile');
-                if (stored) {
-                    return JSON.parse(stored);
-                }
-            } catch(e) {}
-            return { unlockedGames: [], adsDisabled: false };
+        function getTotalActiveTime() {
+    try {
+        const stored = localStorage.getItem(_0x2b4a(_0x3e8a));
+        return stored ? parseInt(_0x2b4a(stored)) : 0;
+    } catch(e) {}
+    return 0;
+}
+
+function formatPlaytime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return `${hours}h ${minutes}m`;
+}
+
+function getUserProfile() {
+    try {
+        const stored = localStorage.getItem('userProfile');
+        if (stored) {
+            const profile = JSON.parse(stored);
+            if (!profile.username) {
+                profile.username = 'guest' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            }
+            if (!profile.status) {
+                profile.status = 'player';
+            }
+            return profile;
         }
+    } catch(e) {}
+    const newUsername = 'guest' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    return { unlockedGames: [], adsDisabled: false, username: newUsername, status: 'player' };
+}
 
         function saveUserProfile(profile) {
             try {
@@ -150,10 +202,14 @@
             } catch(e) {}
         }
 
-        let coins = getCoins();
-        let userProfile = getUserProfile();
+let coins = getCoins();
+let userProfile = getUserProfile();
+let totalActiveTime = getTotalActiveTime();
 
-        document.getElementById('coinAmount').textContent = coins;
+document.getElementById('coinAmount').textContent = coins;
+document.getElementById('playtime').textContent = formatPlaytime(totalActiveTime);
+
+
 
         if (userProfile.adsDisabled) {
             const item = document.getElementById('adRemovalItem');
@@ -179,6 +235,103 @@
                 alert('❌ Not enough coins! You need 20,000 coins.');
             }
         });
+
+        // Name Change Purchase
+document.getElementById('buyNameChange').addEventListener('click', () => {
+    if (coins >= 50000) {
+        const newName = prompt('Enter your new username (max 20 characters):');
+        if (newName && newName.trim()) {
+            const trimmedName = newName.trim().substring(0, 20);
+            if (confirm(`Change your name to "${trimmedName}" for 50,000 coins?`)) {
+                coins -= 50000;
+                setCoins(coins);
+                userProfile.username = trimmedName;
+                saveUserProfile(userProfile);
+                alert('✅ Success! Your username has been changed.');
+                window.location.reload();
+            }
+        }
+    } else {
+        alert('❌ Not enough coins! You need 50,000 coins.');
+    }
+});
+
+// Rare Rank Purchase
+document.getElementById('buyRareRank').addEventListener('click', () => {
+    if (userProfile.status === 'rare' || userProfile.status === 'legendary' || userProfile.status === 'mystical') {
+        alert('❌ You already have this rank or a higher rank!');
+        return;
+    }
+    
+    if (coins >= 30000) {
+        if (confirm('Purchase Rare rank for 30,000 coins?')) {
+            coins -= 30000;
+            setCoins(coins);
+            userProfile.status = 'rare';
+            saveUserProfile(userProfile);
+            alert('✅ Success! You are now Rare rank!');
+            window.location.reload();
+        }
+    } else {
+        alert('❌ Not enough coins! You need 30,000 coins.');
+    }
+});
+
+// Legendary Rank Purchase
+document.getElementById('buyLegendaryRank').addEventListener('click', () => {
+    if (userProfile.status === 'legendary' || userProfile.status === 'mystical') {
+        alert('❌ You already have this rank or a higher rank!');
+        return;
+    }
+    
+    const hoursPlayed = totalActiveTime / 3600;
+    
+    if (hoursPlayed < 5) {
+        alert(`❌ Not enough playtime! You need 5 hours (you have ${hoursPlayed.toFixed(1)} hours).`);
+        return;
+    }
+    
+    if (coins >= 100000) {
+        if (confirm('Purchase Legendary rank for 100,000 coins?')) {
+            coins -= 100000;
+            setCoins(coins);
+            userProfile.status = 'legendary';
+            saveUserProfile(userProfile);
+            alert('✅ Success! You are now Legendary rank!');
+            window.location.reload();
+        }
+    } else {
+        alert('❌ Not enough coins! You need 100,000 coins.');
+    }
+});
+
+// Mystical Rank Purchase
+document.getElementById('buyMysticalRank').addEventListener('click', () => {
+    if (userProfile.status === 'mystical') {
+        alert('❌ You already have this rank!');
+        return;
+    }
+    
+    const hoursPlayed = totalActiveTime / 3600;
+    
+    if (hoursPlayed < 20) {
+        alert(`❌ Not enough playtime! You need 20 hours (you have ${hoursPlayed.toFixed(1)} hours).`);
+        return;
+    }
+    
+    if (coins >= 500000) {
+        if (confirm('Purchase Mystical rank for 500,000 coins?')) {
+            coins -= 500000;
+            setCoins(coins);
+            userProfile.status = 'mystical';
+            saveUserProfile(userProfile);
+            alert('✅ Success! You are now Mystical rank!');
+            window.location.reload();
+        }
+    } else {
+        alert('❌ Not enough coins! You need 500,000 coins.');
+    }
+});
     </script>
 </body>
 </html>
