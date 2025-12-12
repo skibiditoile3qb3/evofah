@@ -160,34 +160,29 @@
             <h2>Dev Codes</h2>
             
             <div class="code-item">
-                <h3>abcd</h3>
+                <h3>ved1</h3>
                 <p>Effect: +100 coins</p>
                 <div class="code-box">abcd</div>
             </div>
             
             <div class="code-item">
-                <h3>efgh</h3>
+                <h3>imanadmin</h3>
                 <p>Effect: Grant admin status</p>
                 <div class="code-box">efgh</div>
             </div>
             
             <div class="code-item">
-                <h3>ijkl</h3>
+                <h3>ved3</h3>
                 <p>Effect: Toggle ads on/off</p>
                 <div class="code-box">ijkl</div>
             </div>
             
             <div class="code-item">
-                <h3>mnop</h3>
+                <h3>ved4</h3>
                 <p>Effect: Set ad interval to 10 seconds (testing)</p>
                 <div class="code-box">mnop</div>
             </div>
             
-            <div class="code-item">
-                <h3>qrst</h3>
-                <p>Effect: Enable ban code generation</p>
-                <div class="code-box">qrst</div>
-            </div>
         </div>
         
         <div class="section">
@@ -211,7 +206,6 @@
     </div>
     
     <script>
-        // Copy obfuscation functions from main file
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
         const _0x2b4a = (s) => atob(s.split('').reverse().join(''));
         
@@ -259,13 +253,8 @@
             }
         }
         
-        // Check for ban code access
-        const devInput = prompt('Enter dev code to access ban generation:');
-        if (devInput === 'qrst') {
-            document.getElementById('banSection').style.display = 'block';
-        }
-        
-        // Coin code generation
+        document.getElementById('banSection').style.display = 'block';
+
         document.getElementById('generateCoinBtn').addEventListener('click', () => {
             const seed = document.getElementById('coinSeedInput').value.trim();
             const amount = parseInt(document.getElementById('coinAmountInput').value);
@@ -290,7 +279,6 @@
             }
         });
         
-        // Ban code generation
         document.getElementById('generateBanBtn').addEventListener('click', () => {
             const seed = document.getElementById('banSeedInput').value.trim();
             const days = parseInt(document.getElementById('banDaysInput').value);
