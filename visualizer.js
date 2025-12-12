@@ -777,4 +777,5 @@ if (!profile.visualizerEnabled) {
         }
     });
 
-})();
+})(); 
+} 
