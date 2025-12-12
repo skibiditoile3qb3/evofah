@@ -291,6 +291,18 @@
             color: #666;
             font-size: 12px;
         }
+        #userStatus.admin {
+    color: #ff4444;
+    font-weight: bold;
+}
+#userStatus.owner {
+    color: #a855f7;
+    font-weight: bold;
+}
+#userStatus.legendary {
+    color: #ffd700;
+    font-weight: bold;
+}
     </style>
 </head>
 <body>
@@ -303,6 +315,9 @@
 
     <div id="mainView">
         <div id="coinDisplay">Coins: <span id="coinAmount">10</span></div>
+        <div id="userDisplay" style="position: fixed; top: 60px; right: 20px; background: #1a1a1a; padding: 10px 20px; border-radius: 8px; font-size: 14px; border: 1px solid #333; z-index: 100;">
+    <span id="userName">guest000000</span> | <span id="userStatus">player</span>
+</div>
         <div class="container">
             <h1>Evo?</h1>
             <div class="search-container">
@@ -310,6 +325,7 @@
                 <button id="allBtn">ALL</button>
                 <button id="shopBtn">SHOP 🛒</button>
                 <button id="hofBtn">HALL OF FAME 🏆</button>
+                <button id="adminPanelBtn" style="display: none;">ADMIN PANEL</button>
                 <button id="minesBtn" style="background: #d69e2e; border: 1px solid #b7791f;">MINES 💎</button>
                 <button id="blackjackBtn" style="background: #c53030; border: 1px solid #9b2c2c;">BLACKJACK ♠️</button>
                 <button id="pokerBtn" style="background: #38a169; border: 1px solid #2f855a;">POKER 🃏</button>
@@ -338,7 +354,7 @@
                 </div>
                 
                 <div style="margin-top: 15px;">
-                    <input type="text" id="coinCodeInput" placeholder="Enter coin code from admin" style="width: 100%; margin-bottom: 10px; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;">
+                    <input type="text" id="coinCodeInput" placeholder="Enter code from admin" style="width: 100%; margin-bottom: 10px; padding: 12px 16px; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 14px;">
                     <button id="redeemCoinCodeBtn" style="display: block; width: 100%;">Redeem Coin Code</button>
                 </div>
             </div>
@@ -404,16 +420,26 @@
         const _0x3e8a = 'X3RvdGFsQWN0aXZlVGltZQ==';
         const _0x5c2f = 'X2N1cnJlbnRTZWVk';
         const _0x8d4b = 'X3VzZWRDb2Rlcw==';
+        const _0x6f9a = 'X2JhbkRhdGE=';
+        
 
-        function getUserProfile() {
-            try {
-                const stored = localStorage.getItem('userProfile');
-                if (stored) {
-                    return JSON.parse(stored);
-                }
-            } catch(e) {}
-            return { unlockedGames: [], adsDisabled: false };
+function getUserProfile() {
+    try {
+        const stored = localStorage.getItem('userProfile');
+        if (stored) {
+            const profile = JSON.parse(stored);
+            if (!profile.username) {
+                profile.username = 'guest' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+            }
+            if (!profile.status) {
+                profile.status = 'player';
+            }
+            return profile;
         }
+    } catch(e) {}
+    const newUsername = 'guest' + Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
+    return { unlockedGames: [], adsDisabled: false, username: newUsername, status: 'player' };
+}
 
         function saveUserProfile(profile) {
             try {
@@ -422,6 +448,77 @@
         }
 
         let userProfile = getUserProfile();
+
+        // Update user display
+function updateUserDisplay() {
+    document.getElementById('userName').textContent = userProfile.username;
+    const statusEl = document.getElementById('userStatus');
+    statusEl.textContent = userProfile.status;
+    statusEl.className = userProfile.status;
+    
+    // Show admin panel button if admin or owner
+    if (userProfile.status === 'admin' || userProfile.status === 'owner') {
+        document.getElementById('adminPanelBtn').style.display = 'block';
+    }
+}
+
+// Check ban status on load
+function checkAndHandleBan() {
+    const banStatus = checkBanStatus();
+    if (banStatus.banned) {
+        showBanScreen(banStatus);
+        return true;
+    }
+    return false;
+}
+
+function showBanScreen(banStatus) {
+    const banScreen = document.createElement('div');
+    banScreen.id = 'banScreen';
+    banScreen.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 100000;
+    `;
+    
+    const unbanCost = banStatus.daysRemaining * 1000;
+    const canUnban = coins >= unbanCost;
+    
+    banScreen.innerHTML = `
+        <h1 style="font-size: 48px; font-weight: 300; letter-spacing: 3px; margin-bottom: 30px; color: #ff4444;">🚫 BANNED</h1>
+        <p style="font-size: 18px; margin-bottom: 10px;">You have been banned by: <span style="color: #d69e2e;">${banStatus.bannedBy}</span></p>
+        <p style="font-size: 18px; margin-bottom: 10px;">Days remaining: <span style="color: #ff4444;">${banStatus.daysRemaining}</span></p>
+        <p style="font-size: 16px; margin-bottom: 30px; color: #888;">Ban expires: ${new Date(banStatus.until).toLocaleString()}</p>
+        <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333;">
+            <p style="font-size: 16px; margin-bottom: 15px;">Unban yourself for: <span style="color: #d69e2e; font-weight: bold;">${unbanCost} coins</span></p>
+            <p style="font-size: 14px; color: #888; margin-bottom: 15px;">Your balance: ${coins} coins</p>
+            <button id="unbanBtn" style="padding: 16px 32px; background: ${canUnban ? '#d69e2e' : '#333'}; border: 1px solid ${canUnban ? '#b7791f' : '#555'}; border-radius: 8px; color: ${canUnban ? '#000' : '#666'}; cursor: ${canUnban ? 'pointer' : 'not-allowed'}; font-size: 16px; font-weight: bold;" ${!canUnban ? 'disabled' : ''}>
+                ${canUnban ? 'UNBAN NOW' : 'NOT ENOUGH COINS'}
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(banScreen);
+    
+    if (canUnban) {
+        document.getElementById('unbanBtn').addEventListener('click', () => {
+            coins -= unbanCost;
+            setCoins(coins);
+            updateCoinDisplay();
+            clearBanData();
+            banScreen.remove();
+            alert('✅ You have been unbanned!');
+        });
+    }
+}
         
 
         function getCoins() {
@@ -490,6 +587,46 @@
             } catch(e) {}
         }
 
+        function getBanData() {
+    try {
+        const stored = localStorage.getItem(_0x2b4a(_0x6f9a));
+        if (stored) {
+            return JSON.parse(_0x2b4a(stored));
+        }
+    } catch(e) {}
+    return null;
+}
+
+function setBanData(data) {
+    try {
+        localStorage.setItem(_0x2b4a(_0x6f9a), _0x4a2b(JSON.stringify(data)));
+    } catch(e) {}
+}
+
+function clearBanData() {
+    try {
+        localStorage.removeItem(_0x2b4a(_0x6f9a));
+    } catch(e) {}
+}
+
+function checkBanStatus() {
+    const banData = getBanData();
+    if (!banData) return { banned: false };
+    
+    const now = Date.now();
+    if (now >= banData.until) {
+        clearBanData();
+        return { banned: false };
+    }
+    
+    return { 
+        banned: true, 
+        until: banData.until,
+        bannedBy: banData.bannedBy,
+        daysRemaining: Math.ceil((banData.until - now) / (1000 * 60 * 60 * 24))
+    };
+}
+
         function obfuscateSeedUser(seed) {
             return btoa(seed).split('').reverse().join('');
         }
@@ -522,44 +659,85 @@
             }).join('');
         }
 
-        function generateCoinCode(userObfuscatedSeed, coinAmount) {
-            try {
-                const seed = deobfuscateSeedUser(userObfuscatedSeed);
-                const adminObfuscated = obfuscateSeedAdmin(seed);
-                const coinCode = btoa(coinAmount.toString()) + '.' + adminObfuscated;
-                return coinCode;
-            } catch(e) {
-                console.error("Error generating coin code:", e);
-                return null;
-            }
-        }
+function generateCoinCode(userObfuscatedSeed, coinAmount) {
+    try {
+        const seed = deobfuscateSeedUser(userObfuscatedSeed);
+        const adminObfuscated = obfuscateSeedAdmin(seed);
+        const coinCode = btoa(coinAmount.toString()) + '.' + adminObfuscated;
+        return coinCode;
+    } catch(e) {
+        console.error("Error generating coin code:", e);
+        return null;
+    }
+}
+
+function generateBanCode(userObfuscatedSeed, days, adminUsername) {
+    try {
+        const seed = deobfuscateSeedUser(userObfuscatedSeed);
+        const adminObfuscated = obfuscateSeedAdmin(seed);
+        const banData = {
+            days: days,
+            admin: adminUsername
+        };
+        const banCode = 'BAN.' + btoa(JSON.stringify(banData)) + '.' + adminObfuscated;
+        return banCode;
+    } catch(e) {
+        console.error("Error generating ban code:", e);
+        return null;
+    }
+}
 
         function validateCoinCode(coinCode) {
-            try {
-                const parts = coinCode.split('.');
-                if (parts.length !== 2) return { valid: false, message: 'Invalid coin code format' };
+    try {
+        const parts = coinCode.split('.');
+        
+        // Check if it's a ban code
+        if (parts[0] === 'BAN' && parts.length === 3) {
+            const banData = JSON.parse(atob(parts[1]));
+            const adminObfuscatedSeed = parts[2];
+            
+            const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
+            const currentSeed = getCurrentSeed();
+            
+            if (seed === currentSeed) {
+                const newSeed = generateSeed();
+                setCurrentSeed(newSeed);
                 
-                const coinAmount = parseInt(atob(parts[0]));
-                const adminObfuscatedSeed = parts[1];
+                const banUntil = Date.now() + (banData.days * 24 * 60 * 60 * 1000);
+                setBanData({
+                    until: banUntil,
+                    bannedBy: banData.admin
+                });
                 
-                if (isNaN(coinAmount) || coinAmount <= 0) return { valid: false, message: 'Invalid coin amount or code' };
-                
-                const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
-                const currentSeed = getCurrentSeed();
-                
-                if (seed === currentSeed) {
-                    const newSeed = generateSeed();
-                    setCurrentSeed(newSeed);
-                    return { valid: true, coins: coinAmount };
-                } else {
-                    return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
-                }
-            } catch(e) {
-                console.error("Error validating coin code:", e);
-                return { valid: false, message: 'Invalid coin code' };
+                return { valid: true, type: 'ban', days: banData.days, bannedBy: banData.admin };
+            } else {
+                return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
             }
         }
-
+        
+        // Regular coin code
+        if (parts.length !== 2) return { valid: false, message: 'Invalid code format' };
+        
+        const coinAmount = parseInt(atob(parts[0]));
+        const adminObfuscatedSeed = parts[1];
+        
+        if (isNaN(coinAmount) || coinAmount <= 0) return { valid: false, message: 'Invalid coin amount or code' };
+        
+        const seed = deobfuscateSeedAdmin(adminObfuscatedSeed);
+        const currentSeed = getCurrentSeed();
+        
+        if (seed === currentSeed) {
+            const newSeed = generateSeed();
+            setCurrentSeed(newSeed);
+            return { valid: true, type: 'coins', coins: coinAmount };
+        } else {
+            return { valid: false, message: 'Seed mismatch - code may be for another user or expired' };
+        }
+    } catch(e) {
+        console.error("Error validating code:", e);
+        return { valid: false, message: 'Invalid code' };
+    }
+}
         (function() {
             const newSeed = generateSeed();
             setCurrentSeed(newSeed);
@@ -656,6 +834,13 @@
         }
 
         updateCoinDisplay();
+        updateUserDisplay();
+
+// Check if banned
+if (checkAndHandleBan()) {
+    // User is banned, don't allow interaction
+    document.getElementById('mainView').style.pointerEvents = 'none';
+}
 
         function markActivity() {
             isActive = true;
@@ -996,10 +1181,13 @@
         updateCoinDisplay();
         e.target.value = '';
 
-    } else if (code === 'efgh') {
-        isAdmin = true;
-        document.getElementById('adminPanel').style.display = 'block';
-        e.target.value = '';
+   } else if (code === 'efgh') {
+    isAdmin = true;
+    userProfile.status = 'admin';
+    saveUserProfile(userProfile);
+    updateUserDisplay();
+    document.getElementById('adminPanel').style.display = 'block';
+    e.target.value = '';
 
     } else if (code === 'ijkl') {
         userProfile.adsDisabled = !userProfile.adsDisabled;
@@ -1081,27 +1269,32 @@
             }, 1000);
         });
 
-        document.getElementById('redeemCoinCodeBtn').addEventListener('click', () => {
-            const coinCode = document.getElementById('coinCodeInput').value.trim();
-            
-            if (!coinCode) {
-                alert('Please enter a coin code');
-                return;
-            }
-            
-            const result = validateCoinCode(coinCode);
-            
-            if (result.valid) {
-                coins += result.coins;
-                setCoins(coins);
-                updateCoinDisplay();
-                alert(`✅ Successfully redeemed ${result.coins} coins!`);
-                document.getElementById('coinCodeInput').value = '';
-            } else {
-                alert('❌ ' + result.message);
-            }
-        });
-
+document.getElementById('redeemCoinCodeBtn').addEventListener('click', () => {
+    const code = document.getElementById('coinCodeInput').value.trim();
+    
+    if (!code) {
+        alert('Please enter a code');
+        return;
+    }
+    
+    const result = validateCoinCode(code);
+    
+    if (result.valid) {
+        if (result.type === 'coins') {
+            coins += result.coins;
+            setCoins(coins);
+            updateCoinDisplay();
+            alert(`✅ Successfully redeemed ${result.coins} coins!`);
+            document.getElementById('coinCodeInput').value = '';
+        } else if (result.type === 'ban') {
+            alert(`❌ You have been banned for ${result.days} days by ${result.bannedBy}!`);
+            document.getElementById('coinCodeInput').value = '';
+            location.reload();
+        }
+    } else {
+        alert('❌ ' + result.message);
+    }
+});
         document.getElementById('shopBtn').addEventListener('click', () => {
             window.location.href = 'shop.html';
         });
@@ -1109,6 +1302,9 @@
         document.getElementById('hofBtn').addEventListener('click', () => {
             window.location.href = 'hof.html';
         });
+        document.getElementById('adminPanelBtn').addEventListener('click', () => {
+    window.location.href = 'adminpanel.html';
+});
     </script>
 </body>
 </html>
