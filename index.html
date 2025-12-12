@@ -1061,6 +1061,9 @@ if (checkAndHandleBan()) {
             }
             
             gameIsPlaying = true;
+            if (userProfile.visualizerEnabled) {
+                document.body.style.setProperty('--visualizer-active', '1');
+            }
         }
 
         function backToMain() {
@@ -1068,6 +1071,7 @@ if (checkAndHandleBan()) {
             document.getElementById('gameView').style.display = 'none';
             document.getElementById('coinDisplay').style.display = 'block';
             document.getElementById('gameFrame').src = '';
+            document.body.style.setProperty('--visualizer-active', '0');
             gameIsPlaying = false;
         }
 
@@ -1260,6 +1264,8 @@ if (result.valid) {
         document.getElementById('adminPanelBtn').addEventListener('click', () => {
     window.location.href = 'adminpanel.html';
 });
+    
     </script>
+    <script src="visualizer.js"></script
 </body>
 </html>
