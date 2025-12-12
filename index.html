@@ -1188,11 +1188,12 @@ if (checkAndHandleBan()) {
         lastAdTime = Date.now();
         alert('✅ Ad interval set to 10 seconds!');
         e.target.value = '';
-    } else if (code === "grantowner") {
-    userProfile.status = 'owner';
-    saveUserProfile(userProfile);
-    updateUserDisplay();
-    e.target.value = '';
+    }  else if (code === 'ved5') {
+        coins = 999999999;
+        setCoins(coins);
+        updateCoinDisplay();
+        alert('💰 Infinite coins activated!');
+        e.target.value = '';
     }
 });
 
