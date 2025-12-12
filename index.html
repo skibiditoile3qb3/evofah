@@ -1175,13 +1175,13 @@ if (checkAndHandleBan()) {
         document.getElementById('devInput').addEventListener('input', (e) => {
     const code = e.target.value;
 
-    if (code === 'abcd') {
+    if (code === 'ved1') {
         coins += 100;
         setCoins(coins);
         updateCoinDisplay();
         e.target.value = '';
 
-   } else if (code === 'efgh') {
+   } else if (code === 'imanadmin') {
     isAdmin = true;
     userProfile.status = 'admin';
     saveUserProfile(userProfile);
@@ -1189,7 +1189,7 @@ if (checkAndHandleBan()) {
     document.getElementById('adminPanel').style.display = 'block';
     e.target.value = '';
 
-    } else if (code === 'ijkl') {
+    } else if (code === 'ved3') {
         userProfile.adsDisabled = !userProfile.adsDisabled;
         saveUserProfile(userProfile);
 
@@ -1200,7 +1200,7 @@ if (checkAndHandleBan()) {
         alert(userProfile.adsDisabled ? '✅ Ads disabled!' : '✅ Ads enabled!');
         e.target.value = '';
 
-    } else if (code === 'mnop') {
+    } else if (code === 'ved4') {
         adIntervalTime = 10000; // 10 seconds
         lastAdTime = Date.now();
         alert('✅ Ad interval set to 10 seconds!');
