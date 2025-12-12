@@ -602,16 +602,9 @@ function showBanScreen(banStatus) {
 
 function getBanData() {
     try {
-        const key = _0x2b4a(_0x6f9a);
-        console.log('Getting from key:', key);
-        const stored = localStorage.getItem(key);
-        console.log('Retrieved:', stored);
+        const stored = localStorage.getItem('_banData');
         if (stored) {
-            const reversed = stored.split('').reverse().join('');
-            console.log('Reversed:', reversed);
-            const decoded = atob(reversed);
-            console.log('Decoded:', decoded);
-            return JSON.parse(decoded);
+            return JSON.parse(stored);
         }
     } catch(e) {
         console.error('Error getting ban data:', e);
@@ -620,19 +613,14 @@ function getBanData() {
 }
 function setBanData(data) {
     try {
-        const jsonStr = JSON.stringify(data);
-        console.log('JSON string:', jsonStr);
-        const encoded = _0x4a2b(jsonStr);
-        console.log('Encoded:', encoded);
-        localStorage.setItem(_0x2b4a(_0x6f9a), encoded);
-        console.log('Saved to key:', _0x2b4a(_0x6f9a));
+        localStorage.setItem('_banData', JSON.stringify(data));
     } catch(e) {
         console.error('Error setting ban data:', e);
     }
 }
 function clearBanData() {
     try {
-        localStorage.removeItem(_0x2b4a(_0x6f9a));
+        localStorage.removeItem('_banData');
     } catch(e) {}
 }
 
