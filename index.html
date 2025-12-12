@@ -1308,6 +1308,7 @@ if (result.valid) {
         alert(`✅ Successfully redeemed ${result.coins} coins!`);
         document.getElementById('coinCodeInput').value = '';
     } else if (result.type === 'ban') {
+    console.log('Ban detected!', result);
         document.getElementById('coinCodeInput').value = '';
         // Show ban screen immediately without reload
         const banStatus = checkBanStatus();
