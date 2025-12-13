@@ -146,6 +146,83 @@
             <div class="price">500,000 Coins</div>
             <button id="buyMysticalRank">Purchase</button>
         </div>
+        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+    <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🎨 COSMETICS</h1>
+    
+    <!-- Sphere Colors -->
+    <div class="shop-item">
+        <h2>🌅 Sunset Sphere Color</h2>
+        <p>Transform your sphere into a beautiful sunset gradient (red to orange).</p>
+        <div class="price">25,000 Coins</div>
+        <button id="buySunset">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>🌊 Ocean Sphere Color</h2>
+        <p>Deep blue ocean gradient for your sphere.</p>
+        <div class="price">25,000 Coins</div>
+        <button id="buyOcean">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>🌌 Galaxy Sphere Color</h2>
+        <p>Purple cosmic gradient that looks out of this world.</p>
+        <div class="price">35,000 Coins</div>
+        <button id="buyGalaxy">Purchase</button>
+    </div>
+
+    <!-- Hats -->
+    <div class="shop-item">
+        <h2>👑 Crown Hat</h2>
+        <p>Wear a golden crown and show your royalty!</p>
+        <div class="price">40,000 Coins</div>
+        <button id="buyCrown">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>🎩 Top Hat</h2>
+        <p>Classy black top hat for the sophisticated player.</p>
+        <div class="price">35,000 Coins</div>
+        <button id="buyTophat">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>🧙 Wizard Hat</h2>
+        <p>Purple wizard hat with mystical powers (not really).</p>
+        <div class="price">45,000 Coins</div>
+        <button id="buyWizard">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>😇 Halo</h2>
+        <p>Angelic golden halo floating above your sphere.</p>
+        <div class="price">50,000 Coins</div>
+        <button id="buyHalo">Purchase</button>
+    </div>
+
+    <!-- Faces -->
+    <div class="shop-item">
+        <h2>😊 Happy Face</h2>
+        <p>A cheerful smiley face for your sphere!</p>
+        <div class="price">20,000 Coins</div>
+        <button id="buyHappy">Purchase</button>
+    </div>
+
+    <div class="shop-item">
+        <h2>😈 Evil Face</h2>
+        <p>Sinister red eyes and devilish grin.</p>
+        <div class="price">30,000 Coins</div>
+        <button id="buyEvil">Purchase</button>
+    </div>
+
+    <!-- Effects -->
+    <div class="shop-item" style="border: 2px solid #a855f7;">
+        <h2>🌑 Orbiting Black Holes</h2>
+        <p>Three miniature black holes orbit around your sphere. The ultimate flex!</p>
+        <div class="price" style="color: #a855f7;">200,000 Coins</div>
+        <button id="buyBlackhole" style="background: #a855f7; border-color: #7c3aed;">Purchase</button>
+    </div>
+</div>
     </div>
 
     <script>
@@ -334,6 +411,105 @@
                 alert('❌ Not enough coins! You need 500,000 coins.');
             }
         });
+
+        // Initialize cosmetics in profile if not exists
+if (!userProfile.ownedCosmetics) {
+    userProfile.ownedCosmetics = {
+        colors: ['default'],
+        hats: ['none'],
+        faces: ['none'],
+        effects: ['none']
+    };
+    saveUserProfile(userProfile);
+}
+
+// Helper function to buy cosmetic
+function buyCosmetic(type, item, cost, buttonId) {
+    if (coins >= cost) {
+        if (confirm(`Purchase ${item} for ${cost.toLocaleString()} coins?`)) {
+            if (userProfile.ownedCosmetics[type].includes(item)) {
+                alert('❌ You already own this!');
+                return;
+            }
+            coins -= cost;
+            setCoins(coins);
+            userProfile.ownedCosmetics[type].push(item);
+            saveUserProfile(userProfile);
+            alert(`✅ Successfully purchased ${item}!`);
+            document.getElementById(buttonId).disabled = true;
+            document.getElementById(buttonId).textContent = 'Already Owned';
+            document.getElementById('coinAmount').textContent = coins;
+        }
+    } else {
+        alert(`❌ Not enough coins! You need ${cost.toLocaleString()} coins.`);
+    }
+}
+
+// Colors
+document.getElementById('buySunset').addEventListener('click', () => buyCosmetic('colors', 'sunset', 25000, 'buySunset'));
+document.getElementById('buyOcean').addEventListener('click', () => buyCosmetic('colors', 'ocean', 25000, 'buyOcean'));
+document.getElementById('buyGalaxy').addEventListener('click', () => buyCosmetic('colors', 'galaxy', 35000, 'buyGalaxy'));
+
+// Hats
+document.getElementById('buyCrown').addEventListener('click', () => buyCosmetic('hats', 'crown', 40000, 'buyCrown'));
+document.getElementById('buyTophat').addEventListener('click', () => buyCosmetic('hats', 'tophat', 35000, 'buyTophat'));
+document.getElementById('buyWizard').addEventListener('click', () => buyCosmetic('hats', 'wizard', 45000, 'buyWizard'));
+document.getElementById('buyHalo').addEventListener('click', () => buyCosmetic('hats', 'halo', 50000, 'buyHalo'));
+
+// Faces
+document.getElementById('buyHappy').addEventListener('click', () => buyCosmetic('faces', 'happy', 20000, 'buyHappy'));
+document.getElementById('buyEvil').addEventListener('click', () => buyCosmetic('faces', 'evil', 30000, 'buyEvil'));
+
+// Effects
+document.getElementById('buyBlackhole').addEventListener('click', () => buyCosmetic('effects', 'blackhole', 200000, 'buyBlackhole'));
+
+// Disable already owned items
+function checkOwnedCosmetics() {
+    const owned = userProfile.ownedCosmetics;
+    
+    if (owned.colors.includes('sunset')) {
+        document.getElementById('buySunset').disabled = true;
+        document.getElementById('buySunset').textContent = 'Already Owned';
+    }
+    if (owned.colors.includes('ocean')) {
+        document.getElementById('buyOcean').disabled = true;
+        document.getElementById('buyOcean').textContent = 'Already Owned';
+    }
+    if (owned.colors.includes('galaxy')) {
+        document.getElementById('buyGalaxy').disabled = true;
+        document.getElementById('buyGalaxy').textContent = 'Already Owned';
+    }
+    if (owned.hats.includes('crown')) {
+        document.getElementById('buyCrown').disabled = true;
+        document.getElementById('buyCrown').textContent = 'Already Owned';
+    }
+    if (owned.hats.includes('tophat')) {
+        document.getElementById('buyTophat').disabled = true;
+        document.getElementById('buyTophat').textContent = 'Already Owned';
+    }
+    if (owned.hats.includes('wizard')) {
+        document.getElementById('buyWizard').disabled = true;
+        document.getElementById('buyWizard').textContent = 'Already Owned';
+    }
+    if (owned.hats.includes('halo')) {
+        document.getElementById('buyHalo').disabled = true;
+        document.getElementById('buyHalo').textContent = 'Already Owned';
+    }
+    if (owned.faces.includes('happy')) {
+        document.getElementById('buyHappy').disabled = true;
+        document.getElementById('buyHappy').textContent = 'Already Owned';
+    }
+    if (owned.faces.includes('evil')) {
+        document.getElementById('buyEvil').disabled = true;
+        document.getElementById('buyEvil').textContent = 'Already Owned';
+    }
+    if (owned.effects.includes('blackhole')) {
+        document.getElementById('buyBlackhole').disabled = true;
+        document.getElementById('buyBlackhole').textContent = 'Already Owned';
+    }
+}
+
+checkOwnedCosmetics();
     </script>
 </body>
 </html>
