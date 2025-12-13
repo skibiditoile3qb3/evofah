@@ -393,32 +393,36 @@
 
         if (localStorage.getItem('good') === null) {
             localStorage.setItem('good', '0');
-        } else if (localStorage.getItem('good') === '1') {
-            document.getElementById('passwordScreen').style.display = 'none';
-            document.getElementById('mainView').style.display = 'flex';
-        }
+} else if (localStorage.getItem('good') === '1') {
+    document.getElementById('passwordScreen').style.display = 'none';
+    document.getElementById('mainView').style.display = 'flex';
+    updateCoinDisplay();  // ADD THIS LINE
+    updateUserDisplay();  // ADD THIS LINE
+}
             
-        function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            if (input === ky) {
-                document.getElementById('passwordScreen').style.display = 'none';
-                localStorage.setItem('good', '1');
-                document.getElementById('mainView').style.display = 'flex';
-                return true;
-            } else {
-                const errorMsg = document.getElementById('errorMessage');
-                errorMsg.classList.add('show');
-                setTimeout(() => {
-                    errorMsg.classList.remove('show');
-                }, 2000);
-                return false;
-            }
-        }
+function () {
+    const input = document.getElementById('passwordInput').value;
+    if (input === ky) {
+        document.getElementById('passwordScreen').style.display = 'none';
+        localStorage.setItem('good', '1');
+        document.getElementById('mainView').style.display = 'flex';
+        updateCoinDisplay();  // ADD THIS LINE
+        updateUserDisplay();  // ADD THIS LINE
+        return true;
+    } else {
+        const errorMsg = document.getElementById('errorMessage');
+        errorMsg.classList.add('show');
+        setTimeout(() => {
+            errorMsg.classList.remove('show');
+        }, 2000);
+        return false;
+    }
+}
 
-        document.getElementById('unlockBtn').addEventListener('click', checkPassword);
+        document.getElementById('unlockBtn').addEventListener('click', );
         document.getElementById('passwordInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                checkPassword();
+                ();
             }
         });
 
@@ -968,8 +972,6 @@ function deobfuscateSeedAdmin(obfuscated) {
     if (topCoin) topCoin.textContent = coins;
 }
 
-        updateCoinDisplay();
-        updateUserDisplay();
 
 // Check if banned
 if (checkAndHandleBan()) {
