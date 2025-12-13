@@ -396,8 +396,6 @@
 } else if (localStorage.getItem('good') === '1') {
     document.getElementById('passwordScreen').style.display = 'none';
     document.getElementById('mainView').style.display = 'flex';
-    updateCoinDisplay();  // ADD THIS LINE
-    updateUserDisplay();  // ADD THIS LINE
 }
             
 function checkPassword() {
@@ -970,6 +968,10 @@ function deobfuscateSeedAdmin(obfuscated) {
     document.getElementById('coinAmount').textContent = coins;
     const topCoin = document.getElementById('coinAmountTop');
     if (topCoin) topCoin.textContent = coins;
+}
+        if (localStorage.getItem('good') === '1') {
+    updateCoinDisplay();
+    updateUserDisplay();
 }
 
 
