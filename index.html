@@ -400,7 +400,7 @@
     updateUserDisplay();  // ADD THIS LINE
 }
             
-function () {
+function checkPassword() {
     const input = document.getElementById('passwordInput').value;
     if (input === ky) {
         document.getElementById('passwordScreen').style.display = 'none';
@@ -419,12 +419,12 @@ function () {
     }
 }
 
-        document.getElementById('unlockBtn').addEventListener('click', );
-        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                ();
-            }
-        });
+document.getElementById('unlockBtn').addEventListener('click', checkPassword);
+document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        checkPassword();
+    }
+});
 
         let isAdmin = false;
         const games = ["2048","4th-and-goal-2022","8-ball-pool","a-small-world-cup","among-us","apple-shooter","aquapark.io","arcade-car-driving","archery","awesome-tanks-2","awesome-tanks-2s","axis-football","backyard-baseball","backyard-football","bad-ice-cream-2","bad-ice-cream-3","bad-ice-cream","baldi-s-basics","baseball-9","baseball-bros","basket-champs","basket-random","basketball-legends","basketball-stars","big-shot-boxing","bit-life","blackjack","block-blast","block-breaker","bottle-flip","boxing-random","bubble-shooter","car-game-simulator","car-parking","car-traffic-racing","cheese-chompers-3d","chess","classic-uno","cluster-rush","color-tunnel","cookie-clicker","coreball","crazy-cattle-3d","crossy-road","dig-to-china","dino-game","dinosaur-game","doodle-baseball","doodle-cricket","doodle-jump-christmas","doodle-jump","dragon-ball-z","dragon-simulator-3d","dreadhead-parkour","drift-boss","drift-hunters","drive-mad","eaglercraft-1.8", "eaglercraft","easy-chess","eggy-car","escape-road","fireboy-and-watergirl","five-nights-at-freddy","flappy-bird","flappy-dunk","flying-gorilla","fnaf-2","football-us","friday-night-funkin","fruit-merge","funny-shooter-2","g-switch","geometry-dash-lite","getaway-shootout","granny-2","happy-wheels","hexanaut.io","highway-rider-extreme","highway-traffic","hill-climb-racing","house-of-hazards","idle-breakout","idle-dice","jelly-truck","level-devil","little-alchemy-2","little-alchemy","madalin-stunt-cars-2","make-it-meme","minesweeper","monkey-mart","moto-x3m-4-winter","moto-x3m-5-pool-party","moto-x3m-6-spooky-land","moto-x3m","murder","need-for-speed-dirft-car","ovo-2","ovo","papa-s-burgeria","papa-s-pancakeria","papa-s-scooperia","papas-freezeria","papas-pizzeria","paper-io","paper.io-2","paper.io","parking-fury","penalty-kick-online","penalty-kick","ping-pong-chaos","pixel-shooter","pizza-tower","polytrack","poodle-jump","poop-clicker","raft-wars","ragdoll-archers","ragdoll-hit","real-flight","retro-bowl","rocket-soccer-derby","rooftop-sniper","rooftop-snipers","run-3","sbrunga","scifi-flight-simulator","short-life","slice-master","slope-2","slope-3","slope-ball","slope-multiplayer","slope-run","slope","smash-karts","snake.io","sniper-rifle-shooting","snow-rider3d","snowball.io","soccer-bros","soccer-legends","space-waves","spacebar-clicker","speed-stars","sprinter","sprunki-1999","sprunki-2004","sprunki-cendi","sprunki-corruption","sprunki-italian-brainrot","sprunki-ketchup","sprunki-phase-21","sprunki-swap-retextured","sprunki-the-trevor-mod","sprunki-warm","squidgame3d","stick-fighter","stickman-archero-fight","stickman-hook","strite-football-game","subway-surfers","survival-race","swingo","tag","tall-man-run","tank-trouble","tanuki-sunset","tap-road","tap-tap-shots","temple-run-2","10-minutes-till-dawn","tic-tac-toe","time-shooter-2","time-shooter-3","tiny-fishing","toca-boca","tomb-of-the-mask","tomb-of-the-masks","traffic-jam-3d","traffic-rush","tunnel-rush","unicycle-hero","vex-3","vex4","vex5","vex6","whack-your-neighbor","wheelie-bike","wordle-unlimited","wordle","world-war-2","worlds-hardest-game","wrestle-bros"];
