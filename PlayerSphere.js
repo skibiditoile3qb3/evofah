@@ -12,14 +12,26 @@ class PlayerSphere {
         
         this.ctx = this.canvas.getContext('2d');
         this.size = size;
-        this.canvas.width = size;
-        this.canvas.height = size;
-        this.centerX = size / 2;
-        this.centerY = size / 2;
+        // Increase canvas size to accommodate effects
+        this.canvas.width = size * 2.5;
+        this.canvas.height = size * 2.5;
+        this.centerX = this.canvas.width / 2;
+        this.centerY = this.canvas.height / 2;
         this.radius = size * 0.375; // 75% of half size
         
         this.animationFrame = null;
         this.shouldAnimate = false;
+        
+        // Preload wing image
+        this.wingImage = new Image();
+        this.wingImage.src = 'media/darkwing.png';
+        this.wingImageLoaded = false;
+        this.wingImage.onload = () => {
+            this.wingImageLoaded = true;
+            if (this.shouldAnimate) {
+                this.draw(this.cosmetics);
+            }
+        };
     }
     
     /**
@@ -29,7 +41,12 @@ class PlayerSphere {
     draw(cosmetics = {}) {
         const { color = 'default', hat = 'none', face = 'none', effect = 'none' } = cosmetics;
         
-        this.ctx.clearRect(0, 0, this.size, this.size);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Draw effects first (behind sphere)
+        if (effect === 'blackhole' || effect === 'wings') {
+            this.drawEffect(effect);
+        }
         
         // Draw main sphere with gradient
         this.drawSphere(color);
@@ -37,11 +54,13 @@ class PlayerSphere {
         // Draw face
         this.drawFace(face);
         
-        // Draw hat
+        // Draw hat (on top of sphere)
         this.drawHat(hat);
         
-        // Draw effect
-        this.drawEffect(effect);
+        // Draw glitch effect (in front)
+        if (effect === 'glitch') {
+            this.drawEffect(effect);
+        }
     }
     
     drawSphere(color) {
@@ -78,7 +97,7 @@ class PlayerSphere {
         this.ctx.fill();
     }
     
-drawFace(face) {
+    drawFace(face) {
         const eyeSize = this.radius * 0.1;
         const eyeY = this.centerY - this.radius * 0.26;
         const eyeOffsetX = this.radius * 0.33;
@@ -153,7 +172,7 @@ drawFace(face) {
         }
     }
     
-drawHat(hat) {
+    drawHat(hat) {
         const scale = this.radius / 30;
         
         if (hat === 'crown') {
@@ -238,54 +257,59 @@ drawHat(hat) {
             this.ctx.fillText('★', this.centerX, this.centerY - this.radius * 0.93);
             
         } else if (hat === 'halo') {
-            // More realistic glowing halo
+            // Halo ON TOP of sphere (behind in 3D space)
+            const haloY = this.centerY - this.radius * 1.3; // Higher up
+            const haloRadiusOuter = this.radius * 0.5;
+            const haloRadiusInner = this.radius * 0.35;
+            
+            // Outer glow
             const gradient = this.ctx.createRadialGradient(
-                this.centerX, this.centerY - this.radius * 1.06,
-                this.radius * 0.3,
-                this.centerX, this.centerY - this.radius * 1.06,
-                this.radius * 0.5
+                this.centerX, haloY,
+                haloRadiusInner,
+                this.centerX, haloY,
+                haloRadiusOuter
             );
             gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
             gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
             
             this.ctx.fillStyle = gradient;
             this.ctx.beginPath();
-            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.06, this.radius * 0.5, 0, Math.PI * 2);
+            this.ctx.arc(this.centerX, haloY, haloRadiusOuter, 0, Math.PI * 2);
             this.ctx.fill();
             
             // Inner bright ring
             this.ctx.strokeStyle = '#ffd700';
             this.ctx.lineWidth = this.radius * 0.12;
             this.ctx.beginPath();
-            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.06, this.radius * 0.35, 0, Math.PI * 2);
+            this.ctx.arc(this.centerX, haloY, haloRadiusInner, 0, Math.PI * 2);
             this.ctx.stroke();
             
         } else if (hat === 'santa') {
-            // Santa hat
+            // Santa hat - higher position
             this.ctx.fillStyle = '#dc143c';
             this.ctx.beginPath();
-            this.ctx.moveTo(this.centerX, this.centerY - this.radius * 1.2);
-            this.ctx.lineTo(this.centerX - this.radius * 0.5, this.centerY - this.radius * 0.7);
-            this.ctx.lineTo(this.centerX + this.radius * 0.4, this.centerY - this.radius * 0.7);
+            this.ctx.moveTo(this.centerX, this.centerY - this.radius * 1.5); // Higher tip
+            this.ctx.lineTo(this.centerX - this.radius * 0.5, this.centerY - this.radius * 0.9); // Higher base
+            this.ctx.lineTo(this.centerX + this.radius * 0.4, this.centerY - this.radius * 0.9);
             this.ctx.closePath();
             this.ctx.fill();
             
             // White trim
             this.ctx.fillStyle = '#fff';
-            this.ctx.fillRect(this.centerX - this.radius * 0.5, this.centerY - this.radius * 0.75, this.radius * 0.9, this.radius * 0.15);
+            this.ctx.fillRect(this.centerX - this.radius * 0.5, this.centerY - this.radius * 0.95, this.radius * 0.9, this.radius * 0.15);
             
             // Pom pom
             this.ctx.beginPath();
-            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.2, this.radius * 0.15, 0, Math.PI * 2);
+            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.5, this.radius * 0.15, 0, Math.PI * 2);
             this.ctx.fill();
             
         } else if (hat === 'party') {
-            // Party hat
+            // Party hat - higher position
             const gradient = this.ctx.createLinearGradient(
                 this.centerX - this.radius * 0.4,
-                this.centerY - this.radius * 1.2,
+                this.centerY - this.radius * 1.6, // Higher
                 this.centerX + this.radius * 0.4,
-                this.centerY - this.radius * 0.7
+                this.centerY - this.radius * 0.9
             );
             gradient.addColorStop(0, '#ff0080');
             gradient.addColorStop(0.5, '#00ff80');
@@ -293,21 +317,21 @@ drawHat(hat) {
             
             this.ctx.fillStyle = gradient;
             this.ctx.beginPath();
-            this.ctx.moveTo(this.centerX, this.centerY - this.radius * 1.3);
-            this.ctx.lineTo(this.centerX - this.radius * 0.45, this.centerY - this.radius * 0.7);
-            this.ctx.lineTo(this.centerX + this.radius * 0.45, this.centerY - this.radius * 0.7);
+            this.ctx.moveTo(this.centerX, this.centerY - this.radius * 1.6); // Higher tip
+            this.ctx.lineTo(this.centerX - this.radius * 0.45, this.centerY - this.radius * 0.9); // Higher base
+            this.ctx.lineTo(this.centerX + this.radius * 0.45, this.centerY - this.radius * 0.9);
             this.ctx.closePath();
             this.ctx.fill();
             
             // Pom pom
             this.ctx.fillStyle = '#ffff00';
             this.ctx.beginPath();
-            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.3, this.radius * 0.12, 0, Math.PI * 2);
+            this.ctx.arc(this.centerX, this.centerY - this.radius * 1.6, this.radius * 0.12, 0, Math.PI * 2);
             this.ctx.fill();
         }
     }
     
-drawEffect(effect) {
+    drawEffect(effect) {
         if (effect === 'blackhole') {
             const time = Date.now() / 1000;
             const orbitRadius = this.radius * 1.8; // Increased from 1.5
@@ -329,24 +353,48 @@ drawEffect(effect) {
             }
             
         } else if (effect === 'wings') {
-            const time = Date.now() / 1000;
-            const flapOffset = Math.sin(time * 3) * 0.15; // Wing flapping animation
-            
-            // Left wing
-            this.drawWing(
-                this.centerX - this.radius * 0.8,
-                this.centerY,
-                -1,
-                flapOffset
-            );
-            
-            // Right wing
-            this.drawWing(
-                this.centerX + this.radius * 0.8,
-                this.centerY,
-                1,
-                flapOffset
-            );
+            // Use image if loaded, otherwise fallback
+            if (this.wingImageLoaded) {
+                const time = Date.now() / 1000;
+                const flapOffset = Math.sin(time * 3) * 0.1; // Wing flapping
+                
+                const wingWidth = this.radius * 2;
+                const wingHeight = this.radius * 2;
+                
+                // Left wing (flipped)
+                this.ctx.save();
+                this.ctx.translate(this.centerX - this.radius * 0.8, this.centerY);
+                this.ctx.rotate(-flapOffset);
+                this.ctx.scale(-1, 1); // Flip horizontally
+                this.ctx.drawImage(
+                    this.wingImage,
+                    -wingWidth,
+                    -wingHeight / 2,
+                    wingWidth,
+                    wingHeight
+                );
+                this.ctx.restore();
+                
+                // Right wing
+                this.ctx.save();
+                this.ctx.translate(this.centerX + this.radius * 0.8, this.centerY);
+                this.ctx.rotate(flapOffset);
+                this.ctx.drawImage(
+                    this.wingImage,
+                    0,
+                    -wingHeight / 2,
+                    wingWidth,
+                    wingHeight
+                );
+                this.ctx.restore();
+            } else {
+                // Fallback: draw simple wings
+                const time = Date.now() / 1000;
+                const flapOffset = Math.sin(time * 3) * 0.15;
+                
+                this.drawWing(this.centerX - this.radius * 0.8, this.centerY, -1, flapOffset);
+                this.drawWing(this.centerX + this.radius * 0.8, this.centerY, 1, flapOffset);
+            }
             
         } else if (effect === 'glitch') {
             const time = Date.now();
@@ -362,8 +410,8 @@ drawEffect(effect) {
                 this.ctx.fillRect(
                     glitchOffsetX,
                     glitchOffsetY,
-                    this.size,
-                    this.size
+                    this.canvas.width,
+                    this.canvas.height
                 );
                 
                 // Blue channel
@@ -371,16 +419,16 @@ drawEffect(effect) {
                 this.ctx.fillRect(
                     -glitchOffsetX,
                     -glitchOffsetY,
-                    this.size,
-                    this.size
+                    this.canvas.width,
+                    this.canvas.height
                 );
                 
                 this.ctx.globalCompositeOperation = 'source-over';
                 
                 // Scanlines
-                for (let i = 0; i < this.size; i += 4) {
+                for (let i = 0; i < this.canvas.height; i += 4) {
                     this.ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
-                    this.ctx.fillRect(0, i, this.size, 2);
+                    this.ctx.fillRect(0, i, this.canvas.width, 2);
                 }
             }
         }
@@ -478,7 +526,7 @@ drawEffect(effect) {
     destroy() {
         this.stopAnimation();
         if (this.canvas) {
-            this.ctx.clearRect(0, 0, this.size, this.size);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }
     }
 }
