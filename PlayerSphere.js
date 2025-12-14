@@ -1,7 +1,3 @@
-/**
- * PlayerSphere - Reusable player sphere renderer
- * Handles drawing and animating player spheres with cosmetics
- */
 class PlayerSphere {
     constructor(canvasId, size = 80) {
         this.canvas = document.getElementById(canvasId);
