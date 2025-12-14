@@ -356,32 +356,32 @@ class PlayerSphere {
             // Use image if loaded, otherwise fallback
             if (this.wingImageLoaded) {
                 const time = Date.now() / 1000;
-                const flapOffset = Math.sin(time * 3) * 0.1; // Wing flapping
+                const flapOffset = Math.sin(time * 3) * 0.15; // Wing flapping
                 
-                const wingWidth = this.radius * 2;
-                const wingHeight = this.radius * 2;
+                const wingWidth = this.radius * 2.5;
+                const wingHeight = this.radius * 2.5;
                 
-                // Left wing (flipped)
+                // Left wing - original image (wing points left)
                 this.ctx.save();
-                this.ctx.translate(this.centerX - this.radius * 0.8, this.centerY);
+                this.ctx.translate(this.centerX - this.radius * 0.9, this.centerY);
                 this.ctx.rotate(-flapOffset);
-                this.ctx.scale(-1, 1); // Flip horizontally
                 this.ctx.drawImage(
                     this.wingImage,
-                    -wingWidth,
+                    -wingWidth, // Draw to the left
                     -wingHeight / 2,
                     wingWidth,
                     wingHeight
                 );
                 this.ctx.restore();
                 
-                // Right wing
+                // Right wing - flipped image
                 this.ctx.save();
-                this.ctx.translate(this.centerX + this.radius * 0.8, this.centerY);
+                this.ctx.translate(this.centerX + this.radius * 0.9, this.centerY);
                 this.ctx.rotate(flapOffset);
+                this.ctx.scale(-1, 1); // Flip to point right
                 this.ctx.drawImage(
                     this.wingImage,
-                    0,
+                    -wingWidth, // Draw to the left in flipped space (appears right)
                     -wingHeight / 2,
                     wingWidth,
                     wingHeight
