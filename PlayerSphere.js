@@ -358,30 +358,30 @@ class PlayerSphere {
                 const time = Date.now() / 1000;
                 const flapOffset = Math.sin(time * 3) * 0.15; // Wing flapping
                 
-                const wingWidth = this.radius * 2.5;
-                const wingHeight = this.radius * 2.5;
+                const wingWidth = this.radius * 3;
+                const wingHeight = this.radius * 3;
                 
-                // Left wing - original image (wing points left)
+                // Right wing - original image (wing points right, attaches on right)
                 this.ctx.save();
-                this.ctx.translate(this.centerX - this.radius * 0.9, this.centerY);
-                this.ctx.rotate(-flapOffset);
+                this.ctx.translate(this.centerX + this.radius * 0.7, this.centerY);
+                this.ctx.rotate(flapOffset);
                 this.ctx.drawImage(
                     this.wingImage,
-                    -wingWidth, // Draw to the left
+                    0, // Start at attachment point
                     -wingHeight / 2,
                     wingWidth,
                     wingHeight
                 );
                 this.ctx.restore();
                 
-                // Right wing - flipped image
+                // Left wing - flipped image (flip to point left)
                 this.ctx.save();
-                this.ctx.translate(this.centerX + this.radius * 0.9, this.centerY);
-                this.ctx.rotate(flapOffset);
-                this.ctx.scale(-1, 1); // Flip to point right
+                this.ctx.translate(this.centerX - this.radius * 0.7, this.centerY);
+                this.ctx.rotate(-flapOffset);
+                this.ctx.scale(-1, 1); // Flip horizontally
                 this.ctx.drawImage(
                     this.wingImage,
-                    -wingWidth, // Draw to the left in flipped space (appears right)
+                    0, // Start at attachment point in flipped space
                     -wingHeight / 2,
                     wingWidth,
                     wingHeight
