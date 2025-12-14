@@ -195,6 +195,7 @@
             }
         }
     </style>
+    <script src="PlayerSphere.js"></script>
 </head>
 <body>
     <div class="container">
@@ -314,134 +315,37 @@
             return 0;
         }
 
-        let userProfile = getUserProfile();
+       let userProfile = getUserProfile();
         let coins = getCoins();
         let rotation = { x: 0, y: 0 };
         let isDragging = false;
         let lastMouse = { x: 0, y: 0 };
+        let bigSphereRenderer = null;
 
         // Draw big player sphere
         function drawBigPlayerSphere() {
-            const canvas = document.getElementById('bigPlayerSphere');
-            if (!canvas) return;
+            if (!bigSphereRenderer) {
+                bigSphereRenderer = new PlayerSphere('bigPlayerSphere', 200);
+            }
             
-            const ctx = canvas.getContext('2d');
-            const centerX = 100;
-            const centerY = 100;
-            const radius = 75;
-            
-            const cosmetics = userProfile.equippedCosmetics;
-            
-            ctx.clearRect(0, 0, 200, 200);
-            
-            // Draw sphere with gradient
-            const gradient = ctx.createRadialGradient(centerX - 25, centerY - 25, 10, centerX, centerY, radius);
-            
-            if (cosmetics.color === 'sunset') {
-                gradient.addColorStop(0, '#ff6b6b');
-                gradient.addColorStop(1, '#ff9a3c');
-            } else if (cosmetics.color === 'ocean') {
-                gradient.addColorStop(0, '#4cc9f0');
-                gradient.addColorStop(1, '#0077b6');
-            } else if (cosmetics.color === 'galaxy') {
-                gradient.addColorStop(0, '#c77dff');
-                gradient.addColorStop(1, '#3c096c');
+            bigSphereRenderer.draw(userProfile.equippedCosmetics);
+        }
+
+// Animate black hole effect
+        function updateBigSphereAnimation() {
+            if (userProfile.equippedCosmetics.effect === 'blackhole') {
+                if (bigSphereRenderer && !bigSphereRenderer.shouldAnimate) {
+                    bigSphereRenderer.startAnimation(userProfile.equippedCosmetics);
+                }
             } else {
-                gradient.addColorStop(0, '#888');
-                gradient.addColorStop(1, '#333');
-            }
-            
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Draw face
-            if (cosmetics.face === 'happy') {
-                ctx.fillStyle = '#000';
-                ctx.beginPath();
-                ctx.arc(75, 80, 8, 0, Math.PI * 2);
-                ctx.arc(125, 80, 8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(100, 100, 35, 0, Math.PI);
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-            } else if (cosmetics.face === 'evil') {
-                ctx.fillStyle = '#f00';
-                ctx.beginPath();
-                ctx.arc(75, 80, 8, 0, Math.PI * 2);
-                ctx.arc(125, 80, 8, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(100, 125, 35, Math.PI, 0);
-                ctx.strokeStyle = '#f00';
-                ctx.lineWidth = 4;
-                ctx.stroke();
-            }
-            
-            // Draw hat
-            if (cosmetics.hat === 'crown') {
-                ctx.fillStyle = '#ffd700';
-                ctx.beginPath();
-                ctx.moveTo(50, 40);
-                ctx.lineTo(60, 20);
-                ctx.lineTo(75, 30);
-                ctx.lineTo(90, 15);
-                ctx.lineTo(100, 30);
-                ctx.lineTo(110, 15);
-                ctx.lineTo(125, 30);
-                ctx.lineTo(140, 20);
-                ctx.lineTo(150, 40);
-                ctx.closePath();
-                ctx.fill();
-            } else if (cosmetics.hat === 'tophat') {
-                ctx.fillStyle = '#1a1a1a';
-                ctx.fillRect(60, 10, 80, 20);
-                ctx.fillRect(50, 30, 100, 12);
-            } else if (cosmetics.hat === 'wizard') {
-                ctx.fillStyle = '#6b46c1';
-                ctx.beginPath();
-                ctx.moveTo(100, 10);
-                ctx.lineTo(60, 35);
-                ctx.lineTo(140, 35);
-                ctx.closePath();
-                ctx.fill();
-            } else if (cosmetics.hat === 'halo') {
-                ctx.strokeStyle = '#ffd700';
-                ctx.lineWidth = 6;
-                ctx.beginPath();
-                ctx.arc(100, 20, 30, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-            
-            // Draw effect (black hole)
-            if (cosmetics.effect === 'blackhole') {
-                const time = Date.now() / 1000;
-                for (let i = 0; i < 3; i++) {
-                    const angle = time + (i * Math.PI * 2 / 3);
-                    const x = centerX + Math.cos(angle) * 110;
-                    const y = centerY + Math.sin(angle) * 110;
-                    
-                    const effGradient = ctx.createRadialGradient(x, y, 0, x, y, 20);
-                    effGradient.addColorStop(0, '#000');
-                    effGradient.addColorStop(1, 'transparent');
-                    ctx.fillStyle = effGradient;
-                    ctx.beginPath();
-                    ctx.arc(x, y, 20, 0, Math.PI * 2);
-                    ctx.fill();
+                if (bigSphereRenderer && bigSphereRenderer.shouldAnimate) {
+                    bigSphereRenderer.stopAnimation();
                 }
             }
         }
-
-        // Animate black hole effect
-        setInterval(() => {
-            if (userProfile.equippedCosmetics.effect === 'blackhole') {
-                drawBigPlayerSphere();
-            }
-        }, 50);
-
+        
+        // Initialize animation
+        updateBigSphereAnimation();
         // Drag to rotate (placeholder for future 3D)
         const canvas = document.getElementById('bigPlayerSphere');
         canvas.addEventListener('mousedown', (e) => {
@@ -590,7 +494,7 @@
         }
 
         // Equip cosmetic
-        function equipCosmetic(type, id) {
+function equipCosmetic(type, id) {
             if (type === 'color') {
                 userProfile.equippedCosmetics.color = id;
             } else if (type === 'hat') {
@@ -603,6 +507,7 @@
             
             saveUserProfile(userProfile);
             drawBigPlayerSphere();
+            updateBigSphereAnimation();
             renderCosmetics();
         }
 
