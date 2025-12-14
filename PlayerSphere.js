@@ -350,8 +350,8 @@ class PlayerSphere {
         } else if (effect === 'wings') {
             // Use image if loaded, otherwise fallback
             if (this.wingImageLoaded) {
-            const wingWidth = this.radius * 2.0;
-            const wingHeight = this.radius * 2.5;
+            const wingWidth = this.radius * 2.4;
+            const wingHeight = this.radius * 3.0;
             const time = Date.now() / 1000;
             const flapOffset = Math.sin(time * 3) * 0.15;
             
