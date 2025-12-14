@@ -355,38 +355,36 @@ class PlayerSphere {
         } else if (effect === 'wings') {
             // Use image if loaded, otherwise fallback
             if (this.wingImageLoaded) {
-                const time = Date.now() / 1000;
-                const flapOffset = Math.sin(time * 3) * 0.15; // Wing flapping
-                
-                const wingWidth = this.radius * 3;
-                const wingHeight = this.radius * 3;
-                
-                // Left wing - needs to point LEFT, so flip the right-pointing image
-                this.ctx.save();
-                this.ctx.translate(this.centerX - this.radius * 0.7, this.centerY);
-                this.ctx.rotate(-flapOffset);
-                this.ctx.scale(-1, 1); // Flip to make it point left
-                this.ctx.drawImage(
-                    this.wingImage,
-                    -wingWidth, // Draw from negative to extend left after flip
-                    -wingHeight / 2,
-                    wingWidth,
-                    wingHeight
-                );
-                this.ctx.restore();
-                
-                // Right wing - use original that points RIGHT
-                this.ctx.save();
-                this.ctx.translate(this.centerX + this.radius * 0.7, this.centerY);
-                this.ctx.rotate(flapOffset);
-                this.ctx.drawImage(
-                    this.wingImage,
-                    0, // Draw from 0 to extend right
-                    -wingHeight / 2,
-                    wingWidth,
-                    wingHeight
-                );
-                this.ctx.restore();
+             const time = Date.now() / 1000;
+            const flapOffset = Math.sin(time * 3) * 0.15;
+            
+            // LEFT wing — image already points LEFT
+            this.ctx.save();
+            this.ctx.translate(this.centerX - this.radius * 0.7, this.centerY);
+            this.ctx.rotate(-flapOffset);
+            this.ctx.drawImage(
+                this.wingImage,
+                -wingWidth,          // anchor at the body
+                -wingHeight / 2,
+                wingWidth,
+                wingHeight
+            );
+            this.ctx.restore();
+            
+            // RIGHT wing — flip the LEFT-pointing image
+            this.ctx.save();
+            this.ctx.translate(this.centerX + this.radius * 0.7, this.centerY);
+            this.ctx.rotate(flapOffset);
+            this.ctx.scale(-1, 1); // horizontal flip
+            this.ctx.drawImage(
+                this.wingImage,
+                -wingWidth,          // still draw from -width after flip
+                -wingHeight / 2,
+                wingWidth,
+                wingHeight
+            );
+            this.ctx.restore();
+
             } else {
                 // Fallback: draw simple wings
                 const time = Date.now() / 1000;
