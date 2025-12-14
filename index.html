@@ -322,6 +322,7 @@
     transform: translateY(-2px);
 }
     </style>
+    <script src="PlayerSphere.js"></script>
 </head>
 <body>
     <div id="passwordScreen">
@@ -492,116 +493,21 @@ function getUserProfile() {
 
         let userProfile = getUserProfile();
 
+let playerSphereRenderer = null;
+
 function drawPlayerSphere() {
-    const canvas = document.getElementById('playerSphere');
-    if (!canvas) return;
+    if (!playerSphereRenderer) {
+        playerSphereRenderer = new PlayerSphere('playerSphere', 80);
+    }
     
-    const ctx = canvas.getContext('2d');
-    const centerX = 40;
-    const centerY = 40;
-    const radius = 30;
     const cosmetics = userProfile.equippedCosmetics || {
         color: 'default',
         hat: 'none',
         face: 'none',
         effect: 'none'
     };
-    ctx.clearRect(0, 0, 80, 80);
-    const gradient = ctx.createRadialGradient(centerX - 10, centerY - 10, 5, centerX, centerY, radius);
     
-    if (cosmetics.color === 'sunset') {
-        gradient.addColorStop(0, '#ff6b6b');
-        gradient.addColorStop(1, '#ff9a3c');
-    } else if (cosmetics.color === 'ocean') {
-        gradient.addColorStop(0, '#4cc9f0');
-        gradient.addColorStop(1, '#0077b6');
-    } else if (cosmetics.color === 'galaxy') {
-        gradient.addColorStop(0, '#c77dff');
-        gradient.addColorStop(1, '#3c096c');
-    } else {
-        gradient.addColorStop(0, '#888');
-        gradient.addColorStop(1, '#333');
-    }
-    
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fill();
-    
-    if (cosmetics.face === 'happy') {
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(30, 32, 3, 0, Math.PI * 2);
-        ctx.arc(50, 32, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(40, 40, 15, 0, Math.PI);
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    } else if (cosmetics.face === 'evil') {
-        ctx.fillStyle = '#f00';
-        ctx.beginPath();
-        ctx.arc(30, 32, 3, 0, Math.PI * 2);
-        ctx.arc(50, 32, 3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(40, 50, 15, Math.PI, 0);
-        ctx.strokeStyle = '#f00';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-    }
-    
-    if (cosmetics.hat === 'crown') {
-        ctx.fillStyle = '#ffd700';
-        ctx.beginPath();
-        ctx.moveTo(20, 15);
-        ctx.lineTo(25, 8);
-        ctx.lineTo(30, 12);
-        ctx.lineTo(35, 6);
-        ctx.lineTo(40, 12);
-        ctx.lineTo(45, 8);
-        ctx.lineTo(50, 12);
-        ctx.lineTo(55, 8);
-        ctx.lineTo(60, 15);
-        ctx.closePath();
-        ctx.fill();
-    } else if (cosmetics.hat === 'tophat') {
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(25, 5, 30, 8);
-        ctx.fillRect(20, 13, 40, 5);
-    } else if (cosmetics.hat === 'wizard') {
-        ctx.fillStyle = '#6b46c1';
-        ctx.beginPath();
-        ctx.moveTo(40, 5);
-        ctx.lineTo(25, 15);
-        ctx.lineTo(55, 15);
-        ctx.closePath();
-        ctx.fill();
-    } else if (cosmetics.hat === 'halo') {
-        ctx.strokeStyle = '#ffd700';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(40, 8, 12, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-    
-    if (cosmetics.effect === 'blackhole') {
-        const time = Date.now() / 1000;
-        for (let i = 0; i < 3; i++) {
-            const angle = time + (i * Math.PI * 2 / 3);
-            const x = centerX + Math.cos(angle) * 45;
-            const y = centerY + Math.sin(angle) * 45;
-            
-            const effGradient = ctx.createRadialGradient(x, y, 0, x, y, 8);
-            effGradient.addColorStop(0, '#000');
-            effGradient.addColorStop(1, 'transparent');
-            ctx.fillStyle = effGradient;
-            ctx.beginPath();
-            ctx.arc(x, y, 8, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    }
+    playerSphereRenderer.draw(cosmetics);
 }
 
 function updateUserDisplay() {
@@ -615,14 +521,21 @@ function updateUserDisplay() {
     }
     
     drawPlayerSphere();
+    updateSphereAnimation();
 }
 
-setInterval(() => {
+function updateSphereAnimation() {
     const cosmetics = userProfile.equippedCosmetics || {};
     if (cosmetics.effect === 'blackhole') {
-        drawPlayerSphere();
+        if (playerSphereRenderer && !playerSphereRenderer.shouldAnimate) {
+            playerSphereRenderer.startAnimation(cosmetics);
+        }
+    } else {
+        if (playerSphereRenderer && playerSphereRenderer.shouldAnimate) {
+            playerSphereRenderer.stopAnimation();
+        }
     }
-}, 50);
+}
 
 function checkAndHandleBan() {
     const banStatus = checkBanStatus();
