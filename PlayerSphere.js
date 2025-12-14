@@ -382,15 +382,8 @@ class PlayerSphere {
             );
             this.ctx.restore();
 
-            } else {
-                // Fallback: draw simple wings
-                const time = Date.now() / 1000;
-                const flapOffset = Math.sin(time * 3) * 0.15;
-                
-                this.drawWing(this.centerX - this.radius * 0.8, this.centerY, -1, flapOffset);
-                this.drawWing(this.centerX + this.radius * 0.8, this.centerY, 1, flapOffset);
-            }
-            
+            } 
+          
         } else if (effect === 'glitch') {
             const time = Date.now();
             
