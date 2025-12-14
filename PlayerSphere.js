@@ -8,7 +8,6 @@ class PlayerSphere {
         
         this.ctx = this.canvas.getContext('2d');
         this.size = size;
-        // Increase canvas size to accommodate effects
         this.canvas.width = size * 2.5;
         this.canvas.height = size * 2.5;
         this.centerX = this.canvas.width / 2;
