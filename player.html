@@ -248,6 +248,10 @@
 
                     <h3 style="margin: 30px 0 20px; color: #d69e2e;">✨ Effects</h3>
                     <div class="cosmetics-grid" id="effectsGrid"></div>
+
+                    <h3 style="margin: 30px 0 20px; color: #d69e2e;">⚔️ Swords</h3>
+                    <div class="cosmetics-grid" id="swordsGrid"></div>
+                    
                 </div>
             </div>
         </div>
@@ -269,7 +273,8 @@
                             color: 'default',
                             hat: 'none',
                             face: 'none',
-                            effect: 'none'
+                            effect: 'none',
+                            sword: 'none'
                         };
                     }
                     if (!profile.ownedCosmetics) {
@@ -277,7 +282,8 @@
                             colors: ['default'],
                             hats: ['none'],
                             faces: ['none'],
-                            effects: ['none']
+                            effects: ['none'],
+                            swords: ['none']
                         };
                     }
                     return profile;
@@ -286,8 +292,8 @@
             return { 
                 username: 'guest000000',
                 status: 'player',
-                equippedCosmetics: { color: 'default', hat: 'none', face: 'none', effect: 'none' },
-                ownedCosmetics: { colors: ['default'], hats: ['none'], faces: ['none'], effects: ['none'] }
+                equippedCosmetics: { color: 'default', hat: 'none', face: 'none', effect: 'none', sword: 'none' },
+                ownedCosmetics: { colors: ['default'], hats: ['none'], faces: ['none'], effects: ['none'], swords: ['none'] }
             };
         }
 
@@ -412,6 +418,12 @@ function updateBigSphereAnimation() {
                 { id: 'none', name: 'None', icon: '❌' },
                 { id: 'blackhole', name: 'Black Holes', icon: '🌑' },
                 { id: 'wings', name: 'Black Wings', icon: '🖤' }
+            ],
+            swords: [
+                { id: 'none', name: 'None', icon: '❌' },
+                { id: 'stick', name: 'Stick Sword', icon: '🪵' },
+                { id: 'stone', name: 'Stone Sword', icon: '⚔️' },
+                { id: 'dragon', name: 'Dragon Sword', icon: '🐉' }
             ]
         };
 
@@ -496,6 +508,26 @@ function updateBigSphereAnimation() {
                 }
                 effectsGrid.appendChild(div);
             });
+
+            // Swords
+const swordsGrid = document.getElementById('swordsGrid');
+swordsGrid.innerHTML = '';
+cosmetics.swords.forEach(item => {
+    const owned = userProfile.ownedCosmetics.swords.includes(item.id);
+    const equipped = userProfile.equippedCosmetics.sword === item.id;
+    
+    const div = document.createElement('div');
+    div.className = 'cosmetic-item' + (equipped ? ' equipped' : '') + (!owned ? ' locked' : '');
+    div.innerHTML = `
+        <div class="cosmetic-preview" style="font-size: 48px;">${item.icon}</div>
+        <div class="cosmetic-name">${item.name}</div>
+        <div class="cosmetic-status">${equipped ? 'EQUIPPED' : owned ? 'Click to equip' : 'LOCKED'}</div>
+    `;
+    if (owned) {
+        div.onclick = () => equipCosmetic('sword', item.id);
+    }
+    swordsGrid.appendChild(div);
+});
         }
 
         // Equip cosmetic
@@ -508,7 +540,9 @@ function equipCosmetic(type, id) {
                 userProfile.equippedCosmetics.face = id;
             } else if (type === 'effect') {
                 userProfile.equippedCosmetics.effect = id;
-            }
+            } else if (type === 'sword') {
+        userProfile.equippedCosmetics.sword = id;
+    }
             
             saveUserProfile(userProfile);
             drawBigPlayerSphere();
