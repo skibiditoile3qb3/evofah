@@ -337,24 +337,24 @@ class PlayerSphere {
                 this.ctx.fillRect(
                     glitchOffsetX,
                     glitchOffsetY,
-                    this.canvas.width / 2,
-                    this.canvas.height / 2
+                    this.canvas.width,
+                    this.canvas.height
                 );
                 
                 this.ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
                 this.ctx.fillRect(
                     -glitchOffsetX,
                     -glitchOffsetY,
-                    this.canvas.width / 2,
-                    this.canvas.height / 2
+                    this.canvas.width,
+                    this.canvas.height
                 );
                 
                 this.ctx.globalCompositeOperation = 'source-over';
                 
 
-                for (let i = 0; i < this.canvas.height /2 ; i += 4) {
+                for (let i = 0; i < this.canvas.height; i += 4) {
                     this.ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
-                    this.ctx.fillRect(0, i, this.canvas.width / 2, 2);
+                    this.ctx.fillRect(0, i, this.canvas.width, 2);
                 }
             }
         }
