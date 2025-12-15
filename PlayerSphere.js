@@ -27,10 +27,21 @@ class PlayerSphere {
                 this.draw(this.cosmetics);
             }
         };
+
+        // Preload dragon sword image
+this.dragonSwordImage = new Image();
+this.dragonSwordImage.src = 'media/dragonsword.png';
+this.dragonSwordLoaded = false;
+this.dragonSwordImage.onload = () => {
+    this.dragonSwordLoaded = true;
+    if (this.shouldAnimate) {
+        this.draw(this.cosmetics);
+    }
+};
     }
     
-    draw(cosmetics = {}) {
-        const { color = 'default', hat = 'none', face = 'none', effect = 'none' } = cosmetics;
+draw(cosmetics = {}) {
+    const { color = 'default', hat = 'none', face = 'none', effect = 'none', sword = 'none' } = cosmetics;
         
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (effect === 'blackhole' || effect === 'wings') {
@@ -38,6 +49,7 @@ class PlayerSphere {
         }
         
         this.drawSphere(color);
+        this.drawSword(sword);
         this.drawFace(face);
         this.drawHat(hat);
         if (effect === 'glitch') {
@@ -306,6 +318,73 @@ class PlayerSphere {
           
     }
     }
+    
+    drawSword(sword) {
+    if (sword === 'none') return;
+    
+    const swordX = this.centerX + this.radius * 1.2; // Position to the right of sphere
+    const swordY = this.centerY;
+    const swordWidth = this.radius * 0.8;
+    const swordHeight = this.radius * 2;
+    
+    this.ctx.save();
+    this.ctx.translate(swordX, swordY);
+    this.ctx.rotate(Math.PI / 6); 
+    
+    if (sword === 'stick') {
+        this.ctx.fillStyle = '#8B4513';
+        this.ctx.fillRect(-swordWidth * 0.1, -swordHeight * 0.45, swordWidth * 0.2, swordHeight * 0.9);
+        this.ctx.fillStyle = '#654321';
+        this.ctx.fillRect(-swordWidth * 0.15, swordHeight * 0.35, swordWidth * 0.3, swordHeight * 0.15);
+        
+    } else if (sword === 'stone') {
+        // Stone sword - gray blade
+        this.ctx.fillStyle = '#808080';
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -swordHeight * 0.45);
+        this.ctx.lineTo(swordWidth * 0.15, -swordHeight * 0.25);
+        this.ctx.lineTo(swordWidth * 0.15, swordHeight * 0.35);
+        this.ctx.lineTo(-swordWidth * 0.15, swordHeight * 0.35);
+        this.ctx.lineTo(-swordWidth * 0.15, -swordHeight * 0.25);
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.fillStyle = '#555';
+        this.ctx.fillRect(-swordWidth * 0.3, swordHeight * 0.32, swordWidth * 0.6, swordHeight * 0.08);
+        this.ctx.fillStyle = '#654321';
+        this.ctx.fillRect(-swordWidth * 0.1, swordHeight * 0.35, swordWidth * 0.2, swordHeight * 0.15);
+        
+    } else if (sword === 'dragon') {
+        if (this.dragonSwordLoaded) {
+            this.ctx.drawImage(
+                this.dragonSwordImage,
+                -swordWidth * 0.3,
+                -swordHeight * 0.5,
+                swordWidth * 0.6,
+                swordHeight
+            );
+        } else {
+            const gradient = this.ctx.createLinearGradient(0, -swordHeight * 0.45, 0, swordHeight * 0.35);
+            gradient.addColorStop(0, '#ff4500');
+            gradient.addColorStop(1, '#ff8c00');
+            this.ctx.fillStyle = gradient;
+            
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, -swordHeight * 0.45);
+            this.ctx.lineTo(swordWidth * 0.2, -swordHeight * 0.25);
+            this.ctx.lineTo(swordWidth * 0.2, swordHeight * 0.35);
+            this.ctx.lineTo(-swordWidth * 0.2, swordHeight * 0.35);
+            this.ctx.lineTo(-swordWidth * 0.2, -swordHeight * 0.25);
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.fillStyle = '#ffd700';
+            this.ctx.fillRect(-swordWidth * 0.35, swordHeight * 0.32, swordWidth * 0.7, swordHeight * 0.08);
+            this.ctx.fillStyle = '#8b0000';
+            this.ctx.fillRect(-swordWidth * 0.12, swordHeight * 0.35, swordWidth * 0.24, swordHeight * 0.15);
+        }
+    }
+    
+    this.ctx.restore();
+}
     startAnimation(cosmetics) {
         this.shouldAnimate = true;
         this.cosmetics = cosmetics;
