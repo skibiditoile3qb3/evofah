@@ -254,7 +254,36 @@ draw(cosmetics = {}) {
     }
     
     drawEffect(effect) {
-        if (effect === 'blackhole') {
+        if (effect === 'mystical-aura') {
+            const time = Date.now() / 1000;
+            const pulseSize = this.radius * (1.4 + Math.sin(time * 2) * 0.1);
+            
+            // Outer glow
+            const gradient1 = this.ctx.createRadialGradient(
+                this.centerX, this.centerY, this.radius * 0.9,
+                this.centerX, this.centerY, pulseSize
+            );
+            gradient1.addColorStop(0, 'rgba(0, 140, 153, 0.3)');
+            gradient1.addColorStop(1, 'transparent');
+            this.ctx.fillStyle = gradient1;
+            this.ctx.beginPath();
+            this.ctx.arc(this.centerX, this.centerY, pulseSize, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Sparkles
+            for (let i = 0; i < 6; i++) {
+                const angle = time + (i * Math.PI / 3);
+                const distance = this.radius * 1.3;
+                const x = this.centerX + Math.cos(angle) * distance;
+                const y = this.centerY + Math.sin(angle) * distance;
+                const sparkleSize = this.radius * 0.08;
+                
+                this.ctx.fillStyle = '#00d9ff';
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, sparkleSize, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        } else if (effect === 'blackhole') {
             const time = Date.now() / 1000;
             const orbitRadius = this.radius * 1.8;
             const holeRadius = this.radius * 0.3;
