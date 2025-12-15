@@ -32,19 +32,19 @@ class PlayerSphere {
 draw(cosmetics = {}) {
     const { color = 'default', hat = 'none', face = 'none', effect = 'none', sword = 'none' } = cosmetics;
         
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        if (effect === 'blackhole' || effect === 'wings') {
-            this.drawEffect(effect);
-        }
-        
-        this.drawSphere(color);
-        this.drawSword(sword);
-        this.drawFace(face);
-        this.drawHat(hat);
-        if (effect === 'glitch') {
-            this.drawEffect(effect);
-        }
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (effect === 'blackhole' || effect === 'wings' || effect === 'mystical-aura') {
+        this.drawEffect(effect);
     }
+    
+    this.drawSphere(color);
+    this.drawSword(sword);
+    this.drawFace(face);
+    this.drawHat(hat);
+    if (effect === 'glitch') {
+        this.drawEffect(effect);
+    }
+}
     
     drawSphere(color) {
         const gradient = this.ctx.createRadialGradient(
