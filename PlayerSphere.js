@@ -211,30 +211,7 @@ class PlayerSphere {
             this.ctx.fillStyle = '#ffd700';
             this.ctx.font = `${this.radius * 0.4}px Arial`;
             this.ctx.textAlign = 'center';
-            this.ctx.fillText('★', this.centerX, this.centerY - this.radius * 0.93);
-            
-        } else if (hat === 'halo') {
-            const haloY = this.centerY - this.radius * 1.3; // Higher up
-            const haloRadiusOuter = this.radius * 0.5;
-            const haloRadiusInner = this.radius * 0.35;
-            const gradient = this.ctx.createRadialGradient(
-                this.centerX, haloY,
-                haloRadiusInner,
-                this.centerX, haloY,
-                haloRadiusOuter
-            );
-            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
-            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.beginPath();
-            this.ctx.arc(this.centerX, haloY, haloRadiusOuter, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.strokeStyle = '#ffd700';
-            this.ctx.lineWidth = this.radius * 0.12;
-            this.ctx.beginPath();
-            this.ctx.arc(this.centerX, haloY, haloRadiusInner, 0, Math.PI * 2);
-            this.ctx.stroke();
+            this.ctx.fillText('★', this.centerX, this.centerY - this.radius * 0.93);        
             
         } else if (hat === 'santa') {
             this.ctx.fillStyle = '#dc143c';
@@ -327,37 +304,6 @@ class PlayerSphere {
 
             } 
           
-        } else if (effect === 'glitch') {
-            const time = Date.now();
-            if (time % 200 < 50) {
-                const glitchOffsetX = (Math.random() - 0.5) * this.radius * 0.4;
-                const glitchOffsetY = (Math.random() - 0.5) * this.radius * 0.4;
-                this.ctx.globalCompositeOperation = 'screen';
-                this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-                this.ctx.fillRect(
-                    glitchOffsetX,
-                    glitchOffsetY,
-                    this.canvas.width,
-                    this.canvas.height
-                );
-                
-                this.ctx.fillStyle = 'rgba(0, 255, 255, 0.5)';
-                this.ctx.fillRect(
-                    -glitchOffsetX,
-                    -glitchOffsetY,
-                    this.canvas.width,
-                    this.canvas.height
-                );
-                
-                this.ctx.globalCompositeOperation = 'source-over';
-                
-
-                for (let i = 0; i < this.canvas.height; i += 4) {
-                    this.ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
-                    this.ctx.fillRect(0, i, this.canvas.width, 2);
-                }
-            }
-        }
     }
     startAnimation(cosmetics) {
         this.shouldAnimate = true;
