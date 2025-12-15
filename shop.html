@@ -83,12 +83,14 @@
             font-weight: bold;
             transition: all 0.2s;
         }
-        .shop-item button:hover {
+        .shop-item button:hover:not(:disabled) {
             background: #2f855a;
         }
         .shop-item button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            background: #666;
+            border-color: #555;
         }
         .purchased {
             background: #1a472a;
@@ -96,6 +98,15 @@
         }
         .purchased .price {
             color: #38a169;
+        }
+        .owned-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #38a169;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -146,134 +157,132 @@
             <div class="price">500,000 Coins</div>
             <button id="buyMysticalRank">Purchase</button>
         </div>
+        
         <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
-    <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🎨 COSMETICS</h1>
-    
-    <!-- Sphere Colors -->
-    <div class="shop-item">
-        <h2>🌅 Sunset Sphere Color</h2>
-        <p>Transform your sphere into sunset gradient (red to orange).</p>
-        <div class="price">25,000 Coins</div>
-        <button id="buySunset">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>🌊 Ocean Sphere Color</h2>
-        <p>Deep blue ocean gradient for your sphere.</p>
-        <div class="price">25,000 Coins</div>
-        <button id="buyOcean">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>🌌 Galaxy Sphere Color</h2>
-        <p>Purple cosmic gradient. (My favorite) </p>
-        <div class="price">30,000 Coins</div>
-        <button id="buyGalaxy">Purchase</button>
-    </div>
-
-    <!-- Hats -->
-    <div class="shop-item">
-        <h2>👑 Crown Hat</h2>
-        <p>Wear a golden crown!</p>
-        <div class="price">20,000 Coins</div>
-        <button id="buyCrown">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>🎩 Top Hat</h2>
-        <p>Classy black top hat. White outline.</p>
-        <div class="price">15,000 Coins</div>
-        <button id="buyTophat">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>🧙 Wizard Hat</h2>
-        <p>Purple wizard hat with powers(not actually).</p>
-        <div class="price">25,000 Coins</div>
-        <button id="buyWizard">Purchase</button>
-    </div>
-
-
-    <!-- Faces -->
-    <div class="shop-item">
-        <h2>😊 Happy Face</h2>
-        <p>A cheerful smiley face for your sphere!</p>
-        <div class="price">20,000 Coins</div>
-        <button id="buyHappy">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>😈 Evil Face</h2>
-        <p>Sinister red eyes and devilish grin.</p>
-        <div class="price">30,000 Coins</div>
-        <button id="buyEvil">Purchase</button>
-    </div>
-
-    <!-- Effects -->
-    <div class="shop-item" style="border: 2px solid #a855f7;">
-        <h2>🌑 Orbiting Black Holes</h2>
-        <p>Three miniature black holes orbit around your sphere. The ultimate flex!</p>
-        <div class="price" style="color: #a855f7;">200,000 Coins</div>
-        <button id="buyBlackhole" style="background: #a855f7; border-color: #7c3aed;">Purchase</button>
-    </div>
-    <div class="shop-item" style="border: 2px solid #fff;">
-        <h2>🖤 Black Wings</h2>
-        <p>Dark angelic wings that flap behind your sphere.</p>
-        <div class="price">350,000 Coins</div>
-        <button id="buyWings">Purchase</button>
-    </div>
-
-
-    <!-- New Hats -->
-    <div class="shop-item">
-        <h2>🎅 Santa Hat</h2>
-        <p>Ho ho ho! It's almost christmas time!</p>
-        <div class="price">45,000 Coins</div>
-        <button id="buySanta">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>🎉 Party Hat</h2>
-        <p>Rainbow gradient party hat.</p>
-        <div class="price">40,000 Coins</div>
-        <button id="buyParty">Purchase</button>
-    </div>
-
-    <!-- New Face -->
-    <div class="shop-item">
-        <h2>😎 Cool Face (Sunglasses)</h2>
-        <p>Black sunglasses with a smirk.</p>
-        <div class="price">50,000 Coins</div>
-        <button id="buyCool">Purchase</button>
-    </div>
-
-<div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
-    <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">⚔️ SWORDS</h1>
-    
-    <div class="shop-item">
-        <h2>🦯 Stick Sword</h2>
-        <p>A simple wooden stick. Hey, it's better than nothing!</p>
-        <div class="price">10,000 Coins</div>
-        <button id="buyStickSword">Purchase</button>
-    </div>
-
-    <div class="shop-item">
-        <h2>⚔️ Stone Sword</h2>
-        <p>Forged from solid stone. Increases coin PROFIT by 1.2x!</p>
-        <div class="price">100,000 Coins</div>
-        <button id="buyStoneSword">Purchase</button>
-    </div>
-
-    <div class="shop-item" style="border: 2px solid #ff4500;">
-        <h2>🐉 Dragon Sword</h2>
-        <p>Legendary blade forged in dragon fire. Doubles all coin PROFIT!</p>
-        <div class="price" style="color: #ff4500;">600,000 Coins</div>
-        <button id="buyDragonSword" style="background: #ff4500; border-color: #ff6347;">Purchase</button>
-    </div>
-</div>
-</div>
+            <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🎨 COSMETICS</h1>
             
-</div>
+            <!-- Sphere Colors -->
+            <div class="shop-item">
+                <h2>🌅 Sunset Sphere Color</h2>
+                <p>Transform your sphere into sunset gradient (red to orange).</p>
+                <div class="price">25,000 Coins</div>
+                <button id="buySunset">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>🌊 Ocean Sphere Color</h2>
+                <p>Deep blue ocean gradient for your sphere.</p>
+                <div class="price">25,000 Coins</div>
+                <button id="buyOcean">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>🌌 Galaxy Sphere Color</h2>
+                <p>Purple cosmic gradient. (My favorite) </p>
+                <div class="price">30,000 Coins</div>
+                <button id="buyGalaxy">Purchase</button>
+            </div>
+
+            <!-- Hats -->
+            <div class="shop-item">
+                <h2>👑 Crown Hat</h2>
+                <p>Wear a golden crown!</p>
+                <div class="price">20,000 Coins</div>
+                <button id="buyCrown">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>🎩 Top Hat</h2>
+                <p>Classy black top hat. White outline.</p>
+                <div class="price">15,000 Coins</div>
+                <button id="buyTophat">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>🧙 Wizard Hat</h2>
+                <p>Purple wizard hat with powers(not actually).</p>
+                <div class="price">25,000 Coins</div>
+                <button id="buyWizard">Purchase</button>
+            </div>
+
+            <!-- Faces -->
+            <div class="shop-item">
+                <h2>😊 Happy Face</h2>
+                <p>A cheerful smiley face for your sphere!</p>
+                <div class="price">20,000 Coins</div>
+                <button id="buyHappy">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>😈 Evil Face</h2>
+                <p>Sinister red eyes and devilish grin.</p>
+                <div class="price">30,000 Coins</div>
+                <button id="buyEvil">Purchase</button>
+            </div>
+
+            <!-- Effects -->
+            <div class="shop-item" style="border: 2px solid #a855f7;">
+                <h2>🌑 Orbiting Black Holes</h2>
+                <p>Three miniature black holes orbit around your sphere. The ultimate flex!</p>
+                <div class="price" style="color: #a855f7;">200,000 Coins</div>
+                <button id="buyBlackhole" style="background: #a855f7; border-color: #7c3aed;">Purchase</button>
+            </div>
+            
+            <div class="shop-item" style="border: 2px solid #fff;">
+                <h2>🖤 Black Wings</h2>
+                <p>Dark angelic wings that flap behind your sphere.</p>
+                <div class="price">350,000 Coins</div>
+                <button id="buyWings">Purchase</button>
+            </div>
+
+            <!-- New Hats -->
+            <div class="shop-item">
+                <h2>🎅 Santa Hat</h2>
+                <p>Ho ho ho! It's almost christmas time!</p>
+                <div class="price">45,000 Coins</div>
+                <button id="buySanta">Purchase</button>
+            </div>
+
+            <div class="shop-item">
+                <h2>🎉 Party Hat</h2>
+                <p>Rainbow gradient party hat.</p>
+                <div class="price">40,000 Coins</div>
+                <button id="buyParty">Purchase</button>
+            </div>
+
+            <!-- New Face -->
+            <div class="shop-item">
+                <h2>😎 Cool Face (Sunglasses)</h2>
+                <p>Black sunglasses with a smirk.</p>
+                <div class="price">50,000 Coins</div>
+                <button id="buyCool">Purchase</button>
+            </div>
+
+            <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+                <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">⚔️ SWORDS</h1>
+                
+                <div class="shop-item">
+                    <h2>🦯 Stick Sword</h2>
+                    <p>A simple wooden stick. Hey, it's better than nothing!</p>
+                    <div class="price">10,000 Coins</div>
+                    <button id="buyStickSword">Purchase</button>
+                </div>
+
+                <div class="shop-item">
+                    <h2>⚔️ Stone Sword</h2>
+                    <p>Forged from solid stone. Increases coin PROFIT by 1.2x!</p>
+                    <div class="price">100,000 Coins</div>
+                    <button id="buyStoneSword">Purchase</button>
+                </div>
+
+                <div class="shop-item" style="border: 2px solid #ff4500;">
+                    <h2>🐉 Dragon Sword</h2>
+                    <p>Legendary blade forged in dragon fire. Doubles all coin PROFIT!</p>
+                    <div class="price" style="color: #ff4500;">600,000 Coins</div>
+                    <button id="buyDragonSword" style="background: #ff4500; border-color: #ff6347;">Purchase</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -325,8 +334,93 @@
         let userProfile = getUserProfile();
 
         document.getElementById('coinAmount').textContent = coins;
-// Ad Removal Purchase
+
+        // Initialize cosmetics in profile if not exists
+        if (!userProfile.ownedCosmetics) {
+            userProfile.ownedCosmetics = {
+                colors: ['default'],
+                hats: ['none'],
+                faces: ['none'],
+                effects: ['none'],
+                swords: ['none']
+            };
+            saveUserProfile(userProfile);
+        }
+
+        // Helper function to mark item as owned
+        function markAsOwned(buttonId, itemElement) {
+            const button = document.getElementById(buttonId);
+            button.textContent = 'Already Owned';
+            button.disabled = true;
+            itemElement.classList.add('purchased');
+        }
+
+        // Check and update UI for owned items on page load
+        function checkOwnedItems() {
+            // Check ad removal
+            if (userProfile.adsDisabled) {
+                markAsOwned('buyAdRemoval', document.getElementById('adRemovalItem'));
+            }
+
+            // Check visualizer
+            if (userProfile.visualizerEnabled) {
+                markAsOwned('buyVisualizer', document.getElementById('visualizerItem'));
+            }
+
+            // Check if custom name was purchased (username doesn't start with 'guest')
+            if (userProfile.username && !userProfile.username.startsWith('guest')) {
+                markAsOwned('buyNameChange', document.getElementById('nameChangeItem'));
+            }
+
+            // Check ranks
+            if (userProfile.status === 'rare' || userProfile.status === 'legendary' || userProfile.status === 'mystical') {
+                markAsOwned('buyRareRank', document.getElementById('rareRankItem'));
+            }
+            if (userProfile.status === 'legendary' || userProfile.status === 'mystical') {
+                markAsOwned('buyLegendaryRank', document.getElementById('legendaryRankItem'));
+            }
+            if (userProfile.status === 'mystical') {
+                markAsOwned('buyMysticalRank', document.getElementById('mysticalRankItem'));
+            }
+
+            // Check cosmetics
+            const cosmeticChecks = [
+                { type: 'colors', item: 'sunset', btn: 'buySunset' },
+                { type: 'colors', item: 'ocean', btn: 'buyOcean' },
+                { type: 'colors', item: 'galaxy', btn: 'buyGalaxy' },
+                { type: 'hats', item: 'crown', btn: 'buyCrown' },
+                { type: 'hats', item: 'tophat', btn: 'buyTophat' },
+                { type: 'hats', item: 'wizard', btn: 'buyWizard' },
+                { type: 'hats', item: 'santa', btn: 'buySanta' },
+                { type: 'hats', item: 'party', btn: 'buyParty' },
+                { type: 'faces', item: 'happy', btn: 'buyHappy' },
+                { type: 'faces', item: 'evil', btn: 'buyEvil' },
+                { type: 'faces', item: 'cool', btn: 'buyCool' },
+                { type: 'effects', item: 'blackhole', btn: 'buyBlackhole' },
+                { type: 'effects', item: 'wings', btn: 'buyWings' },
+                { type: 'swords', item: 'stick', btn: 'buyStickSword' },
+                { type: 'swords', item: 'stone', btn: 'buyStoneSword' },
+                { type: 'swords', item: 'dragon', btn: 'buyDragonSword' }
+            ];
+
+            cosmeticChecks.forEach(({ type, item, btn }) => {
+                if (userProfile.ownedCosmetics[type] && userProfile.ownedCosmetics[type].includes(item)) {
+                    const button = document.getElementById(btn);
+                    if (button) {
+                        button.textContent = 'Already Owned';
+                        button.disabled = true;
+                        button.parentElement.classList.add('purchased');
+                    }
+                }
+            });
+        }
+
+        // Ad Removal Purchase
         document.getElementById('buyAdRemoval').addEventListener('click', () => {
+            if (userProfile.adsDisabled) {
+                alert('❌ You already own this!');
+                return;
+            }
             if (coins >= 20000) {
                 if (confirm('Purchase ad removal for 20,000 coins?')) {
                     coins -= 20000;
@@ -334,7 +428,8 @@
                     userProfile.adsDisabled = true;
                     saveUserProfile(userProfile);
                     alert('✅ Success! Ads have been permanently removed.');
-                    window.location.reload();
+                    document.getElementById('coinAmount').textContent = coins;
+                    markAsOwned('buyAdRemoval', document.getElementById('adRemovalItem'));
                 }
             } else {
                 alert('❌ Not enough coins! You need 20,000 coins.');
@@ -343,6 +438,10 @@
 
         // Visualizer Purchase
         document.getElementById('buyVisualizer').addEventListener('click', () => {
+            if (userProfile.visualizerEnabled) {
+                alert('❌ You already own this!');
+                return;
+            }
             if (coins >= 75000) {
                 if (confirm('Purchase Gaming Visualizer for 75,000 coins?\n\nThis will add a premium overlay showing your keyboard presses, mouse clicks, and custom crosshair while gaming!')) {
                     coins -= 75000;
@@ -350,7 +449,8 @@
                     userProfile.visualizerEnabled = true;
                     saveUserProfile(userProfile);
                     alert('✅ Success! Gaming Visualizer activated!\n\nThe visualizer will appear when you play games. Press U to open settings and customize themes, crosshair, and more!');
-                    window.location.reload();
+                    document.getElementById('coinAmount').textContent = coins;
+                    markAsOwned('buyVisualizer', document.getElementById('visualizerItem'));
                 }
             } else {
                 alert('❌ Not enough coins! You need 75,000 coins.');
@@ -359,6 +459,10 @@
 
         // Name Change Purchase
         document.getElementById('buyNameChange').addEventListener('click', () => {
+            if (userProfile.username && !userProfile.username.startsWith('guest')) {
+                alert('❌ You already have a custom name! Your current name is: ' + userProfile.username);
+                return;
+            }
             if (coins >= 50000) {
                 const newName = prompt('Enter your new username (max 20 characters):');
                 if (newName && newName.trim()) {
@@ -369,7 +473,8 @@
                         userProfile.username = trimmedName;
                         saveUserProfile(userProfile);
                         alert('✅ Success! Your username has been changed.');
-                        window.location.reload();
+                        document.getElementById('coinAmount').textContent = coins;
+                        markAsOwned('buyNameChange', document.getElementById('nameChangeItem'));
                     }
                 }
             } else {
@@ -391,7 +496,8 @@
                     userProfile.status = 'rare';
                     saveUserProfile(userProfile);
                     alert('✅ Success! You are now Rare rank!');
-                    window.location.reload();
+                    document.getElementById('coinAmount').textContent = coins;
+                    markAsOwned('buyRareRank', document.getElementById('rareRankItem'));
                 }
             } else {
                 alert('❌ Not enough coins! You need 30,000 coins.');
@@ -412,7 +518,10 @@
                     userProfile.status = 'legendary';
                     saveUserProfile(userProfile);
                     alert('✅ Success! You are now Legendary rank!');
-                    window.location.reload();
+                    document.getElementById('coinAmount').textContent = coins;
+                    markAsOwned('buyLegendaryRank', document.getElementById('legendaryRankItem'));
+                    // Also mark rare as owned since they have a higher rank
+                    markAsOwned('buyRareRank', document.getElementById('rareRankItem'));
                 }
             } else {
                 alert('❌ Not enough coins! You need 100,000 coins.');
@@ -461,41 +570,36 @@
                     
                     saveUserProfile(userProfile);
                     alert('✅ Success! You are now Mystical rank with exclusive aura!\n\n🎮 Earn 3x more coins while playing\n✨ Mystical Aura automatically equipped\n🛡️ Loss Protection activated');
-                    window.location.reload();
+                    document.getElementById('coinAmount').textContent = coins;
+                    markAsOwned('buyMysticalRank', document.getElementById('mysticalRankItem'));
+                    // Also mark lower ranks as owned
+                    markAsOwned('buyRareRank', document.getElementById('rareRankItem'));
+                    markAsOwned('buyLegendaryRank', document.getElementById('legendaryRankItem'));
                 }
             } else {
                 alert('❌ Not enough coins! You need 500,000 coins.');
             }
         });
 
-        // Initialize cosmetics in profile if not exists
-        if (!userProfile.ownedCosmetics) {
-            userProfile.ownedCosmetics = {
-                colors: ['default'],
-                hats: ['none'],
-                faces: ['none'],
-                effects: ['none'],
-                swords: ['none']
-            };
-            saveUserProfile(userProfile);
-        }
-
         // Helper function to buy cosmetic
         function buyCosmetic(type, item, cost, buttonId) {
+            if (userProfile.ownedCosmetics[type].includes(item)) {
+                alert('❌ You already own this!');
+                return;
+            }
+            
             if (coins >= cost) {
                 if (confirm(`Purchase ${item} for ${cost.toLocaleString()} coins?`)) {
-                    if (userProfile.ownedCosmetics[type].includes(item)) {
-                        alert('❌ You already own this!');
-                        return;
-                    }
                     coins -= cost;
                     setCoins(coins);
                     userProfile.ownedCosmetics[type].push(item);
                     saveUserProfile(userProfile);
                     alert(`✅ Successfully purchased ${item}!`);
-                    document.getElementById(buttonId).disabled = true;
-                    document.getElementById(buttonId).textContent = 'Already Owned';
                     document.getElementById('coinAmount').textContent = coins;
+                    const button = document.getElementById(buttonId);
+                    button.textContent = 'Already Owned';
+                    button.disabled = true;
+                    button.parentElement.classList.add('purchased');
                 }
             } else {
                 alert(`❌ Not enough coins! You need ${cost.toLocaleString()} coins.`);
@@ -511,28 +615,25 @@
         document.getElementById('buyCrown').addEventListener('click', () => buyCosmetic('hats', 'crown', 20000, 'buyCrown'));
         document.getElementById('buyTophat').addEventListener('click', () => buyCosmetic('hats', 'tophat', 15000, 'buyTophat'));
         document.getElementById('buyWizard').addEventListener('click', () => buyCosmetic('hats', 'wizard', 25000, 'buyWizard'));
+        document.getElementById('buySanta').addEventListener('click', () => buyCosmetic('hats', 'santa', 45000, 'buySanta'));
+        document.getElementById('buyParty').addEventListener('click', () => buyCosmetic('hats', 'party', 40000, 'buyParty'));
 
         // Faces
         document.getElementById('buyHappy').addEventListener('click', () => buyCosmetic('faces', 'happy', 20000, 'buyHappy'));
         document.getElementById('buyEvil').addEventListener('click', () => buyCosmetic('faces', 'evil', 30000, 'buyEvil'));
+        document.getElementById('buyCool').addEventListener('click', () => buyCosmetic('faces', 'cool', 50000, 'buyCool'));
 
         // Effects
         document.getElementById('buyBlackhole').addEventListener('click', () => buyCosmetic('effects', 'blackhole', 200000, 'buyBlackhole'));
         document.getElementById('buyWings').addEventListener('click', () => buyCosmetic('effects', 'wings', 350000, 'buyWings'));
-
-        // New hats
-        document.getElementById('buySanta').addEventListener('click', () => buyCosmetic('hats', 'santa', 45000, 'buySanta'));
-        document.getElementById('buyParty').addEventListener('click', () => buyCosmetic('hats', 'party', 40000, 'buyParty'));
-
-        // New face
-        document.getElementById('buyCool').addEventListener('click', () => buyCosmetic('faces', 'cool', 50000, 'buyCool'));
 
         // Swords
         document.getElementById('buyStickSword').addEventListener('click', () => buyCosmetic('swords', 'stick', 10000, 'buyStickSword'));
         document.getElementById('buyStoneSword').addEventListener('click', () => buyCosmetic('swords', 'stone', 100000, 'buyStoneSword'));
         document.getElementById('buyDragonSword').addEventListener('click', () => buyCosmetic('swords', 'dragon', 600000, 'buyDragonSword'));
 
-        checkOwnedCosmetics();
+        // Check owned items on page load
+        checkOwnedItems();
     </script>
 </body>
 </html>
