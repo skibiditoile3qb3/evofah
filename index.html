@@ -574,7 +574,7 @@ function updateUserDisplay() {
 
 function updateSphereAnimation() {
     const cosmetics = userProfile.equippedCosmetics || {};
-    const animatedEffects = ['blackhole', 'wings', 'glitch'];
+    const animatedEffects = ['blackhole', 'wings', 'glitch', 'mystical-aura'];
     if (animatedEffects.includes(cosmetics.effect)) {
         if (playerSphereRenderer && !playerSphereRenderer.shouldAnimate) {
             playerSphereRenderer.startAnimation(cosmetics);
@@ -643,7 +643,79 @@ function showBanScreen(banStatus) {
     }
 }
         
+function getLossProtectionData() {
+    try {
+        const stored = localStorage.getItem('_lossProtection');
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch(e) {}
+    return { used: false, lastReset: Date.now() };
+}
 
+function setLossProtectionData(data) {
+    try {
+        localStorage.setItem('_lossProtection', JSON.stringify(data));
+    } catch(e) {}
+}
+
+function checkLossProtectionReset() {
+    const data = getLossProtectionData();
+    const now = Date.now();
+    const oneDay = 24 * 60 * 60 * 1000;
+    
+    if (now - data.lastReset >= oneDay) {
+        setLossProtectionData({ used: false, lastReset: now });
+        return true;
+    }
+    return false;
+}
+
+function applyLossProtection(lossAmount) {
+    if (userProfile.status !== 'mystical') return 0;
+    
+    checkLossProtectionReset();
+    const protectionData = getLossProtectionData();
+    
+    if (!protectionData.used && lossAmount > 0 && lossAmount <= 10000) {
+        const refund = Math.floor(lossAmount * 0.5);
+        protectionData.used = true;
+        setLossProtectionData(protectionData);
+        
+        // Show notification
+        showLossProtectionNotification(refund);
+        
+        return refund;
+    }
+    return 0;
+}
+
+function showLossProtectionNotification(refund) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: linear-gradient(135deg, #008c99 0%, #00d9ff 100%);
+        border: 2px solid #00ffff;
+        border-radius: 12px;
+        padding: 15px 25px;
+        z-index: 10001;
+        color: #fff;
+        font-weight: bold;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(0, 140, 153, 0.4);
+        animation: slideInRight 0.3s ease-out, fadeOutRight 0.3s ease-in 2.7s;
+    `;
+    
+    notification.innerHTML = `✨ Mystical Protection: +${refund} coins refunded!`;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
         function getCoins() {
             try {
                 const stored = localStorage.getItem(_0x2b4a(_0x9c3d));
@@ -929,14 +1001,15 @@ if (checkAndHandleBan()) {
         let gamePlayTime = 0;
         let lastAdTime = Date.now();
 
-        activityCheckInterval = setInterval(() => {
-            if (gameIsPlaying) {
-                gamePlayTime += 1;
-                if (gamePlayTime > 0 && gamePlayTime % 30 === 0) {
-                    coins += 30;
-                    setCoins(coins);
-                    updateCoinDisplay();
-                }
+activityCheckInterval = setInterval(() => {
+    if (gameIsPlaying) {
+        gamePlayTime += 1;
+        if (gamePlayTime > 0 && gamePlayTime % 30 === 0) {
+            const coinReward = userProfile.status === 'mystical' ? 100 : 30;
+            coins += coinReward;
+            setCoins(coins);
+            updateCoinDisplay();
+        }
 
                 if (!userProfile.adsDisabled && Date.now() - lastAdTime >= adIntervalTime) {
                     showAd();
@@ -1270,8 +1343,12 @@ window.addEventListener('message', (event) => {
             if (bonusProfit > 0) {
                 showSwordBonus(bonusProfit, swordMultiplier);
             }
+        } else if (difference < 0) {
+            // Apply loss protection for Mystical rank
+            const lossAmount = Math.abs(difference);
+            const refund = applyLossProtection(lossAmount);
+            coins = newCoins + refund;
         } else {
-            // No multiplier on losses
             coins = newCoins;
         }
         
