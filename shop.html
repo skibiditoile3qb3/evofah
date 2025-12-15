@@ -167,7 +167,7 @@
     <div class="shop-item">
         <h2>🌌 Galaxy Sphere Color</h2>
         <p>Purple cosmic gradient that looks out of this world.</p>
-        <div class="price">35,000 Coins</div>
+        <div class="price">30,000 Coins</div>
         <button id="buyGalaxy">Purchase</button>
     </div>
 
@@ -175,30 +175,24 @@
     <div class="shop-item">
         <h2>👑 Crown Hat</h2>
         <p>Wear a golden crown and show your royalty!</p>
-        <div class="price">40,000 Coins</div>
+        <div class="price">20,000 Coins</div>
         <button id="buyCrown">Purchase</button>
     </div>
 
     <div class="shop-item">
         <h2>🎩 Top Hat</h2>
         <p>Classy black top hat for the sophisticated player.</p>
-        <div class="price">35,000 Coins</div>
+        <div class="price">15,000 Coins</div>
         <button id="buyTophat">Purchase</button>
     </div>
 
     <div class="shop-item">
         <h2>🧙 Wizard Hat</h2>
         <p>Purple wizard hat with mystical powers (not really).</p>
-        <div class="price">45,000 Coins</div>
+        <div class="price">25,000 Coins</div>
         <button id="buyWizard">Purchase</button>
     </div>
 
-    <div class="shop-item">
-        <h2>😇 Halo</h2>
-        <p>Angelic golden halo floating above your sphere.</p>
-        <div class="price">50,000 Coins</div>
-        <button id="buyHalo">Purchase</button>
-    </div>
 
     <!-- Faces -->
     <div class="shop-item">
@@ -225,16 +219,10 @@
     <div class="shop-item" style="border: 2px solid #fff;">
         <h2>🖤 Black Wings</h2>
         <p>Dark angelic wings that flap behind your sphere. Pure elegance!</p>
-        <div class="price">250,000 Coins</div>
+        <div class="price">350,000 Coins</div>
         <button id="buyWings">Purchase</button>
     </div>
 
-    <div class="shop-item" style="border: 2px solid #00ff00;">
-        <h2>⚡ Glitch Effect</h2>
-        <p>Reality-bending glitch effect with RGB distortion and scanlines!</p>
-        <div class="price">300,000 Coins</div>
-        <button id="buyGlitch" style="background: #00ff00; color: #000; border-color: #00cc00;">Purchase</button>
-    </div>
 
     <!-- New Hats -->
     <div class="shop-item">
@@ -255,7 +243,7 @@
     <div class="shop-item">
         <h2>😎 Cool Face (Sunglasses)</h2>
         <p>Black sunglasses with a smirk. Too cool for school!</p>
-        <div class="price">35,000 Coins</div>
+        <div class="price">50,000 Coins</div>
         <button id="buyCool">Purchase</button>
     </div>
 </div>
@@ -492,7 +480,6 @@ document.getElementById('buyGalaxy').addEventListener('click', () => buyCosmetic
 document.getElementById('buyCrown').addEventListener('click', () => buyCosmetic('hats', 'crown', 40000, 'buyCrown'));
 document.getElementById('buyTophat').addEventListener('click', () => buyCosmetic('hats', 'tophat', 35000, 'buyTophat'));
 document.getElementById('buyWizard').addEventListener('click', () => buyCosmetic('hats', 'wizard', 45000, 'buyWizard'));
-document.getElementById('buyHalo').addEventListener('click', () => buyCosmetic('hats', 'halo', 50000, 'buyHalo'));
 
 // Faces
 document.getElementById('buyHappy').addEventListener('click', () => buyCosmetic('faces', 'happy', 20000, 'buyHappy'));
@@ -501,7 +488,6 @@ document.getElementById('buyEvil').addEventListener('click', () => buyCosmetic('
 // Effects
 document.getElementById('buyBlackhole').addEventListener('click', () => buyCosmetic('effects', 'blackhole', 200000, 'buyBlackhole'));
 document.getElementById('buyWings').addEventListener('click', () => buyCosmetic('effects', 'wings', 250000, 'buyWings'));
-document.getElementById('buyGlitch').addEventListener('click', () => buyCosmetic('effects', 'glitch', 300000, 'buyGlitch'));
 
 // New hats
 document.getElementById('buySanta').addEventListener('click', () => buyCosmetic('hats', 'santa', 45000, 'buySanta'));
@@ -540,10 +526,6 @@ function checkOwnedCosmetics() {
         document.getElementById('buyWizard').disabled = true;
         document.getElementById('buyWizard').textContent = 'Already Owned';
     }
-    if (owned.hats.includes('halo')) {
-        document.getElementById('buyHalo').disabled = true;
-        document.getElementById('buyHalo').textContent = 'Already Owned';
-    }
     if (owned.faces.includes('happy')) {
         document.getElementById('buyHappy').disabled = true;
         document.getElementById('buyHappy').textContent = 'Already Owned';
@@ -559,10 +541,6 @@ if (owned.effects.includes('blackhole')) {
     if (owned.effects.includes('wings')) {
         document.getElementById('buyWings').disabled = true;
         document.getElementById('buyWings').textContent = 'Already Owned';
-    }
-    if (owned.effects.includes('glitch')) {
-        document.getElementById('buyGlitch').disabled = true;
-        document.getElementById('buyGlitch').textContent = 'Already Owned';
     }
     if (owned.hats.includes('santa')) {
         document.getElementById('buySanta').disabled = true;
