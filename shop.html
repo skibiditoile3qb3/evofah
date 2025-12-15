@@ -367,10 +367,7 @@
                 markAsOwned('buyVisualizer', document.getElementById('visualizerItem'));
             }
 
-            // Check if custom name was purchased (username doesn't start with 'guest')
-            if (userProfile.username && !userProfile.username.startsWith('guest')) {
-                markAsOwned('buyNameChange', document.getElementById('nameChangeItem'));
-            }
+            // Note: Custom Name Change can be purchased multiple times, so we don't mark it as owned
 
             // Check ranks
             if (userProfile.status === 'rare' || userProfile.status === 'legendary' || userProfile.status === 'mystical') {
@@ -457,14 +454,11 @@
             }
         });
 
-        // Name Change Purchase
+        // Name Change Purchase (Can be purchased multiple times)
         document.getElementById('buyNameChange').addEventListener('click', () => {
-            if (userProfile.username && !userProfile.username.startsWith('guest')) {
-                alert('❌ You already have a custom name! Your current name is: ' + userProfile.username);
-                return;
-            }
             if (coins >= 50000) {
-                const newName = prompt('Enter your new username (max 20 characters):');
+                const currentName = userProfile.username || 'guest';
+                const newName = prompt(`Enter your new username (max 20 characters):\n\nCurrent name: ${currentName}`);
                 if (newName && newName.trim()) {
                     const trimmedName = newName.trim().substring(0, 20);
                     if (confirm(`Change your name to "${trimmedName}" for 50,000 coins?`)) {
@@ -472,9 +466,8 @@
                         setCoins(coins);
                         userProfile.username = trimmedName;
                         saveUserProfile(userProfile);
-                        alert('✅ Success! Your username has been changed.');
+                        alert('✅ Success! Your username has been changed to: ' + trimmedName);
                         document.getElementById('coinAmount').textContent = coins;
-                        markAsOwned('buyNameChange', document.getElementById('nameChangeItem'));
                     }
                 }
             } else {
