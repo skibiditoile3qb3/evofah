@@ -142,7 +142,7 @@
 
         <div class="shop-item" id="mysticalRankItem">
             <h2>✨ Mystical Rank</h2>
-            <p>Flex on your friends with the mystical blue rank!</p>
+            <p>Flex on your friends with the mystical blue rank! INSANE PERKS: LOSS PROTECTION, 3X PASSIVE COIN GAIN, MYSTICAL COSMETIC. </p>
             <div class="price">500,000 Coins</div>
             <button id="buyMysticalRank">Purchase</button>
         </div>
@@ -441,27 +441,54 @@
                 alert('❌ Not enough coins! You need 100,000 coins.');
             }
         });
-
-        // Mystical Rank Purchase
-        document.getElementById('buyMysticalRank').addEventListener('click', () => {
-            if (userProfile.status === 'mystical') {
-                alert('❌ You already have this rank!');
-                return;
+// Mystical Rank Purchase
+document.getElementById('buyMysticalRank').addEventListener('click', () => {
+    if (userProfile.status === 'mystical') {
+        alert('❌ You already have this rank!');
+        return;
+    }
+    
+    if (coins >= 500000) {
+        if (confirm('Purchase Mystical rank for 500,000 coins?\n\n✨ BENEFITS:\n• Earn 100 coins per 30 seconds (vs 30)\n• Exclusive Mystical Aura effect\n• Loss Protection: 50% refund on losses up to 10k (once per day)')) {
+            coins -= 500000;
+            setCoins(coins);
+            userProfile.status = 'mystical';
+            
+            // Initialize cosmetics if needed
+            if (!userProfile.ownedCosmetics) {
+                userProfile.ownedCosmetics = {
+                    colors: ['default'],
+                    hats: ['none'],
+                    faces: ['none'],
+                    effects: ['none'],
+                    swords: ['none']
+                };
             }
             
-            if (coins >= 500000) {
-                if (confirm('Purchase Mystical rank for 500,000 coins?')) {
-                    coins -= 500000;
-                    setCoins(coins);
-                    userProfile.status = 'mystical';
-                    saveUserProfile(userProfile);
-                    alert('✅ Success! You are now Mystical rank!');
-                    window.location.reload();
-                }
-            } else {
-                alert('❌ Not enough coins! You need 500,000 coins.');
+            // Auto-give and equip mystical aura
+            if (!userProfile.ownedCosmetics.effects.includes('mystical-aura')) {
+                userProfile.ownedCosmetics.effects.push('mystical-aura');
             }
-        });
+            if (!userProfile.equippedCosmetics) {
+                userProfile.equippedCosmetics = {
+                    color: 'default',
+                    hat: 'none',
+                    face: 'none',
+                    effect: 'mystical-aura',
+                    sword: 'none'
+                };
+            } else {
+                userProfile.equippedCosmetics.effect = 'mystical-aura';
+            }
+            
+            saveUserProfile(userProfile);
+            alert('✅ Success! You are now Mystical rank with exclusive aura!\n\n🎮 Earn 3x more coins while playing\n✨ Mystical Aura automatically equipped\n🛡️ Loss Protection activated');
+            window.location.reload();
+        }
+    } else {
+        alert('❌ Not enough coins! You need 500,000 coins.');
+    }
+});
 
         // Initialize cosmetics in profile if not exists
 if (!userProfile.ownedCosmetics) {
