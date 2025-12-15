@@ -1103,7 +1103,6 @@ if (checkAndHandleBan()) {
         function loadGame(game) {
             document.getElementById('mainView').style.display = 'none';
             document.getElementById('gameView').style.display = 'block';
-            document.getElementById('coinDisplay').style.display = 'none';
             
             if (game === 'mines') {
                 document.getElementById('gameFrame').src = 'mines.html';
@@ -1140,7 +1139,6 @@ if (checkAndHandleBan()) {
         function backToMain() {
             document.getElementById('mainView').style.display = 'flex';
             document.getElementById('gameView').style.display = 'none';
-            document.getElementById('coinDisplay').style.display = 'block';
             document.getElementById('gameFrame').src = '';
             document.body.style.setProperty('--visualizer-active', '0');
             gameIsPlaying = false;
