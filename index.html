@@ -1005,7 +1005,7 @@ activityCheckInterval = setInterval(() => {
     if (gameIsPlaying) {
         gamePlayTime += 1;
         if (gamePlayTime > 0 && gamePlayTime % 30 === 0) {
-            const coinReward = userProfile.status === 'mystical' ? 100 : 30;
+            const coinReward = userProfile.status === 'mystical' ? 450 : 150;
             coins += coinReward;
             setCoins(coins);
             updateCoinDisplay();
