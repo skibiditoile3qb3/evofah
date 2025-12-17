@@ -111,11 +111,41 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <button class="back-btn" onclick="window.location.href='index.html'">← BACK</button>
-        <h1>🛒 SHOP</h1>
-        <div class="coin-display">Your Coins: <span id="coinAmount">0</span></div>
+   <div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← BACK</button>
+    <h1>🛒 SHOP</h1>
+    <div class="coin-display">Your Coins: <span id="coinAmount">0</span></div>
 
+    <!-- RANKS SECTION -->
+    <div style="margin-top: 40px;">
+        <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">👑 RANKS</h1>
+        
+        <div class="shop-item" id="rareRankItem">
+            <h2>💎 Rare Rank</h2>
+            <p>Get the exclusive Rare rank with a beautiful blue color!</p>
+            <div class="price">15,000 Coins</div>
+            <button id="buyRareRank">Purchase</button>
+        </div>
+
+        <div class="shop-item" id="legendaryRankItem">
+            <h2>👑 Legendary Rank</h2>
+            <p>Become a legend with the golden Legendary rank!</p>
+            <div class="price">50,000 Coins</div>
+            <button id="buyLegendaryRank">Purchase</button>
+        </div>
+
+        <div class="shop-item" id="mysticalRankItem">
+            <h2>✨ Mystical Rank</h2>
+            <p>Flex on your friends with the mystical blue rank! INSANE PERKS: LOSS PROTECTION, 3X PASSIVE COIN GAIN, MYSTICAL COSMETIC.</p>
+            <div class="price">250,000 Coins</div>
+            <button id="buyMysticalRank">Purchase</button>
+        </div>
+    </div>
+
+    <!-- UTILITIES SECTION -->
+    <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+        <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🔧 UTILITIES</h1>
+        
         <div class="shop-item" id="adRemovalItem">
             <h2>🚫 Remove All Ads Forever</h2>
             <p>Want a break from the ads? Purchase this!</p>
@@ -136,154 +166,177 @@
             <div class="price">25,000 Coins</div>
             <button id="buyNameChange">Purchase</button>
         </div>
+    </div>
 
-        <div class="shop-item" id="rareRankItem">
-            <h2>💎 Rare Rank</h2>
-            <p>Get the exclusive Rare rank with a beautiful blue color!</p>
+    <!-- COSMETICS SECTION -->
+    <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+        <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🎨 COSMETICS</h1>
+        
+        <!-- Sphere Colors -->
+        <h2 style="text-align: center; margin: 30px 0 20px 0; font-size: 22px; color: #888;">Sphere Colors</h2>
+        
+        <div class="shop-item">
+            <h2>🌅 Sunset Sphere Color</h2>
+            <p>Transform your sphere into sunset gradient (red to orange).</p>
+            <div class="price">12,000 Coins</div>
+            <button id="buySunset">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>🌊 Ocean Sphere Color</h2>
+            <p>Deep blue ocean gradient for your sphere.</p>
+            <div class="price">12,000 Coins</div>
+            <button id="buyOcean">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>🌌 Galaxy Sphere Color</h2>
+            <p>Purple cosmic gradient. (My favorite)</p>
             <div class="price">15,000 Coins</div>
-            <button id="buyRareRank">Purchase</button>
+            <button id="buyGalaxy">Purchase</button>
         </div>
 
-        <div class="shop-item" id="legendaryRankItem">
-            <h2>👑 Legendary Rank</h2>
-            <p>Become a legend with the golden Legendary rank!</p>
-            <div class="price">50,000 Coins</div>
-            <button id="buyLegendaryRank">Purchase</button>
+        <div class="shop-item">
+    <h2>🩸 Blood Sphere Color</h2>
+    <p>Intense red gradient. Bold and daring.</p>
+    <div class="price">10,000 Coins</div>
+    <button id="buyBlood">Purchase</button>
+</div>
+
+<div class="shop-item">
+    <h2>⚪ Quartz Sphere Color</h2>
+    <p>Clean white to soft gray. Minimalist luxury.</p>
+    <div class="price">10,000 Coins</div>
+    <button id="buyQuartz">Purchase</button>
+</div>
+
+<div class="shop-item">
+    <h2>💎 Ruby Sphere Color</h2>
+    <p>Deep jewel red fading to black. Legendary elegance.</p>
+    <div class="price">50,000 Coins</div>
+    <button id="buyRuby">Purchase</button>
+</div>
+
+<div class="shop-item">
+    <h2>🏆 Obsidian Gold Sphere Color</h2>
+    <p>Rich gold highlight in dark shadow. Paid-only luxury.</p>
+    <div class="price">75,000 Coins</div>
+    <button id="buyObsidian">Purchase</button>
+</div>
+
+<div class="shop-item">
+    <h2>🔮 Opaline Sphere Color</h2>
+    <p>Pearly gray gradient with dark edges. Subtle high-tier glow.</p>
+    <div class="price">50,000 Coins</div>
+    <button id="buyOpaline">Purchase</button>
+</div>
+
+        <!-- Hats -->
+        <h2 style="text-align: center; margin: 30px 0 20px 0; font-size: 22px; color: #888;">Hats</h2>
+        
+        <div class="shop-item">
+            <h2>👑 Crown Hat</h2>
+            <p>Wear a golden crown!</p>
+            <div class="price">10,000 Coins</div>
+            <button id="buyCrown">Purchase</button>
         </div>
 
-        <div class="shop-item" id="mysticalRankItem">
-            <h2>✨ Mystical Rank</h2>
-            <p>Flex on your friends with the mystical blue rank! INSANE PERKS: LOSS PROTECTION, 3X PASSIVE COIN GAIN, MYSTICAL COSMETIC. </p>
-            <div class="price">250,000 Coins</div>
-            <button id="buyMysticalRank">Purchase</button>
+        <div class="shop-item">
+            <h2>🎩 Top Hat</h2>
+            <p>Classy black top hat. White outline.</p>
+            <div class="price">8,000 Coins</div>
+            <button id="buyTophat">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>🧙 Wizard Hat</h2>
+            <p>Purple wizard hat with powers(not actually).</p>
+            <div class="price">12,000 Coins</div>
+            <button id="buyWizard">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>🎅 Santa Hat</h2>
+            <p>Ho ho ho! It's almost christmas time!</p>
+            <div class="price">22,000 Coins</div>
+            <button id="buySanta">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>🎉 Party Hat</h2>
+            <p>Rainbow gradient party hat.</p>
+            <div class="price">20,000 Coins</div>
+            <button id="buyParty">Purchase</button>
+        </div>
+
+        <!-- Faces -->
+        <h2 style="text-align: center; margin: 30px 0 20px 0; font-size: 22px; color: #888;">Faces</h2>
+        
+        <div class="shop-item">
+            <h2>😊 Happy Face</h2>
+            <p>A cheerful smiley face for your sphere!</p>
+            <div class="price">10,000 Coins</div>
+            <button id="buyHappy">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>😈 Evil Face</h2>
+            <p>Sinister red eyes and devilish grin.</p>
+            <div class="price">15,000 Coins</div>
+            <button id="buyEvil">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>😎 Cool Face (Sunglasses)</h2>
+            <p>Black sunglasses with a smirk.</p>
+            <div class="price">25,000 Coins</div>
+            <button id="buyCool">Purchase</button>
+        </div>
+
+        <!-- Effects -->
+        <h2 style="text-align: center; margin: 30px 0 20px 0; font-size: 22px; color: #888;">Effects</h2>
+        
+        <div class="shop-item" style="border: 2px solid #a855f7;">
+            <h2>🌑 Orbiting Black Holes</h2>
+            <p>Three miniature black holes orbit around your sphere. The ultimate flex!</p>
+            <div class="price" style="color: #a855f7;">100,000 Coins</div>
+            <button id="buyBlackhole" style="background: #a855f7; border-color: #7c3aed;">Purchase</button>
         </div>
         
-        <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
-            <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🎨 COSMETICS</h1>
-            
-            <!-- Sphere Colors -->
-            <div class="shop-item">
-                <h2>🌅 Sunset Sphere Color</h2>
-                <p>Transform your sphere into sunset gradient (red to orange).</p>
-                <div class="price">12,000 Coins</div>
-                <button id="buySunset">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>🌊 Ocean Sphere Color</h2>
-                <p>Deep blue ocean gradient for your sphere.</p>
-                <div class="price">12,000 Coins</div>
-                <button id="buyOcean">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>🌌 Galaxy Sphere Color</h2>
-                <p>Purple cosmic gradient. (My favorite) </p>
-                <div class="price">15,000 Coins</div>
-                <button id="buyGalaxy">Purchase</button>
-            </div>
-
-            <!-- Hats -->
-            <div class="shop-item">
-                <h2>👑 Crown Hat</h2>
-                <p>Wear a golden crown!</p>
-                <div class="price">10,000 Coins</div>
-                <button id="buyCrown">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>🎩 Top Hat</h2>
-                <p>Classy black top hat. White outline.</p>
-                <div class="price">8,000 Coins</div>
-                <button id="buyTophat">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>🧙 Wizard Hat</h2>
-                <p>Purple wizard hat with powers(not actually).</p>
-                <div class="price">12,000 Coins</div>
-                <button id="buyWizard">Purchase</button>
-            </div>
-
-            <!-- Faces -->
-            <div class="shop-item">
-                <h2>😊 Happy Face</h2>
-                <p>A cheerful smiley face for your sphere!</p>
-                <div class="price">10,000 Coins</div>
-                <button id="buyHappy">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>😈 Evil Face</h2>
-                <p>Sinister red eyes and devilish grin.</p>
-                <div class="price">15,000 Coins</div>
-                <button id="buyEvil">Purchase</button>
-            </div>
-
-            <!-- Effects -->
-            <div class="shop-item" style="border: 2px solid #a855f7;">
-                <h2>🌑 Orbiting Black Holes</h2>
-                <p>Three miniature black holes orbit around your sphere. The ultimate flex!</p>
-                <div class="price" style="color: #a855f7;">100,000 Coins</div>
-                <button id="buyBlackhole" style="background: #a855f7; border-color: #7c3aed;">Purchase</button>
-            </div>
-            
-            <div class="shop-item" style="border: 2px solid #fff;">
-                <h2>🖤 Black Wings</h2>
-                <p>Dark angelic wings that flap behind your sphere.</p>
-                <div class="price">175,000 Coins</div>
-                <button id="buyWings">Purchase</button>
-            </div>
-
-            <!-- New Hats -->
-            <div class="shop-item">
-                <h2>🎅 Santa Hat</h2>
-                <p>Ho ho ho! It's almost christmas time!</p>
-                <div class="price">22,000 Coins</div>
-                <button id="buySanta">Purchase</button>
-            </div>
-
-            <div class="shop-item">
-                <h2>🎉 Party Hat</h2>
-                <p>Rainbow gradient party hat.</p>
-                <div class="price">20,000 Coins</div>
-                <button id="buyParty">Purchase</button>
-            </div>
-
-            <!-- New Face -->
-            <div class="shop-item">
-                <h2>😎 Cool Face (Sunglasses)</h2>
-                <p>Black sunglasses with a smirk.</p>
-                <div class="price">25,000 Coins</div>
-                <button id="buyCool">Purchase</button>
-            </div>
-
-            <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
-                <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">⚔️ SWORDS</h1>
-                
-                <div class="shop-item">
-                    <h2>🦯 Stick Sword</h2>
-                    <p>A simple wooden stick. Hey, it's better than nothing!</p>
-                    <div class="price">5,000 Coins</div>
-                    <button id="buyStickSword">Purchase</button>
-                </div>
-
-                <div class="shop-item">
-                    <h2>⚔️ Stone Sword</h2>
-                    <p>Forged from solid stone. Increases coin PROFIT by 1.2x!</p>
-                    <div class="price">50,000 Coins</div>
-                    <button id="buyStoneSword">Purchase</button>
-                </div>
-
-                <div class="shop-item" style="border: 2px solid #ff4500;">
-                    <h2>🐉 Dragon Sword</h2>
-                    <p>Legendary blade forged in dragon fire. Doubles all coin PROFIT!</p>
-                    <div class="price" style="color: #ff4500;">300,000 Coins</div>
-                    <button id="buyDragonSword" style="background: #ff4500; border-color: #ff6347;">Purchase</button>
-                </div>
-            </div>
+        <div class="shop-item" style="border: 2px solid #fff;">
+            <h2>🖤 Black Wings</h2>
+            <p>Dark angelic wings that flap behind your sphere.</p>
+            <div class="price">175,000 Coins</div>
+            <button id="buyWings">Purchase</button>
         </div>
     </div>
+
+    <!-- SWORDS SECTION -->
+    <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+        <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">⚔️ SWORDS</h1>
+        
+        <div class="shop-item">
+            <h2>🦯 Stick Sword</h2>
+            <p>A simple wooden stick. Hey, it's better than nothing!</p>
+            <div class="price">5,000 Coins</div>
+            <button id="buyStickSword">Purchase</button>
+        </div>
+
+        <div class="shop-item">
+            <h2>⚔️ Stone Sword</h2>
+            <p>Forged from solid stone. Increases coin PROFIT by 1.2x!</p>
+            <div class="price">50,000 Coins</div>
+            <button id="buyStoneSword">Purchase</button>
+        </div>
+
+        <div class="shop-item" style="border: 2px solid #ff4500;">
+            <h2>🐉 Dragon Sword</h2>
+            <p>Legendary blade forged in dragon fire. Doubles all coin PROFIT!</p>
+            <div class="price" style="color: #ff4500;">300,000 Coins</div>
+            <button id="buyDragonSword" style="background: #ff4500; border-color: #ff6347;">Purchase</button>
+        </div>
+    </div>
+</div>
 
     <script>
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
@@ -385,6 +438,11 @@
                 { type: 'colors', item: 'sunset', btn: 'buySunset' },
                 { type: 'colors', item: 'ocean', btn: 'buyOcean' },
                 { type: 'colors', item: 'galaxy', btn: 'buyGalaxy' },
+                { type: 'colors', item: 'blood', btn: 'buyBlood' },
+                { type: 'colors', item: 'quartz', btn: 'buyQuartz' },
+                { type: 'colors', item: 'ruby', btn: 'buyRuby' },
+                { type: 'colors', item: 'obsidian', btn: 'buyObsidian' },
+                { type: 'colors', item: 'opaline', btn: 'buyOpaline' },
                 { type: 'hats', item: 'crown', btn: 'buyCrown' },
                 { type: 'hats', item: 'tophat', btn: 'buyTophat' },
                 { type: 'hats', item: 'wizard', btn: 'buyWizard' },
@@ -603,6 +661,11 @@
         document.getElementById('buySunset').addEventListener('click', () => buyCosmetic('colors', 'sunset', 12000, 'buySunset'));
         document.getElementById('buyOcean').addEventListener('click', () => buyCosmetic('colors', 'ocean', 12000, 'buyOcean'));
         document.getElementById('buyGalaxy').addEventListener('click', () => buyCosmetic('colors', 'galaxy', 15000, 'buyGalaxy'));
+        document.getElementById('buyBlood').addEventListener('click', () => buyCosmetic('colors', 'blood', 10000, 'buyBlood'));
+        document.getElementById('buyQuartz').addEventListener('click', () => buyCosmetic('colors', 'quartz', 10000, 'buyQuartz'));
+        document.getElementById('buyRuby').addEventListener('click', () => buyCosmetic('colors', 'ruby', 50000, 'buyRuby'));
+        document.getElementById('buyObsidian').addEventListener('click', () => buyCosmetic('colors', 'obsidian', 75000, 'buyObsidian'));
+        document.getElementById('buyOpaline').addEventListener('click', () => buyCosmetic('colors', 'opaline', 50000, 'buyOpaline'));
 
         // Hats
         document.getElementById('buyCrown').addEventListener('click', () => buyCosmetic('hats', 'crown', 10000, 'buyCrown'));
