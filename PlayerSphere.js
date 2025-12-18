@@ -83,11 +83,11 @@ switch(color) {
         gradient.addColorStop(0.5, '#8b0020');
         gradient.addColorStop(1, '#000000');
         break;
-    case 'obsidian':
-        gradient.addColorStop(0, '#ffed4e');
-        gradient.addColorStop(0.2, '#3d2a1f');
-        gradient.addColorStop(1, '#000000');
-        break;
+ase 'obsidian':
+    gradient.addColorStop(0, '#8b7355');
+    gradient.addColorStop(0.4, '#1a1410');
+    gradient.addColorStop(1, '#000000');
+    break;
     case 'opaline':
         gradient.addColorStop(0, '#ffffff');
         gradient.addColorStop(0.4, '#a8a8a8');
