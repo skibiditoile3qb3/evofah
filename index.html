@@ -192,11 +192,11 @@
             z-index: 10000;
             padding: 10px 20px;
         }
-        #gameFrame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+#gameFrame:not(.mobile-game) {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 #gameFrame.mobile-game {
     width: 375px;
     height: 667px;
