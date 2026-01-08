@@ -33,7 +33,7 @@ draw(cosmetics = {}) {
     const { color = 'default', hat = 'none', face = 'none', effect = 'none', sword = 'none' } = cosmetics;
         
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    if (effect === 'blackhole' || effect === 'wings' || effect === 'mystical-aura') {
+    if (effect === 'blackhole' || effect === 'wings' || effect === 'mystical-aura' || effect === 'golden-aura') {
         this.drawEffect(effect);
     }
     
@@ -41,9 +41,6 @@ draw(cosmetics = {}) {
     this.drawSword(sword);
     this.drawFace(face);
     this.drawHat(hat);
-    if (effect === 'glitch') {
-        this.drawEffect(effect);
-    }
 }
     
     drawSphere(color) {
