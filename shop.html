@@ -356,7 +356,7 @@
     <div class="shop-item" style="border: 2px solid #9333ea;">
         <h2>⚡ Lightning Potion</h2>
         <p>Single-use potion that DOUBLES all profits for 5 minutes. No cooldown! </p>
-        <div class="price" style="color: #9333ea;">25,000 Coins</div>
+        <div class="price" style="color: #9333ea;">20,000 Coins</div>
         <button id="buyLightningPotion" style="background: #9333ea; border-color: #7e22ce;">Purchase</button>
     </div>
 </div>
@@ -433,8 +433,8 @@
         }
 document.getElementById('buyLightningPotion').addEventListener('click', () => {
     if (coins >= 50000) {
-        if (confirm('Purchase Lightning Potion for 50,000 coins?')) {
-            coins -= 50000;
+        if (confirm('Purchase Lightning Potion for 20,000 coins?')) {
+            coins -= 20000;
             setCoins(coins);
             
             // Add to inventory
@@ -477,28 +477,30 @@ document.getElementById('buyLightningPotion').addEventListener('click', () => {
 
             // Check cosmetics
             const cosmeticChecks = [
-                { type: 'colors', item: 'sunset', btn: 'buySunset' },
-                { type: 'colors', item: 'ocean', btn: 'buyOcean' },
-                { type: 'colors', item: 'galaxy', btn: 'buyGalaxy' },
-                { type: 'colors', item: 'blood', btn: 'buyBlood' },
-                { type: 'colors', item: 'quartz', btn: 'buyQuartz' },
-                { type: 'colors', item: 'ruby', btn: 'buyRuby' },
-                { type: 'colors', item: 'obsidian', btn: 'buyObsidian' },
-                { type: 'colors', item: 'opaline', btn: 'buyOpaline' },
-                { type: 'hats', item: 'crown', btn: 'buyCrown' },
-                { type: 'hats', item: 'tophat', btn: 'buyTophat' },
-                { type: 'hats', item: 'wizard', btn: 'buyWizard' },
-                { type: 'hats', item: 'santa', btn: 'buySanta' },
-                { type: 'hats', item: 'party', btn: 'buyParty' },
-                { type: 'faces', item: 'happy', btn: 'buyHappy' },
-                { type: 'faces', item: 'evil', btn: 'buyEvil' },
-                { type: 'faces', item: 'cool', btn: 'buyCool' },
-                { type: 'effects', item: 'blackhole', btn: 'buyBlackhole' },
-                { type: 'effects', item: 'wings', btn: 'buyWings' },
-                { type: 'swords', item: 'stick', btn: 'buyStickSword' },
-                { type: 'swords', item: 'stone', btn: 'buyStoneSword' },
-                { type: 'swords', item: 'dragon', btn: 'buyDragonSword' }
-            ];
+    { type: 'colors', item: 'sunset', btn: 'buySunset' },
+    { type: 'colors', item: 'ocean', btn: 'buyOcean' },
+    { type: 'colors', item: 'galaxy', btn: 'buyGalaxy' },
+    { type: 'colors', item: 'blood', btn: 'buyBlood' },
+    { type: 'colors', item: 'quartz', btn: 'buyQuartz' },
+    { type: 'colors', item: 'ruby', btn: 'buyRuby' },
+    { type: 'colors', item: 'obsidian', btn: 'buyObsidian' },
+    { type: 'colors', item: 'opaline', btn: 'buyOpaline' },
+    { type: 'hats', item: 'crown', btn: 'buyCrown' },
+    { type: 'hats', item: 'tophat', btn: 'buyTophat' },
+    { type: 'hats', item: 'wizard', btn: 'buyWizard' },
+    { type: 'hats', item: 'santa', btn: 'buySanta' },
+    { type: 'hats', item: 'party', btn: 'buyParty' },
+    { type: 'faces', item: 'happy', btn: 'buyHappy' },
+    { type: 'faces', item: 'evil', btn: 'buyEvil' },
+    { type: 'faces', item: 'cool', btn: 'buyCool' },
+    { type: 'effects', item: 'blackhole', btn: 'buyBlackhole' },
+    { type: 'effects', item: 'wings', btn: 'buyWings' },
+    { type: 'effects', item: 'golden-aura', btn: 'buyGoldenAura' },
+    { type: 'swords', item: 'stick', btn: 'buyStickSword' },
+    { type: 'swords', item: 'stone', btn: 'buyStoneSword' },
+    { type: 'swords', item: 'lightning', btn: 'buyLightningBlade' },
+    { type: 'swords', item: 'dragon', btn: 'buyDragonSword' }
+];
 
             cosmeticChecks.forEach(({ type, item, btn }) => {
                 if (userProfile.ownedCosmetics[type] && userProfile.ownedCosmetics[type].includes(item)) {
