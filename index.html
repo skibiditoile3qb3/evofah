@@ -333,6 +333,35 @@
     margin: 0 auto 10px;
     /* No width/height restrictions - let it be its natural size */
 }
+#lightningIcon {
+    position: fixed;
+    top: 150px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffff00 0%, #ffd700 100%);
+    border: 3px solid #fff;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(255, 255, 0, 0.5);
+}
+#lightningIcon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 255, 0, 0.7);
+}
+#lightningIcon.active {
+    animation: pulse 1s infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
     </style>
     <script src="PlayerSphere.js"></script>
 </head>
@@ -352,7 +381,9 @@
         <div id="userStatus" style="font-size: 14px; margin-bottom: 8px;">player</div>
         <div style="font-size: 13px; color: #d69e2e;">💰 <span id="coinAmountTop">10</span></div>
     </div>
+    
 </div>
+        <div id="lightningIcon" title="Lightning Blade: Double Profit">⚡</div>
         <div class="container">
             <h1>Evo?</h1>
             <div class="search-container">
@@ -581,7 +612,7 @@ function updateUserDisplay() {
 
 function updateSphereAnimation() {
     const cosmetics = userProfile.equippedCosmetics || {};
-    const animatedEffects = ['blackhole', 'wings', 'glitch', 'mystical-aura'];
+     const animatedEffects = ['blackhole', 'wings', 'glitch', 'mystical-aura', 'golden-aura'];
     if (animatedEffects.includes(cosmetics.effect)) {
         if (playerSphereRenderer && !playerSphereRenderer.shouldAnimate) {
             playerSphereRenderer.startAnimation(cosmetics);
@@ -1011,12 +1042,18 @@ if (checkAndHandleBan()) {
 activityCheckInterval = setInterval(() => {
     if (gameIsPlaying) {
         gamePlayTime += 1;
-        if (gamePlayTime > 0 && gamePlayTime % 30 === 0) {
-            const coinReward = userProfile.status === 'mystical' ? 300 : 100;
-            coins += coinReward;
-            setCoins(coins);
-            updateCoinDisplay();
-        }
+if (gamePlayTime > 0) {
+    const hasGoldenAura = userProfile.equippedCosmetics?.effect === 'golden-aura';
+    const interval = hasGoldenAura ? 10 : 30;
+    
+    if (gamePlayTime % interval === 0) {
+        let coinReward = 100;
+        if (userProfile.status === 'mystical') coinReward = 300;
+        coins += coinReward;
+        setCoins(coins);
+        updateCoinDisplay();
+    }
+}
 
                 if (!userProfile.adsDisabled && Date.now() - lastAdTime >= adIntervalTime) {
                     showAd();
@@ -1347,16 +1384,26 @@ window.addEventListener('message', (event) => {
         const difference = newCoins - oldCoins;
         
         // Apply sword multiplier ONLY to profits (positive differences)
-        if (difference > 0) {
-            const swordMultiplier = getSwordMultiplier();
-            const bonusProfit = difference * (swordMultiplier - 1);
-            coins = newCoins + bonusProfit;
-            
-            // Show notification if there's a bonus
-            if (bonusProfit > 0) {
-                showSwordBonus(bonusProfit, swordMultiplier);
-            }
-        } else if (difference < 0) {
+if (difference > 0) {
+    let swordMultiplier = getSwordMultiplier();
+    
+    // Apply Lightning Blade double if active
+    if (lightningBladeState.active) {
+        swordMultiplier *= 2;
+    }
+    
+    // Apply potion effects (stacks with everything)
+    if (isPotionActive()) {
+        swordMultiplier *= 2;
+    }
+    
+    const bonusProfit = difference * (swordMultiplier - 1);
+    coins = newCoins + bonusProfit;
+    
+    // Show notification if there's a bonus
+    if (bonusProfit > 0) {
+        showSwordBonus(bonusProfit, swordMultiplier);
+    } else if (difference < 0) {
             // Apply loss protection for Mystical rank
             const lossAmount = Math.abs(difference);
             const refund = applyLossProtection(lossAmount);
@@ -1542,7 +1589,133 @@ if (result.valid) {
         document.getElementById('adminPanelBtn').addEventListener('click', () => {
     window.location.href = 'adminpanel.html';
 });
+
+    function getPotionQueue() {
+    try {
+        const saved = localStorage.getItem('_potionQueue');
+        if (saved) {
+            const queue = JSON.parse(saved);
+            // Remove expired potions
+            const now = Date.now();
+            return queue.filter(p => p.endTime > now);
+        }
+    } catch(e) {}
+    return [];
+}
+
+function savePotionQueue(queue) {
+    try {
+        localStorage.setItem('_potionQueue', JSON.stringify(queue));
+    } catch(e) {}
+}
+
+function addPotionToQueue(potion) {
+    const queue = getPotionQueue();
+    queue.push(potion);
+    savePotionQueue(queue);
+}
+
+function isPotionActive() {
+    const queue = getPotionQueue();
+    return queue.length > 0;
+}
+    let lightningBladeState = {
+    active: false,
+    endTime: 0,
+    cooldownEnd: 0
+};
+
+// Load persisted state
+function loadLightningState() {
+    try {
+        const saved = localStorage.getItem('_lightningBlade');
+        if (saved) {
+            lightningBladeState = JSON.parse(saved);
+            // Check if effects have expired
+            const now = Date.now();
+            if (lightningBladeState.active && now >= lightningBladeState.endTime) {
+                lightningBladeState.active = false;
+                lightningBladeState.cooldownEnd = now + (45 * 60 * 1000);
+                saveLightningState();
+            }
+            if (now >= lightningBladeState.cooldownEnd) {
+                lightningBladeState.cooldownEnd = 0;
+            }
+        }
+    } catch(e) {}
+}
+
+function saveLightningState() {
+    try {
+        localStorage.setItem('_lightningBlade', JSON.stringify(lightningBladeState));
+    } catch(e) {}
+}
+
+function updateLightningIcon() {
+    const icon = document.getElementById('lightningIcon');
+    const hasLightning = userProfile.equippedCosmetics?.sword === 'lightning';
+    const now = Date.now();
     
+    if (!hasLightning) {
+        icon.style.display = 'none';
+        return;
+    }
+    
+    // Show icon only when not on cooldown
+    if (now < lightningBladeState.cooldownEnd) {
+        icon.style.display = 'none';
+    } else {
+        icon.style.display = 'flex';
+        if (lightningBladeState.active) {
+            icon.classList.add('active');
+        } else {
+            icon.classList.remove('active');
+        }
+    }
+}
+
+function activateLightningBlade() {
+    const now = Date.now();
+    
+    if (lightningBladeState.active) {
+        const remaining = Math.ceil((lightningBladeState.endTime - now) / 1000);
+        alert(`⚡ Lightning Blade is already active! ${remaining}s remaining.`);
+        return;
+    }
+    
+    if (now < lightningBladeState.cooldownEnd) {
+        const cooldownMin = Math.ceil((lightningBladeState.cooldownEnd - now) / 60000);
+        alert(`⚡ Lightning Blade is on cooldown! ${cooldownMin} minutes remaining.`);
+        return;
+    }
+    
+    // Activate ability
+    lightningBladeState.active = true;
+    lightningBladeState.endTime = now + (5 * 60 * 1000); // 5 minutes
+    saveLightningState();
+    updateLightningIcon();
+    
+    alert('⚡ Lightning Blade activated! All profits DOUBLED for 5 minutes!');
+    
+    // Auto-deactivate after 5 minutes
+    setTimeout(() => {
+        lightningBladeState.active = false;
+        lightningBladeState.cooldownEnd = Date.now() + (45 * 60 * 1000); // 45 min cooldown
+        saveLightningState();
+        updateLightningIcon();
+        alert('⚡ Lightning Blade effect ended. Entering 45-minute cooldown.');
+    }, 5 * 60 * 1000);
+}
+
+document.getElementById('lightningIcon').addEventListener('click', activateLightningBlade);
+
+// Update icon visibility
+setInterval(() => {
+    updateLightningIcon();
+}, 1000);
+
+loadLightningState();
+updateLightningIcon();
     </script>
     <script src="visualizer.js"></script>
 </body>
