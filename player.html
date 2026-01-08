@@ -198,64 +198,81 @@
     <script src="PlayerSphere.js"></script>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-btn">← BACK TO GAMES</a>
-        <h1>👤 PLAYER PROFILE</h1>
+<div class="container">
+    <a href="index.html" class="back-btn">← BACK TO GAMES</a>
+    <h1>👤 PLAYER PROFILE</h1>
 
-        <div class="profile-grid">
-            <!-- Left Panel -->
-            <div class="left-panel">
-                <canvas id="bigPlayerSphere" width="200" height="200"></canvas>
-                <div class="username" id="profileUsername">guest000000</div>
-                <div class="status" id="profileStatus">player</div>
-                <div class="coins-display">💰 <span id="profileCoins">0</span> coins</div>
-                <button class="share-btn" id="shareBtn">📸 Share Profile</button>
+    <div class="profile-grid">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <canvas id="bigPlayerSphere" width="200" height="200"></canvas>
+            <div class="username" id="profileUsername">guest000000</div>
+            <div class="status" id="profileStatus">player</div>
+            <div class="coins-display">💰 <span id="profileCoins">0</span> coins</div>
+            <button class="share-btn" id="shareBtn">📸 Share Profile</button>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="tabs">
+                <button class="tab active" data-tab="stats">📊 Stats</button>
+                <button class="tab" data-tab="cosmetics">🎨 Cosmetics</button>
+                <button class="tab" data-tab="potions">🧪 Potions</button>
             </div>
 
-            <!-- Right Panel -->
-            <div class="right-panel">
-                <div class="tabs">
-                    <button class="tab active" data-tab="stats">📊 Stats</button>
-                    <button class="tab" data-tab="cosmetics">🎨 Cosmetics</button>
+            <!-- Stats Tab -->
+            <div class="tab-content active" id="stats">
+                <div class="stat-row">
+                    <span class="stat-label">Total Playtime</span>
+                    <span class="stat-value" id="statPlaytime">0 minutes</span>
                 </div>
+                <div class="stat-row">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value" id="statStatus">player</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Total Coins</span>
+                    <span class="stat-value" id="statCoins">0</span>
+                </div>
+            </div>
 
-                <!-- Stats Tab -->
-                <div class="tab-content active" id="stats">
-                    <div class="stat-row">
-                        <span class="stat-label">Total Playtime</span>
-                        <span class="stat-value" id="statPlaytime">0 minutes</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Status</span>
-                        <span class="stat-value" id="statStatus">player</span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Total Coins</span>
-                        <span class="stat-value" id="statCoins">0</span>
+            <!-- Cosmetics Tab -->
+            <div class="tab-content" id="cosmetics">
+                <h3 style="margin-bottom: 20px; color: #d69e2e;">🌈 Colors</h3>
+                <div class="cosmetics-grid" id="colorsGrid"></div>
+
+                <h3 style="margin: 30px 0 20px; color: #d69e2e;">🎩 Hats</h3>
+                <div class="cosmetics-grid" id="hatsGrid"></div>
+
+                <h3 style="margin: 30px 0 20px; color: #d69e2e;">😊 Faces</h3>
+                <div class="cosmetics-grid" id="facesGrid"></div>
+
+                <h3 style="margin: 30px 0 20px; color: #d69e2e;">✨ Effects</h3>
+                <div class="cosmetics-grid" id="effectsGrid"></div>
+
+                <h3 style="margin: 30px 0 20px; color: #d69e2e;">⚔️ Swords</h3>
+                <div class="cosmetics-grid" id="swordsGrid"></div>
+            </div>
+
+            <!-- Potions Tab -->
+            <div class="tab-content" id="potions">
+                <h3 style="margin-bottom: 20px; color: #9333ea;">⚡ Lightning Potions</h3>
+                <div style="background: #252525; border: 2px solid #9333ea; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 18px; margin-bottom: 5px;">⚡ Lightning Potion</div>
+                            <div style="color: #888; font-size: 14px;">Doubles all profit for 5 minutes</div>
+                            <div style="color: #9333ea; font-size: 16px; margin-top: 10px;">Owned: <span id="lightningPotionCount">0</span></div>
+                        </div>
+                        <button id="useLightningPotion" style="padding: 12px 24px; background: #9333ea; border: 1px solid #7e22ce; border-radius: 6px; color: #fff; cursor: pointer; font-size: 14px; transition: all 0.2s;">Use Potion</button>
                     </div>
                 </div>
-
-                <!-- Cosmetics Tab -->
-                <div class="tab-content" id="cosmetics">
-                    <h3 style="margin-bottom: 20px; color: #d69e2e;">🌈 Colors</h3>
-                    <div class="cosmetics-grid" id="colorsGrid"></div>
-
-                    <h3 style="margin: 30px 0 20px; color: #d69e2e;">🎩 Hats</h3>
-                    <div class="cosmetics-grid" id="hatsGrid"></div>
-
-                    <h3 style="margin: 30px 0 20px; color: #d69e2e;">😊 Faces</h3>
-                    <div class="cosmetics-grid" id="facesGrid"></div>
-
-                    <h3 style="margin: 30px 0 20px; color: #d69e2e;">✨ Effects</h3>
-                    <div class="cosmetics-grid" id="effectsGrid"></div>
-
-                    <h3 style="margin: 30px 0 20px; color: #d69e2e;">⚔️ Swords</h3>
-                    <div class="cosmetics-grid" id="swordsGrid"></div>
-                    
-                </div>
+                
+                <div id="activePotionEffects"></div>
             </div>
         </div>
     </div>
+</div>
 
     <script>
         const _0x4a2b = (s) => btoa(s).split('').reverse().join('');
@@ -354,7 +371,7 @@
 
 // Animate black hole effect
 function updateBigSphereAnimation() {
-    const animatedEffects = ['blackhole', 'wings', 'glitch', 'mystical-aura'];
+    const animatedEffects = ['blackhole', 'wings', 'glitch', 'mystical-aura', 'golden-aura'];
     if (animatedEffects.includes(userProfile.equippedCosmetics.effect)) {
                 if (bigSphereRenderer && !bigSphereRenderer.shouldAnimate) {
                     bigSphereRenderer.startAnimation(userProfile.equippedCosmetics);
@@ -438,13 +455,15 @@ function updateBigSphereAnimation() {
                 { id: 'none', name: 'None', icon: '❌' },
                 { id: 'blackhole', name: 'Black Holes', icon: '🌑' },
                 { id: 'wings', name: 'Black Wings', icon: '🖤' },
-                { id: 'mystical-aura', name: 'Mystical Aura', icon: '✨' }
+                { id: 'mystical-aura', name: 'Mystical Aura', icon: '✨' },
+                { id: 'golden-aura', name: 'Golden Aura', icon: '✨' }
             ],
 
             swords: [
                 { id: 'none', name: 'None', icon: '❌' },
                 { id: 'stick', name: 'Stick Sword', icon: '🦯' },
                 { id: 'stone', name: 'Stone Sword', icon: '⚔️' },
+                { id: 'lightning', name: 'Lightning Blade', icon: '⚡' },
                 { id: 'dragon', name: 'Dragon Sword', icon: '🐉' }
             ]
         };
@@ -538,12 +557,29 @@ cosmetics.swords.forEach(item => {
     const owned = userProfile.ownedCosmetics.swords.includes(item.id);
     const equipped = userProfile.equippedCosmetics.sword === item.id;
     
+    let statusText = equipped ? 'EQUIPPED' : owned ? 'Click to equip' : 'LOCKED';
+    
+    // Show cooldown for lightning blade
+    if (item.id === 'lightning' && equipped) {
+        try {
+            const saved = localStorage.getItem('_lightningBlade');
+            if (saved) {
+                const state = JSON.parse(saved);
+                const now = Date.now();
+                if (now < state.cooldownEnd) {
+                    const cooldownMin = Math.ceil((state.cooldownEnd - now) / 60000);
+                    statusText = `Cooldown: ${cooldownMin}min`;
+                }
+            }
+        } catch(e) {}
+    }
+    
     const div = document.createElement('div');
     div.className = 'cosmetic-item' + (equipped ? ' equipped' : '') + (!owned ? ' locked' : '');
     div.innerHTML = `
         <div class="cosmetic-preview" style="font-size: 48px;">${item.icon}</div>
         <div class="cosmetic-name">${item.name}</div>
-        <div class="cosmetic-status">${equipped ? 'EQUIPPED' : owned ? 'Click to equip' : 'LOCKED'}</div>
+        <div class="cosmetic-status">${statusText}</div>
     `;
     if (owned) {
         div.onclick = () => equipCosmetic('sword', item.id);
@@ -551,6 +587,68 @@ cosmetics.swords.forEach(item => {
     swordsGrid.appendChild(div);
 });
         }
+
+        function renderPotions() {
+    if (!userProfile.potions) userProfile.potions = {};
+    document.getElementById('lightningPotionCount').textContent = userProfile.potions.lightning || 0;
+    
+    // Show active effects
+    updateActivePotionDisplay();
+}
+
+function updateActivePotionDisplay() {
+    const container = document.getElementById('activePotionEffects');
+    const activePotion = getActivePotion();
+    
+    if (!activePotion) {
+        container.innerHTML = '<p style="color: #888; text-align: center;">No active potion effects</p>';
+        return;
+    }
+    
+    const remaining = Math.ceil((activePotion.endTime - Date.now()) / 1000);
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+    
+    container.innerHTML = `
+        <h4 style="margin-bottom: 15px; color: #9333ea;">Active Effect:</h4>
+        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; border: 2px solid #9333ea; text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 10px;">⚡</div>
+            <div style="font-size: 16px; color: #9333ea; font-weight: bold;">${minutes}m ${seconds}s remaining</div>
+        </div>
+    `;
+}
+
+// Use lightning potion
+// Use lightning potion
+document.getElementById('useLightningPotion').addEventListener('click', () => {
+    if (!userProfile.potions.lightning || userProfile.potions.lightning <= 0) {
+        alert('❌ You don\'t have any Lightning Potions!');
+        return;
+    }
+    
+    // Check if already active
+    if (isPotionActive()) {
+        alert('⚡ A potion is already active! Wait for it to finish before using another.');
+        return;
+    }
+    
+    // Consume potion
+    userProfile.potions.lightning--;
+    saveUserProfile(userProfile);
+    
+    // Set single active potion
+    setPotionActive({
+        type: 'lightning',
+        endTime: Date.now() + (5 * 60 * 1000)
+    });
+    
+    alert('⚡ Lightning Potion used! All profits DOUBLED for 5 minutes!');
+    renderPotions();
+});
+
+// Initialize
+renderPotions();
+setInterval(updateActivePotionDisplay, 1000);
 
         // Equip cosmetic
 function equipCosmetic(type, id) {
