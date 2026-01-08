@@ -335,7 +335,13 @@
             <div class="price">50,000 Coins</div>
             <button id="buyStoneSword">Purchase</button>
         </div>
-
+        
+<div class="shop-item" style="border: 2px solid #ffff00;">
+    <h2>⚡ Lightning Blade</h2>
+    <p>Sword with active ability! Click the lightning icon to DOUBLE all profits for 5 minutes. 45-minute cooldown.</p>
+    <div class="price" style="color: #ffff00;">200,000 Coins</div>
+    <button id="buyLightningBlade" style="background: #ffff00; border-color: #ffd700; color: #000;">Purchase</button>
+</div>
         <div class="shop-item" style="border: 2px solid #ff4500;">
             <h2>🐉 Dragon Sword</h2>
             <p>Legendary blade forged in dragon fire. Doubles all coin PROFIT!</p>
@@ -343,6 +349,17 @@
             <button id="buyDragonSword" style="background: #ff4500; border-color: #ff6347;">Purchase</button>
         </div>
     </div>
+       <!-- POTIONS SECTION -->
+<div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid #333;">
+    <h1 style="text-align: center; margin-bottom: 30px; font-size: 28px;">🧪 POTIONS</h1>
+    
+    <div class="shop-item" style="border: 2px solid #9333ea;">
+        <h2>⚡ Lightning Potion</h2>
+        <p>Single-use potion that DOUBLES all profits for 5 minutes. No cooldown! </p>
+        <div class="price" style="color: #9333ea;">25,000 Coins</div>
+        <button id="buyLightningPotion" style="background: #9333ea; border-color: #7e22ce;">Purchase</button>
+    </div>
+</div>
 </div>
 
     <script>
@@ -414,7 +431,25 @@
             button.disabled = true;
             itemElement.classList.add('purchased');
         }
-
+document.getElementById('buyLightningPotion').addEventListener('click', () => {
+    if (coins >= 50000) {
+        if (confirm('Purchase Lightning Potion for 50,000 coins?')) {
+            coins -= 50000;
+            setCoins(coins);
+            
+            // Add to inventory
+            if (!userProfile.potions) userProfile.potions = {};
+            if (!userProfile.potions.lightning) userProfile.potions.lightning = 0;
+            userProfile.potions.lightning++;
+            
+            saveUserProfile(userProfile);
+            alert(`✅ Lightning Potion purchased! You now have ${userProfile.potions.lightning} Lightning Potion(s).`);
+            document.getElementById('coinAmount').textContent = coins;
+        }
+    } else {
+        alert('❌ Not enough coins! You need 50,000 coins.');
+    }
+});
         // Check and update UI for owned items on page load
         function checkOwnedItems() {
             // Check ad removal
@@ -695,6 +730,8 @@
         document.getElementById('buyStickSword').addEventListener('click', () => buyCosmetic('swords', 'stick', 5000, 'buyStickSword'));
         document.getElementById('buyStoneSword').addEventListener('click', () => buyCosmetic('swords', 'stone', 50000, 'buyStoneSword'));
         document.getElementById('buyDragonSword').addEventListener('click', () => buyCosmetic('swords', 'dragon', 300000, 'buyDragonSword'));
+        document.getElementById('buyLightningBlade').addEventListener('click', () => buyCosmetic('swords', 'lightning', 200000, 'buyLightningBlade'));
+
 
         // Check owned items on page load
         checkOwnedItems();
