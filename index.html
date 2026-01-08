@@ -1401,14 +1401,15 @@ if (difference > 0) {
     // Show notification if there's a bonus
     if (bonusProfit > 0) {
         showSwordBonus(bonusProfit, totalMultiplier);
-    } else if (difference < 0) {
-            // Apply loss protection for Mystical rank
-            const lossAmount = Math.abs(difference);
-            const refund = applyLossProtection(lossAmount);
-            coins = newCoins + refund;
-        } else {
-            coins = newCoins;
-        }
+    }
+} else if (difference < 0) {  // <-- FIXED: Closed the if (difference > 0) block
+    // Apply loss protection for Mystical rank
+    const lossAmount = Math.abs(difference);
+    const refund = applyLossProtection(lossAmount);
+    coins = newCoins + refund;
+} else {
+    coins = newCoins;
+}
         
         setCoins(coins);
         updateCoinDisplay();
