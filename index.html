@@ -1386,23 +1386,21 @@ window.addEventListener('message', (event) => {
         // Apply sword multiplier ONLY to profits (positive differences)
 if (difference > 0) {
     let swordMultiplier = getSwordMultiplier();
+    let totalMultiplier = swordMultiplier;
     
-    // Apply Lightning Blade double if active
+    // Choose EITHER Lightning Blade OR Potion (whichever is active, not both)
     if (lightningBladeState.active) {
-        swordMultiplier *= 2;
+        totalMultiplier = swordMultiplier * 2; // Sword * 2
+    } else if (isPotionActive()) {
+        totalMultiplier = swordMultiplier * 2; // Sword * 2
     }
     
-    // Apply potion effects (stacks with everything)
-    if (isPotionActive()) {
-        swordMultiplier *= 2;
-    }
-    
-    const bonusProfit = difference * (swordMultiplier - 1);
+    const bonusProfit = difference * (totalMultiplier - 1);
     coins = newCoins + bonusProfit;
     
     // Show notification if there's a bonus
     if (bonusProfit > 0) {
-        showSwordBonus(bonusProfit, swordMultiplier);
+        showSwordBonus(bonusProfit, totalMultiplier);
     } else if (difference < 0) {
             // Apply loss protection for Mystical rank
             const lossAmount = Math.abs(difference);
@@ -1590,34 +1588,46 @@ if (result.valid) {
     window.location.href = 'adminpanel.html';
 });
 
-    function getPotionQueue() {
+// Single potion system (no stacking)
+function getActivePotion() {
     try {
-        const saved = localStorage.getItem('_potionQueue');
+        const saved = localStorage.getItem('_activePotion');
         if (saved) {
-            const queue = JSON.parse(saved);
-            // Remove expired potions
+            const potion = JSON.parse(saved);
             const now = Date.now();
-            return queue.filter(p => p.endTime > now);
+            
+            // Check if expired
+            if (now >= potion.endTime) {
+                clearActivePotion();
+                return null;
+            }
+            return potion;
         }
     } catch(e) {}
-    return [];
+    return null;
 }
 
-function savePotionQueue(queue) {
+function setPotionActive(potion) {
     try {
-        localStorage.setItem('_potionQueue', JSON.stringify(queue));
+        localStorage.setItem('_activePotion', JSON.stringify(potion));
+        
+        // Auto-clear after expiration
+        const duration = potion.endTime - Date.now();
+        setTimeout(() => {
+            clearActivePotion();
+            alert('⚡ Lightning Potion effect ended!');
+        }, duration);
     } catch(e) {}
 }
 
-function addPotionToQueue(potion) {
-    const queue = getPotionQueue();
-    queue.push(potion);
-    savePotionQueue(queue);
+function clearActivePotion() {
+    try {
+        localStorage.removeItem('_activePotion');
+    } catch(e) {}
 }
 
 function isPotionActive() {
-    const queue = getPotionQueue();
-    return queue.length > 0;
+    return getActivePotion() !== null;
 }
     let lightningBladeState = {
     active: false,
