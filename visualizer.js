@@ -36,6 +36,33 @@ if (!profile.visualizerEnabled) {
             visible: true
         }
     };
+        loadSettings();
+
+        function saveSettings() {
+    try {
+        localStorage.setItem('visualizerSettings', JSON.stringify(state));
+    } catch(e) {
+        console.error('Failed to save visualizer settings:', e);
+    }
+}
+
+function loadSettings() {
+    try {
+        const saved = localStorage.getItem('visualizerSettings');
+        if (saved) {
+            const loaded = JSON.parse(saved);
+            // Merge saved settings into state
+            Object.assign(state.themes, loaded.themes || {});
+            Object.assign(state.crosshair, loaded.crosshair || {});
+            Object.assign(state.keyboard, loaded.keyboard || {});
+            Object.assign(state.mouse, loaded.mouse || {});
+            return true;
+        }
+    } catch(e) {
+        console.error('Failed to load visualizer settings:', e);
+    }
+    return false;
+}
 
     /************************************************************
      *  THEME STYLES
@@ -165,9 +192,11 @@ if (!profile.visualizerEnabled) {
         themeSelect.appendChild(option);
     });
     themeSelect.addEventListener("change", () => {
-        state.themes.current = themeSelect.value;
-        updateAllThemes();
-    });
+    state.themes.current = themeSelect.value;
+    updateAllThemes();
+    saveSettings();
+});
+
     themeWrap.appendChild(themeSelect);
     mainMenu.appendChild(themeWrap);
 
@@ -192,10 +221,11 @@ if (!profile.visualizerEnabled) {
     const crosshairCheck = document.createElement("input");
     crosshairCheck.type = "checkbox";
     crosshairCheck.checked = state.crosshair.visible;
-    crosshairCheck.addEventListener("change", () => {
-        state.crosshair.visible = crosshairCheck.checked;
-        updateCrosshair();
-    });
+   crosshairCheck.addEventListener("change", () => {
+    state.crosshair.visible = crosshairCheck.checked;
+    updateCrosshair();
+    saveSettings();
+});
     crosshairToggle.appendChild(crosshairCheck);
     crosshairToggle.appendChild(document.createTextNode(" Show Focus Dot"));
     crosshairSection.appendChild(crosshairToggle);
@@ -214,11 +244,12 @@ if (!profile.visualizerEnabled) {
     sizeSlider.style.width = "100%";
     const sizeValue = document.createElement("span");
     sizeValue.innerText = " " + state.crosshair.size;
-    sizeSlider.addEventListener("input", () => {
-        state.crosshair.size = Number(sizeSlider.value);
-        sizeValue.innerText = " " + sizeSlider.value;
-        updateCrosshair();
-    });
+   sizeSlider.addEventListener("input", () => {
+    state.crosshair.size = Number(sizeSlider.value);
+    sizeValue.innerText = " " + sizeSlider.value;
+    updateCrosshair();
+    saveSettings();
+});
     crosshairSection.appendChild(sizeSlider);
     crosshairSection.appendChild(sizeValue);
 
@@ -232,10 +263,11 @@ if (!profile.visualizerEnabled) {
     colorPicker.value = state.crosshair.color;
     colorPicker.style.width = "50px";
     colorPicker.style.height = "30px";
-    colorPicker.addEventListener("input", () => {
-        state.crosshair.color = colorPicker.value;
-        updateCrosshair();
-    });
+colorPicker.addEventListener("input", () => {
+    state.crosshair.color = colorPicker.value;
+    updateCrosshair();
+    saveSettings();
+});
     crosshairSection.appendChild(colorPicker);
 
     // Border width
@@ -252,10 +284,11 @@ if (!profile.visualizerEnabled) {
     const borderValue = document.createElement("span");
     borderValue.innerText = " " + state.crosshair.borderWidth;
     borderSlider.addEventListener("input", () => {
-        state.crosshair.borderWidth = Number(borderSlider.value);
-        borderValue.innerText = " " + borderSlider.value;
-        updateCrosshair();
-    });
+    state.crosshair.borderWidth = Number(borderSlider.value);
+    borderValue.innerText = " " + borderSlider.value;
+    updateCrosshair();
+    saveSettings();
+});
     crosshairSection.appendChild(borderSlider);
     crosshairSection.appendChild(borderValue);
 
@@ -269,10 +302,11 @@ if (!profile.visualizerEnabled) {
     borderColorPicker.value = state.crosshair.borderColor;
     borderColorPicker.style.width = "50px";
     borderColorPicker.style.height = "30px";
-    borderColorPicker.addEventListener("input", () => {
-        state.crosshair.borderColor = borderColorPicker.value;
-        updateCrosshair();
-    });
+   borderColorPicker.addEventListener("input", () => {
+    state.crosshair.borderColor = borderColorPicker.value;
+    updateCrosshair();
+    saveSettings();
+});
     crosshairSection.appendChild(borderColorPicker);
 
     mainMenu.appendChild(crosshairSection);
@@ -298,10 +332,11 @@ if (!profile.visualizerEnabled) {
     const keyboardCheck = document.createElement("input");
     keyboardCheck.type = "checkbox";
     keyboardCheck.checked = state.keyboard.visible;
-    keyboardCheck.addEventListener("change", () => {
-        state.keyboard.visible = keyboardCheck.checked;
-        keyBox.style.display = state.keyboard.visible ? "grid" : "none";
-    });
+   keyboardCheck.addEventListener("change", () => {
+    state.keyboard.visible = keyboardCheck.checked;
+    keyBox.style.display = state.keyboard.visible ? "grid" : "none";
+    saveSettings();
+});
     keyboardToggle.appendChild(keyboardCheck);
     keyboardToggle.appendChild(document.createTextNode(" Show Keyboard"));
     keyboardSection.appendChild(keyboardToggle);
@@ -319,9 +354,10 @@ if (!profile.visualizerEnabled) {
     keysInput.style.padding = "5px";
     keysInput.style.marginTop = "5px";
     keysInput.addEventListener("change", () => {
-        state.keyboard.keys = keysInput.value.split(",").map(k => k.trim().toUpperCase());
-        rebuildKeyboard();
-    });
+    state.keyboard.keys = keysInput.value.split(",").map(k => k.trim().toUpperCase());
+    rebuildKeyboard();
+    saveSettings();
+});
     keyboardSection.appendChild(keysInput);
 
     mainMenu.appendChild(keyboardSection);
@@ -348,15 +384,30 @@ if (!profile.visualizerEnabled) {
     mouseCheck.type = "checkbox";
     mouseCheck.checked = state.mouse.visible;
     mouseCheck.addEventListener("change", () => {
-        state.mouse.visible = mouseCheck.checked;
-        mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
-    });
+    state.mouse.visible = mouseCheck.checked;
+    mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
+    saveSettings();
+});;
     mouseToggle.appendChild(mouseCheck);
     mouseToggle.appendChild(document.createTextNode(" Show Mouse"));
     mouseSection.appendChild(mouseToggle);
 
     mainMenu.appendChild(mouseSection);
+    themeSelect.value = state.themes.current;
+crosshairCheck.checked = state.crosshair.visible;
+sizeSlider.value = state.crosshair.size;
+sizeValue.innerText = " " + state.crosshair.size;
+colorPicker.value = state.crosshair.color;
+borderSlider.value = state.crosshair.borderWidth;
+borderValue.innerText = " " + state.crosshair.borderWidth;
+borderColorPicker.value = state.crosshair.borderColor;
+keyboardCheck.checked = state.keyboard.visible;
+keysInput.value = state.keyboard.keys.join(", ");
+mouseCheck.checked = state.mouse.visible;
 
+// Apply initial visibility
+keyBox.style.display = state.keyboard.visible ? "grid" : "none";
+mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
     applyTheme(mainMenu);
 
     /************************************************************
