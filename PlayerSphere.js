@@ -448,7 +448,42 @@ switch(color) {
             this.ctx.fillRect(-swordWidth * 0.35, swordHeight * 0.32, swordWidth * 0.7, swordHeight * 0.08);
             this.ctx.fillStyle = '#8b0000';
             this.ctx.fillRect(-swordWidth * 0.12, swordHeight * 0.35, swordWidth * 0.24, swordHeight * 0.15);
+    }else if (sword === 'lightning') {
+    // Lightning blade - yellow/white electric sword
+    const gradient = this.ctx.createLinearGradient(0, -swordHeight * 0.45, 0, swordHeight * 0.35);
+    gradient.addColorStop(0, '#ffffff');
+    gradient.addColorStop(0.5, '#ffff00');
+    gradient.addColorStop(1, '#ffd700');
+    this.ctx.fillStyle = gradient;
+    
+    // Jagged blade
+    this.ctx.beginPath();
+    this.ctx.moveTo(0, -swordHeight * 0.45);
+    const points = 8;
+    for (let i = 0; i < points; i++) {
+        const y = -swordHeight * 0.45 + (swordHeight * 0.8 * i / points);
+        const x = (i % 2 === 0 ? swordWidth * 0.22 : swordWidth * 0.15) * (i % 4 < 2 ? 1 : -1);
+        this.ctx.lineTo(x, y);
     }
+    this.ctx.lineTo(-swordWidth * 0.18, swordHeight * 0.35);
+    this.ctx.lineTo(swordWidth * 0.18, swordHeight * 0.35);
+    this.ctx.closePath();
+    this.ctx.fill();
+    
+    // Electric glow
+    this.ctx.shadowColor = '#ffff00';
+    this.ctx.shadowBlur = 15;
+    this.ctx.stroke();
+    this.ctx.shadowBlur = 0;
+    
+    // Guard
+    this.ctx.fillStyle = '#ffd700';
+    this.ctx.fillRect(-swordWidth * 0.35, swordHeight * 0.32, swordWidth * 0.7, swordHeight * 0.08);
+    
+    // Handle
+    this.ctx.fillStyle = '#666';
+    this.ctx.fillRect(-swordWidth * 0.12, swordHeight * 0.35, swordWidth * 0.24, swordHeight * 0.15);
+}
     
     this.ctx.restore();
 }
