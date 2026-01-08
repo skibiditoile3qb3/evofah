@@ -307,6 +307,40 @@ switch(color) {
                 this.ctx.arc(x, y, sparkleSize, 0, Math.PI * 2);
                 this.ctx.fill();
             }
+            } else if (effect === 'golden-aura') {
+            const time = Date.now() / 1000;
+            
+            // Golden glow
+            const pulseSize = this.radius * (1.5 + Math.sin(time * 3) * 0.15);
+            const gradient = this.ctx.createRadialGradient(
+                this.centerX, this.centerY, this.radius * 0.8,
+                this.centerX, this.centerY, pulseSize
+            );
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.4)');
+            gradient.addColorStop(1, 'transparent');
+            this.ctx.fillStyle = gradient;
+            this.ctx.beginPath();
+            this.ctx.arc(this.centerX, this.centerY, pulseSize, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Orbiting coin symbols
+            for (let i = 0; i < 8; i++) {
+                const angle = (time * 1.5) + (i * Math.PI / 4);
+                const distance = this.radius * 1.4;
+                const x = this.centerX + Math.cos(angle) * distance;
+                const y = this.centerY + Math.sin(angle) * distance;
+                
+                this.ctx.save();
+                this.ctx.translate(x, y);
+                this.ctx.rotate(time * 2);
+                this.ctx.fillStyle = '#ffd700';
+                this.ctx.font = `${this.radius * 0.25}px Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.textBaseline = 'middle';
+                this.ctx.fillText('💰', 0, 0);
+                this.ctx.restore();
+            }
+
         } else if (effect === 'blackhole') {
             const time = Date.now() / 1000;
             const orbitRadius = this.radius * 1.8;
