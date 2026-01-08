@@ -309,6 +309,13 @@
             <div class="price">175,000 Coins</div>
             <button id="buyWings">Purchase</button>
         </div>
+
+        <div class="shop-item" style="border: 2px solid #ffd700;">
+            <h2>✨ Golden Aura</h2>
+            <p>Shimmering gold particles and coins orbit your sphere. Earn passive coins 3x faster (every 10 seconds)!</p>
+            <div class="price" style="color: #ffd700;">150,000 Coins</div>
+            <button id="buyGoldenAura" style="background: #ffd700; border-color: #daa520; color: #000;">Purchase</button>
+        </div>
     </div>
 
     <!-- SWORDS SECTION -->
@@ -682,6 +689,7 @@
         // Effects
         document.getElementById('buyBlackhole').addEventListener('click', () => buyCosmetic('effects', 'blackhole', 100000, 'buyBlackhole'));
         document.getElementById('buyWings').addEventListener('click', () => buyCosmetic('effects', 'wings', 175000, 'buyWings'));
+        document.getElementById('buyGoldenAura').addEventListener('click', () => buyCosmetic('effects', 'golden-aura', 150000, 'buyGoldenAura'));
 
         // Swords
         document.getElementById('buyStickSword').addEventListener('click', () => buyCosmetic('swords', 'stick', 5000, 'buyStickSword'));
