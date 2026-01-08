@@ -352,6 +352,46 @@
             } catch(e) {}
             return 0;
         }
+        function getActivePotion() {
+    try {
+        const saved = localStorage.getItem('_activePotion');
+        if (saved) {
+            const potion = JSON.parse(saved);
+            const now = Date.now();
+            
+            // Check if expired
+            if (now >= potion.endTime) {
+                clearActivePotion();
+                return null;
+            }
+            return potion;
+        }
+    } catch(e) {}
+    return null;
+}
+
+function setPotionActive(potion) {
+    try {
+        localStorage.setItem('_activePotion', JSON.stringify(potion));
+        
+        // Auto-clear after expiration
+        const duration = potion.endTime - Date.now();
+        setTimeout(() => {
+            clearActivePotion();
+            alert('⚡ Lightning Potion effect ended!');
+        }, duration);
+    } catch(e) {}
+}
+
+function clearActivePotion() {
+    try {
+        localStorage.removeItem('_activePotion');
+    } catch(e) {}
+}
+
+function isPotionActive() {
+    return getActivePotion() !== null;
+}
 
        let userProfile = getUserProfile();
         let coins = getCoins();
