@@ -1384,15 +1384,19 @@ window.addEventListener('message', (event) => {
         const difference = newCoins - oldCoins;
         
         // Apply sword multiplier ONLY to profits (positive differences)
+// Apply sword multiplier ONLY to profits (positive differences)
 if (difference > 0) {
     let swordMultiplier = getSwordMultiplier();
     let totalMultiplier = swordMultiplier;
+    let bonusType = 'sword'; // Track what caused the bonus
     
     // Choose EITHER Lightning Blade OR Potion (whichever is active, not both)
     if (lightningBladeState.active) {
         totalMultiplier = swordMultiplier * 2; // Sword * 2
+        bonusType = 'lightning-blade';
     } else if (isPotionActive()) {
         totalMultiplier = swordMultiplier * 2; // Sword * 2
+        bonusType = 'potion';
     }
     
     const bonusProfit = difference * (totalMultiplier - 1);
@@ -1400,7 +1404,7 @@ if (difference > 0) {
     
     // Show notification if there's a bonus
     if (bonusProfit > 0) {
-        showSwordBonus(bonusProfit, totalMultiplier);
+        showBonus(bonusProfit, totalMultiplier, bonusType);
     }
 } else if (difference < 0) {  // <-- FIXED: Closed the if (difference > 0) block
     // Apply loss protection for Mystical rank
@@ -1429,6 +1433,7 @@ function getSwordMultiplier() {
     }
 }
 
+// Show visual feedback for sword bonus
 // Show visual feedback for sword bonus
 function showSwordBonus(bonus, multiplier) {
     const notification = document.createElement('div');
