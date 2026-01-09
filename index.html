@@ -1433,28 +1433,47 @@ function getSwordMultiplier() {
     }
 }
 
-// Show visual feedback for sword bonus
-// Show visual feedback for sword bonus
-function showSwordBonus(bonus, multiplier) {
+// Show visual feedback for bonuses
+function showBonus(bonus, multiplier, type) {
     const notification = document.createElement('div');
+    
+    let bgGradient, borderColor, emoji, label;
+    
+    if (type === 'potion') {
+        bgGradient = 'linear-gradient(135deg, #9333ea 0%, #c084fc 100%)';
+        borderColor = '#a855f7';
+        emoji = '🧪';
+        label = 'Potion Boost';
+    } else if (type === 'lightning-blade') {
+        bgGradient = 'linear-gradient(135deg, #ffff00 0%, #ffd700 100%)';
+        borderColor = '#fff';
+        emoji = '⚡';
+        label = 'Lightning Blade';
+    } else {
+        // Sword bonus
+        bgGradient = 'linear-gradient(135deg, #ff4500 0%, #ff8c00 100%)';
+        borderColor = '#ffd700';
+        emoji = multiplier === 2.0 ? '🐉' : '⚔️';
+        label = 'Sword Bonus';
+    }
+    
     notification.style.cssText = `
         position: fixed;
         top: 80px;
         right: 20px;
-        background: linear-gradient(135deg, #ff4500 0%, #ff8c00 100%);
-        border: 2px solid #ffd700;
+        background: ${bgGradient};
+        border: 2px solid ${borderColor};
         border-radius: 12px;
         padding: 15px 25px;
         z-index: 10001;
         color: #fff;
         font-weight: bold;
         font-size: 16px;
-        box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
+        box-shadow: 0 4px 15px rgba(147, 51, 234, 0.4);
         animation: slideInRight 0.3s ease-out, fadeOutRight 0.3s ease-in 2.7s;
     `;
     
-    const swordEmoji = multiplier === 2.0 ? '🐉' : '⚔️';
-    notification.innerHTML = `${swordEmoji} Sword Bonus: +${Math.floor(bonus)} coins!`;
+    notification.innerHTML = `${emoji} ${label}: +${Math.floor(bonus)} coins!`;
     
     document.body.appendChild(notification);
     
