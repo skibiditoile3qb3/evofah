@@ -405,9 +405,7 @@ keyboardCheck.checked = state.keyboard.visible;
 keysInput.value = state.keyboard.keys.join(", ");
 mouseCheck.checked = state.mouse.visible;
 
-// Apply initial visibility
-keyBox.style.display = state.keyboard.visible ? "grid" : "none";
-mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
+
     applyTheme(mainMenu);
 
     /************************************************************
@@ -697,7 +695,9 @@ mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
     }
 
     rebuildKeyboard();
-
+keyBox.style.display = state.keyboard.visible ? "grid" : "none";
+mouseVisualizer.style.display = state.mouse.visible ? "block" : "none";
+        
     document.addEventListener("keydown", e => {
         const k = e.code.replace("Key", "").replace("Space", "SPACE");
         const el = keyElements[k];
